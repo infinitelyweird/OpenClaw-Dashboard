@@ -24,6 +24,10 @@
     'oc-server': { icon: '🖧', label: 'Server Health', category: 'openclaw', size: '1x1', render: renderOcServer },
     'oc-tasks': { icon: '✅', label: 'Task Summary', category: 'openclaw', size: '2x1', render: renderOcTasks },
     'oc-priority': { icon: '🎯', label: 'Priority Breakdown', category: 'openclaw', size: '1x1', render: renderOcPriority },
+    // Network Speed
+    'speedtest': { icon: '📶', label: 'Speed Test', category: 'network', size: '2x1', render: renderSpeedTest },
+    'speedtest-history': { icon: '📈', label: 'Speed History', category: 'network', size: '4x1', render: renderSpeedHistory },
+    'speedtest-config': { icon: '⚙️', label: 'Speed Test Config', category: 'network', size: '1x1', render: renderSpeedConfig },
   };
 
   const SIZES = ['1x1', '2x1', '3x1', '4x1', '1x2', '2x2'];
@@ -282,6 +286,165 @@
     `).join('');
   }
 
+  // ─── SPEED TEST RENDERERS ──────────────────────────────
+
+  async function renderSpeedTest(body) {
+    const d = await api('/api/speedtest/history?limit=1');
+    if (!d) { body.innerHTML = '<p style="color:var(--muted)">Unable to load</p>'; return; }
+    const latest = d.results && d.results[0];
+    const running = d.isRunning;
+
+    if (!latest && !running) {
+      body.innerHTML = `
+        <div class="empty-state" style="padding:0.5rem;">
+          <p style="color:var(--muted);font-size:0.85rem;">No speed tests yet</p>
+          <button class="btn-sm btn-add" onclick="window._runSpeedTest(this)">▶ Run Speed Test</button>
+        </div>`;
+      return;
+    }
+
+    body.innerHTML = `
+      <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;">
+        <div>
+          <div class="stat-row"><span class="stat-value" style="color:#34d399;">↓ ${latest ? latest.DownloadMbps : '—'}</span><span class="stat-unit">Mbps</span></div>
+          <div class="stat-label">Download</div>
+        </div>
+        <div>
+          <div class="stat-row"><span class="stat-value" style="color:#60a5fa;">↑ ${latest ? latest.UploadMbps : '—'}</span><span class="stat-unit">Mbps</span></div>
+          <div class="stat-label">Upload</div>
+        </div>
+        <div>
+          <div class="stat-row"><span class="stat-value" style="font-size:1.4rem;color:#fbbf24;">${latest ? latest.PingMs : '—'}</span><span class="stat-unit">ms</span></div>
+          <div class="stat-label">Ping${latest && latest.JitterMs ? ` · ${latest.JitterMs}ms jitter` : ''}</div>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+          <button class="btn-sm ${running ? 'btn-reset' : 'btn-add'}" onclick="window._runSpeedTest(this)" ${running ? 'disabled' : ''}>
+            ${running ? '⏳ Running…' : '▶ Run Test'}
+          </button>
+          ${latest ? `<div style="font-size:0.7rem;color:var(--muted);margin-top:0.3rem;">${new Date(latest.TestedAt).toLocaleString()}</div>` : ''}
+        </div>
+      </div>
+      ${latest ? `<div style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem;">
+        ${latest.ServerName || ''} · ${latest.ISP || ''} · ${latest.ExternalIP || ''}
+      </div>` : ''}
+    `;
+  }
+
+  async function renderSpeedHistory(body) {
+    const d = await api('/api/speedtest/history?limit=30');
+    if (!d || !d.results || d.results.length === 0) {
+      body.innerHTML = '<p style="color:var(--muted);font-size:0.85rem;">No history yet. Run a speed test first.</p>';
+      return;
+    }
+    const results = d.results.slice().reverse(); // chronological
+    const maxDl = Math.max(...results.map(r => r.DownloadMbps), 1);
+    const maxUl = Math.max(...results.map(r => r.UploadMbps), 1);
+    const maxVal = Math.max(maxDl, maxUl);
+    const chartH = 120;
+    const barW = Math.max(6, Math.min(20, Math.floor((body.offsetWidth || 600) / results.length) - 2));
+
+    // SVG line chart
+    const w = results.length * (barW + 4);
+    const points = (key, max) => results.map((r, i) => {
+      const x = i * (barW + 4) + barW / 2;
+      const y = chartH - (r[key] / max * (chartH - 10)) - 5;
+      return `${x},${y}`;
+    }).join(' ');
+
+    body.innerHTML = `
+      <div style="overflow-x:auto;">
+        <svg width="${w}" height="${chartH + 30}" style="display:block;">
+          <!-- Grid lines -->
+          ${[0, 25, 50, 75, 100].map(pct => {
+            const y = chartH - (pct / 100 * (chartH - 10)) - 5;
+            return `<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="rgba(255,255,255,0.06)" />
+                    <text x="2" y="${y - 2}" fill="rgba(255,255,255,0.3)" font-size="9">${Math.round(maxVal * pct / 100)}</text>`;
+          }).join('')}
+          <!-- Download line -->
+          <polyline points="${points('DownloadMbps', maxVal)}" fill="none" stroke="#34d399" stroke-width="2" stroke-linejoin="round"/>
+          ${results.map((r, i) => {
+            const x = i * (barW + 4) + barW / 2;
+            const y = chartH - (r.DownloadMbps / maxVal * (chartH - 10)) - 5;
+            return `<circle cx="${x}" cy="${y}" r="3" fill="#34d399"><title>↓ ${r.DownloadMbps} Mbps\n${new Date(r.TestedAt).toLocaleString()}</title></circle>`;
+          }).join('')}
+          <!-- Upload line -->
+          <polyline points="${points('UploadMbps', maxVal)}" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linejoin="round"/>
+          ${results.map((r, i) => {
+            const x = i * (barW + 4) + barW / 2;
+            const y = chartH - (r.UploadMbps / maxVal * (chartH - 10)) - 5;
+            return `<circle cx="${x}" cy="${y}" r="3" fill="#60a5fa"><title>↑ ${r.UploadMbps} Mbps\n${new Date(r.TestedAt).toLocaleString()}</title></circle>`;
+          }).join('')}
+          <!-- Time labels -->
+          ${results.filter((_, i) => i % Math.max(1, Math.floor(results.length / 6)) === 0).map((r, _, arr) => {
+            const idx = results.indexOf(r);
+            const x = idx * (barW + 4) + barW / 2;
+            return `<text x="${x}" y="${chartH + 18}" fill="rgba(255,255,255,0.4)" font-size="8" text-anchor="middle">${new Date(r.TestedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</text>`;
+          }).join('')}
+        </svg>
+      </div>
+      <div style="display:flex;gap:1rem;margin-top:0.4rem;font-size:0.8rem;">
+        <div><span style="color:#34d399;">━</span> Download</div>
+        <div><span style="color:#60a5fa;">━</span> Upload</div>
+        <div style="margin-left:auto;color:var(--muted);">Last ${results.length} tests · Max: ↓${maxDl} / ↑${maxUl} Mbps</div>
+      </div>
+    `;
+  }
+
+  async function renderSpeedConfig(body) {
+    const d = await api('/api/speedtest/status');
+    if (!d) { body.innerHTML = '<p style="color:var(--muted)">Unable to load</p>'; return; }
+
+    body.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.8rem;font-size:0.85rem;">
+        <div>
+          <span class="status-dot ${d.autoEnabled ? 'green' : 'yellow'}"></span>
+          Auto-test: <strong>${d.autoEnabled ? 'Enabled' : 'Disabled'}</strong>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <span style="color:var(--muted);">Every</span>
+          <input type="number" id="speedtest-interval" value="${d.intervalMinutes}" min="1" max="1440"
+            style="width:60px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);padding:0.3rem 0.5rem;background:rgba(5,6,10,0.4);color:var(--text);font-size:0.85rem;" />
+          <span style="color:var(--muted);">min</span>
+        </div>
+        <div style="display:flex;gap:0.4rem;">
+          <button class="btn-sm btn-approve" onclick="window._configSpeedTest(true)">Enable</button>
+          <button class="btn-sm btn-reset" onclick="window._configSpeedTest(false)">Disable</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Global handlers for inline onclick
+  window._runSpeedTest = async function (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Running…';
+    await fetch('/api/speedtest/run', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
+    // Poll until done
+    const poll = setInterval(async () => {
+      const s = await api('/api/speedtest/status');
+      if (s && !s.isRunning) {
+        clearInterval(poll);
+        grid.querySelectorAll('.widget').forEach(w => {
+          const id = w.dataset.widgetId;
+          if (id && id.startsWith('speedtest')) refreshWidget(w);
+        });
+      }
+    }, 3000);
+  };
+
+  window._configSpeedTest = async function (enabled) {
+    const minutesInput = document.getElementById('speedtest-interval');
+    const minutes = minutesInput ? parseInt(minutesInput.value) : 30;
+    await fetch('/api/speedtest/configure', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ minutes, enabled })
+    });
+    grid.querySelectorAll('.widget').forEach(w => {
+      if (w.dataset.widgetId === 'speedtest-config') refreshWidget(w);
+    });
+  };
+
   // ─── LAYOUT ENGINE ────────────────────────────────────
 
   const DEFAULT_LAYOUT = [
@@ -299,6 +462,9 @@
     { id: 'oc-tasks', size: '2x1' },
     { id: 'recent-users', size: '2x1' },
     { id: 'processes', size: '2x2' },
+    { id: 'speedtest', size: '2x1' },
+    { id: 'speedtest-config', size: '1x1' },
+    { id: 'speedtest-history', size: '4x1' },
   ];
 
   function loadLayout() {
@@ -451,7 +617,7 @@
   // ─── WIDGET PICKER ────────────────────────────────────
 
   document.getElementById('add-widget-btn').addEventListener('click', () => {
-    const categories = { system: '🖥️ System Monitoring', users: '👥 User Management', openclaw: '🐾 OpenClaw' };
+    const categories = { system: '🖥️ System Monitoring', users: '👥 User Management', openclaw: '🐾 OpenClaw', network: '📶 Network Speed' };
     const container = document.getElementById('widget-picker-container');
 
     let html = `<div class="widget-picker" onclick="if(event.target===this)this.remove()">

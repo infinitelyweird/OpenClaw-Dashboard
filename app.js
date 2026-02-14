@@ -6,6 +6,7 @@ const loginRoute = require('./routes/loginRoute');
 const adminRoute = require('./routes/adminRoute');
 const profileRoute = require('./routes/profileRoute');
 const widgetRoute = require('./routes/widgetRoute');
+const speedtestRoute = require('./routes/speedtestRoute');
 
 // Middleware
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use(loginRoute);
 app.use(adminRoute);
 app.use(profileRoute);
 app.use(widgetRoute);
+app.use(speedtestRoute);
 
 // Default to login page
 app.get('/', (req, res) => {
