@@ -59,6 +59,16 @@ router.post('/api/admin/users/:id/approve', async (req, res) => {
         END
       `);
 
+    // Assign to "Standard User" group by default
+    await pool.request()
+      .input('UserID3', sql.Int, req.params.id)
+      .query(`
+        IF NOT EXISTS (SELECT 1 FROM UserGroups ug INNER JOIN Groups g ON ug.GroupID = g.GroupID WHERE ug.UserID = @UserID3 AND g.GroupName = 'Standard User')
+        BEGIN
+          INSERT INTO UserGroups (UserID, GroupID) SELECT @UserID3, GroupID FROM Groups WHERE GroupName = 'Standard User'
+        END
+      `);
+
     res.json({ message: 'User approved.' });
   } catch (err) {
     console.error(err);
@@ -341,6 +351,90 @@ router.get('/api/admin/users/:id/details', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to load user details.' });
+  }
+});
+
+// ─── PERMISSIONS ─────────────────────────────────────────
+
+// List all permissions
+router.get('/api/admin/permissions', async (req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request().query('SELECT PermissionID, PermissionName, Description FROM Permissions ORDER BY PermissionName');
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to load permissions.' });
+  }
+});
+
+// Get permissions for a role
+router.get('/api/admin/roles/:id/permissions', async (req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('RoleID', sql.Int, req.params.id)
+      .query(`SELECT p.PermissionID, p.PermissionName, p.Description
+              FROM Permissions p INNER JOIN RolePermissions rp ON p.PermissionID = rp.PermissionID
+              WHERE rp.RoleID = @RoleID ORDER BY p.PermissionName`);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to load role permissions.' });
+  }
+});
+
+// Assign permission to role
+router.post('/api/admin/roles/:roleId/permissions/:permId', async (req, res) => {
+  try {
+    const pool = await getPool();
+    await pool.request()
+      .input('RoleID', sql.Int, req.params.roleId)
+      .input('PermissionID', sql.Int, req.params.permId)
+      .query('IF NOT EXISTS (SELECT 1 FROM RolePermissions WHERE RoleID=@RoleID AND PermissionID=@PermissionID) INSERT INTO RolePermissions (RoleID, PermissionID) VALUES (@RoleID, @PermissionID)');
+    res.json({ message: 'Permission assigned.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to assign permission.' });
+  }
+});
+
+// Revoke permission from role
+router.delete('/api/admin/roles/:roleId/permissions/:permId', async (req, res) => {
+  try {
+    const pool = await getPool();
+    await pool.request()
+      .input('RoleID', sql.Int, req.params.roleId)
+      .input('PermissionID', sql.Int, req.params.permId)
+      .query('DELETE FROM RolePermissions WHERE RoleID=@RoleID AND PermissionID=@PermissionID');
+    res.json({ message: 'Permission revoked.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to revoke permission.' });
+  }
+});
+
+// Get effective permissions for a user (direct roles + group roles)
+router.get('/api/admin/users/:id/permissions', async (req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('UserID', sql.Int, req.params.id)
+      .query(`
+        SELECT DISTINCT p.PermissionID, p.PermissionName, p.Description
+        FROM Permissions p
+        INNER JOIN RolePermissions rp ON p.PermissionID = rp.PermissionID
+        WHERE rp.RoleID IN (
+          SELECT RoleID FROM UserRoles WHERE UserID = @UserID
+          UNION
+          SELECT gr.RoleID FROM GroupRoles gr INNER JOIN UserGroups ug ON gr.GroupID = ug.GroupID WHERE ug.UserID = @UserID
+        )
+        ORDER BY p.PermissionName
+      `);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to load user permissions.' });
   }
 });
 
