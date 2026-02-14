@@ -9,71 +9,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="nav.css" />
+    <link rel="stylesheet" href="widgets.css" />
   </head>
   <body>
     <div class="gradient-bg"></div>
     <script src="nav.js"></script>
     <main id="app">
-      <section id="dashboard">
-        <header>
-          <div>
-            <p class="eyebrow">Agent Monitoring</p>
-            <h1>Mission Control</h1>
-          </div>
-          <div class="header-actions">
-            <button id="summary-btn" class="ghost">Generate Summary</button>
-            <button id="new-dashboard-btn">New Dashboard</button>
-          </div>
-        </header>
+      <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
+        <div>
+          <p class="eyebrow">Operations Dashboard</p>
+          <h1 style="margin:0.1rem 0 0;font-size:2rem;">Mission Control</h1>
+        </div>
+      </header>
 
-        <section id="summary-panel" class="glass-card hidden"></section>
+      <div class="widget-toolbar">
+        <div class="widget-toolbar-left">
+          <button class="add-widget-btn" id="add-widget-btn">+ Add Widget</button>
+          <button class="add-widget-btn" id="reset-layout-btn">↺ Reset Layout</button>
+        </div>
+      </div>
 
-        <section id="cards" class="card-grid"></section>
-
-        <section id="create-panel" class="glass-card hidden">
-          <h2>Add Dashboard</h2>
-          <form id="dashboard-form">
-            <div class="form-grid">
-              <label>
-                <span>Name</span>
-                <input type="text" name="name" required />
-              </label>
-              <label>
-                <span>Agent / Surface</span>
-                <input type="text" name="agent" required />
-              </label>
-              <label>
-                <span>Status</span>
-                <select name="status">
-                  <option value="operational">Operational</option>
-                  <option value="degraded">Degraded</option>
-                  <option value="flaky">Flaky</option>
-                  <option value="down">Down</option>
-                  <option value="unknown">Unknown</option>
-                </select>
-              </label>
-              <label>
-                <span>Accent Color</span>
-                <input type="color" name="color" value="#93C5FD" />
-              </label>
-            </div>
-            <label>
-              <span>Notes</span>
-              <textarea name="notes" rows="2" placeholder="What is this dashboard tracking?"></textarea>
-            </label>
-            <label>
-              <span>Metrics (comma separated label:value)</span>
-              <input type="text" name="metrics" placeholder="Heartbeats:OK, Jobs:2" />
-            </label>
-            <div class="form-actions">
-              <button type="button" id="cancel-create" class="ghost">Cancel</button>
-              <button type="submit">Save Dashboard</button>
-            </div>
-          </form>
-        </section>
-      </section>
+      <div class="widget-grid" id="widget-grid"></div>
+      <div id="widget-picker-container"></div>
     </main>
 
-    <script src="main.js" type="module"></script>
+    <script src="widgets.js"></script>
   </body>
 </html>
