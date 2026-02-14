@@ -81,6 +81,14 @@ router.post('/api/admin/users/:id/deny', async (req, res) => {
   try {
     const pool = await getPool();
     const id = parseInt(req.params.id);
+
+    // Prevent deleting the admin account
+    const check = await pool.request().input('UserID', sql.Int, id)
+      .query("SELECT Username FROM Users WHERE UserID = @UserID");
+    if (check.recordset.length > 0 && check.recordset[0].Username === 'admin') {
+      return res.status(403).json({ message: 'The admin account cannot be deleted.' });
+    }
+
     await pool.request().input('UserID', sql.Int, id).query('DELETE FROM UserRoles WHERE UserID = @UserID');
     await pool.request().input('UserID', sql.Int, id).query('DELETE FROM UserGroups WHERE UserID = @UserID');
     await pool.request().input('UserID', sql.Int, id).query('DELETE FROM Users WHERE UserID = @UserID');

@@ -213,7 +213,7 @@
               <button class="btn-sm btn-edit" onclick="editUserModal(${u.UserID}, '${u.Username.replace(/'/g,"\\'")}', '${u.Email.replace(/'/g,"\\'")}')">Edit</button>
               <button class="btn-sm btn-reset" onclick="resetPasswordModal(${u.UserID}, '${u.Username.replace(/'/g,"\\'")}')">Reset PW</button>
               <button class="btn-sm btn-reset" onclick="manageUserAccess(${u.UserID}, '${u.Username.replace(/'/g,"\\'")}')">Roles/Groups</button>
-              <button class="btn-sm btn-deny" onclick="denyUser(${u.UserID})">Delete</button>
+              ${u.Username === 'admin' ? '' : `<button class="btn-sm btn-deny" onclick="denyUser(${u.UserID})">Delete</button>`}
             </div>
           </div>
         `).join('');
