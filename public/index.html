@@ -3,36 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OpenClaw Agent Console</title>
+    <title>Dashboard - Infinitely Weird DevOps</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="nav.css" />
   </head>
   <body>
     <div class="gradient-bg"></div>
+    <script src="nav.js"></script>
     <main id="app">
-      <section id="login-card" class="glass-card">
-        <div class="logo">OpenClaw Control</div>
-        <p class="subtitle">Securely manage every agent heartbeat & task.</p>
-        <form id="login-form">
-          <label>
-            <span>Username</span>
-            <input type="text" name="username" placeholder="admin" required />
-          </label>
-          <label>
-            <span>Password</span>
-            <input type="password" name="password" placeholder="••••••••" required />
-          </label>
-          <button type="submit">Enter Console</button>
-          <p id="login-error" class="error hidden">Invalid credentials</p>
-        </form>
-      </section>
-
-      <section id="dashboard" class="hidden">
+      <section id="dashboard">
         <header>
           <div>
             <p class="eyebrow">Agent Monitoring</p>

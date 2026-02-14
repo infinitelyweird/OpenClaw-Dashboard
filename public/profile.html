@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Profile - Infinitely Weird DevOps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="nav.css" />
+    <style>
+      .profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; }
+      @media (max-width: 768px) { .profile-layout { grid-template-columns: 1fr; } }
+      .avatar-section { text-align: center; }
+      .avatar-large {
+        width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
+        border: 3px solid rgba(255,255,255,0.2); margin-bottom: 1rem;
+      }
+      .avatar-placeholder-lg {
+        width: 140px; height: 140px; border-radius: 50%; margin: 0 auto 1rem;
+        background: linear-gradient(135deg, #c084fc, #60a5fa, #34d399);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 3rem; font-weight: 600; color: #fff;
+        border: 3px solid rgba(255,255,255,0.2);
+      }
+      .avatar-upload-btn {
+        display: inline-block; padding: 0.5rem 1.2rem; border-radius: 12px;
+        border: 1px solid var(--border); background: rgba(255,255,255,0.06);
+        color: var(--text); font-size: 0.85rem; cursor: pointer;
+        transition: background 0.2s;
+      }
+      .avatar-upload-btn:hover { background: rgba(255,255,255,0.12); }
+      .profile-name { font-size: 1.4rem; font-weight: 600; margin: 0.5rem 0 0.2rem; }
+      .profile-username { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.3rem; }
+      .profile-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; margin-top: 0.8rem; }
+      .badge-role { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 8px; font-size: 0.75rem; background: rgba(167,139,250,0.25); color: #c4b5fd; }
+      .badge-group { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 8px; font-size: 0.75rem; background: rgba(52,211,153,0.25); color: #6ee7b7; }
+      .profile-form { display: flex; flex-direction: column; gap: 1.2rem; }
+      .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+      .section-title { font-size: 1.1rem; font-weight: 600; margin: 0 0 0.3rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .success-msg { color: var(--accent-2); font-size: 0.9rem; margin: 0; }
+      .error-msg { color: var(--danger); font-size: 0.9rem; margin: 0; }
+      .member-since { color: var(--muted); font-size: 0.8rem; margin-top: 0.8rem; }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-bg"></div>
+    <script src="nav.js"></script>
+    <main id="app" style="max-width:900px;">
+      <div class="profile-layout">
+        <!-- LEFT: Avatar & Identity -->
+        <div class="glass-card avatar-section" id="avatar-card">
+          <div id="avatar-display"></div>
+          <div class="profile-name" id="profile-display-name">—</div>
+          <div class="profile-username" id="profile-username">@—</div>
+          <div style="margin: 1rem 0;">
+            <label class="avatar-upload-btn">
+              📷 Change Photo
+              <input type="file" id="avatar-input" accept="image/*" style="display:none;" />
+            </label>
+          </div>
+          <p id="avatar-msg" style="font-size:0.85rem;margin:0;"></p>
+          <div class="profile-badges" id="profile-badges"></div>
+          <div class="member-since" id="member-since"></div>
+        </div>
+
+        <!-- RIGHT: Profile Details -->
+        <div>
+          <div class="glass-card" style="margin-bottom:1.5rem;">
+            <h2 class="section-title">Personal Details</h2>
+            <form id="profile-form" class="profile-form">
+              <div class="form-row">
+                <label><span>Display Name</span><input type="text" id="f-displayName" placeholder="Your full name" /></label>
+                <label><span>Job Title</span><input type="text" id="f-jobTitle" placeholder="e.g. DevOps Engineer" /></label>
+              </div>
+              <div class="form-row">
+                <label><span>Department</span><input type="text" id="f-department" placeholder="e.g. Engineering" /></label>
+                <label><span>Location</span><input type="text" id="f-location" placeholder="e.g. Austin, TX" /></label>
+              </div>
+              <div class="form-row">
+                <label><span>Phone</span><input type="tel" id="f-phone" placeholder="+1 (555) 000-0000" /></label>
+                <label><span>Email</span><input type="email" id="f-email" disabled /></label>
+              </div>
+              <label><span>Bio</span><textarea id="f-bio" rows="3" placeholder="Tell us a bit about yourself…" style="resize:vertical;"></textarea></label>
+              <div class="form-actions">
+                <p id="profile-msg"></p>
+                <button type="submit">Save Changes</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="glass-card" id="password-section">
+            <h2 class="section-title">Change Password</h2>
+            <form id="password-form" class="profile-form">
+              <label><span>Current Password</span><input type="password" id="pw-current" required /></label>
+              <div class="form-row">
+                <label><span>New Password</span><input type="password" id="pw-new" minlength="6" required /></label>
+                <label><span>Confirm New Password</span><input type="password" id="pw-confirm" minlength="6" required /></label>
+              </div>
+              <div class="form-actions">
+                <p id="password-msg"></p>
+                <button type="submit" class="ghost">Update Password</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const token = localStorage.getItem('token');
+
+      async function api(path, opts = {}) {
+        const res = await fetch(path, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, ...opts });
+        return res.json();
+      }
+
+      async function loadProfile() {
+        const p = await api('/api/profile');
+        // Avatar
+        const avatarEl = document.getElementById('avatar-display');
+        if (p.AvatarPath) {
+          avatarEl.innerHTML = `<img src="${p.AvatarPath}" class="avatar-large" alt="Avatar" />`;
+        } else {
+          const initials = (p.DisplayName || p.Username || '?').substring(0, 2).toUpperCase();
+          avatarEl.innerHTML = `<div class="avatar-placeholder-lg">${initials}</div>`;
+        }
+
+        document.getElementById('profile-display-name').textContent = p.DisplayName || p.Username;
+        document.getElementById('profile-username').textContent = `@${p.Username}`;
+        document.getElementById('member-since').textContent = `Member since ${new Date(p.CreatedAt).toLocaleDateString()}`;
+
+        // Badges
+        const badges = document.getElementById('profile-badges');
+        badges.innerHTML =
+          (p.roles || []).map(r => `<span class="badge-role">🛡️ ${r}</span>`).join('') +
+          (p.groups || []).map(g => `<span class="badge-group">📁 ${g}</span>`).join('');
+
+        // Form fields
+        document.getElementById('f-displayName').value = p.DisplayName || '';
+        document.getElementById('f-jobTitle').value = p.JobTitle || '';
+        document.getElementById('f-department').value = p.Department || '';
+        document.getElementById('f-location').value = p.Location || '';
+        document.getElementById('f-phone').value = p.Phone || '';
+        document.getElementById('f-email').value = p.Email || '';
+        document.getElementById('f-bio').value = p.Bio || '';
+      }
+
+      // Save profile
+      document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('profile-msg');
+        try {
+          const result = await api('/api/profile', {
+            method: 'PUT',
+            body: JSON.stringify({
+              displayName: document.getElementById('f-displayName').value,
+              jobTitle: document.getElementById('f-jobTitle').value,
+              department: document.getElementById('f-department').value,
+              location: document.getElementById('f-location').value,
+              phone: document.getElementById('f-phone').value,
+              bio: document.getElementById('f-bio').value
+            })
+          });
+          msg.className = 'success-msg';
+          msg.textContent = '✓ Profile saved!';
+          loadProfile();
+          setTimeout(() => msg.textContent = '', 3000);
+        } catch {
+          msg.className = 'error-msg';
+          msg.textContent = 'Failed to save.';
+        }
+      });
+
+      // Avatar upload
+      document.getElementById('avatar-input').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const msg = document.getElementById('avatar-msg');
+        const formData = new FormData();
+        formData.append('avatar', file);
+        try {
+          const res = await fetch('/api/profile/avatar', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+          });
+          const data = await res.json();
+          if (res.ok) {
+            msg.className = 'success-msg';
+            msg.textContent = '✓ Photo updated!';
+            loadProfile();
+            setTimeout(() => msg.textContent = '', 3000);
+          } else {
+            msg.className = 'error-msg';
+            msg.textContent = data.message;
+          }
+        } catch {
+          msg.className = 'error-msg';
+          msg.textContent = 'Upload failed.';
+        }
+      });
+
+      // Change password
+      document.getElementById('password-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('password-msg');
+        const newPw = document.getElementById('pw-new').value;
+        const confirm = document.getElementById('pw-confirm').value;
+        if (newPw !== confirm) { msg.className = 'error-msg'; msg.textContent = 'Passwords do not match.'; return; }
+        try {
+          const result = await api('/api/profile/change-password', {
+            method: 'POST',
+            body: JSON.stringify({
+              currentPassword: document.getElementById('pw-current').value,
+              newPassword: newPw
+            })
+          });
+          if (result.message.includes('successfully')) {
+            msg.className = 'success-msg';
+            msg.textContent = '✓ Password changed!';
+            document.getElementById('password-form').reset();
+          } else {
+            msg.className = 'error-msg';
+            msg.textContent = result.message;
+          }
+          setTimeout(() => msg.textContent = '', 4000);
+        } catch {
+          msg.className = 'error-msg';
+          msg.textContent = 'Failed to change password.';
+        }
+      });
+
+      // Scroll to password section if hash
+      if (window.location.hash === '#password') {
+        setTimeout(() => document.getElementById('password-section').scrollIntoView({ behavior: 'smooth' }), 300);
+      }
+
+      loadProfile();
+    </script>
+  </body>
+</html>

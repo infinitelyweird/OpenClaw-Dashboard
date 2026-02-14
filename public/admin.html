@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="nav.css" />
     <style>
       .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
       .tab-btn { border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 1.2rem; background: transparent; color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.9rem; transition: all 0.2s; }
@@ -47,16 +48,11 @@
   </head>
   <body>
     <div class="gradient-bg"></div>
+    <script src="nav.js"></script>
     <main id="app">
-      <header style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-        <div>
-          <p class="eyebrow">Administration</p>
-          <h1 style="margin:0.1rem 0 0; font-size:2rem;">Admin Panel</h1>
-        </div>
-        <div style="display:flex; gap:0.8rem; align-items:center;">
-          <a href="/index.html" class="back-link">← Dashboard</a>
-          <button class="ghost" id="logout-btn" style="border-radius:12px; padding:0.5rem 1rem; font-size:0.85rem;">Logout</button>
-        </div>
+      <header style="margin-bottom:1.5rem;">
+        <p class="eyebrow">Administration</p>
+        <h1 style="margin:0.1rem 0 0; font-size:2rem;">Admin Panel</h1>
       </header>
 
       <div class="tab-bar">
@@ -550,12 +546,6 @@
         document.getElementById('perm-role-select').value = roleId;
         await renderRolePermissions(roleId);
       }
-
-      // ─── LOGOUT ───────────────────────────────
-      document.getElementById('logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('token');
-        window.location.href = '/login.html';
-      });
 
       // ─── INIT ─────────────────────────────────
       loadPending();
