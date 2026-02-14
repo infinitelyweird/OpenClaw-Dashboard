@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const registerRoute = require('./routes/registerRoute');
 const loginRoute = require('./routes/loginRoute');
+const adminRoute = require('./routes/adminRoute');
 
 // Middleware
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use(registerRoute);
 app.use(loginRoute);
+app.use(adminRoute);
 
 // Default to login page
 app.get('/', (req, res) => {

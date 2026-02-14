@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const sql = require('mssql');
+const { sql, getPool } = require('../db');
 const router = express.Router();
 
 router.post('/api/register', async (req, res) => {
@@ -11,21 +11,26 @@ router.post('/api/register', async (req, res) => {
   }
 
   try {
+    const pool = await getPool();
+
+    // Check for duplicate username or email
+    const existing = await pool.request()
+      .input('Username', sql.NVarChar, username)
+      .input('Email', sql.NVarChar, email)
+      .query('SELECT UserID FROM Users WHERE Username = @Username OR Email = @Email');
+
+    if (existing.recordset.length > 0) {
+      return res.status(400).json({ message: 'Username or email already exists.' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const pool = await sql.connect({
-      user: 'openclaw',
-      password: 'ix4bw4riEiDrDMxwmNoD',
-      server: '192.168.0.100',
-      database: 'TaskDashboard',
-    });
-
     await pool.request()
-      .input('Username', sql.NVarChar, username)
+      .input('Username2', sql.NVarChar, username)
       .input('PasswordHash', sql.NVarChar, hashedPassword)
-      .input('Email', sql.NVarChar, email)
+      .input('Email2', sql.NVarChar, email)
       .query(`INSERT INTO Users (Username, PasswordHash, Email, IsApproved, CreatedAt) 
-              VALUES (@Username, @PasswordHash, @Email, 0, GETDATE())`);
+              VALUES (@Username2, @PasswordHash, @Email2, 0, GETDATE())`);
 
     res.status(200).json({ message: 'Registration successful! Pending admin approval.' });
   } catch (err) {
