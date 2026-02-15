@@ -6,120 +6,320 @@
   <title>Profile - Infinitely Weird DevOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="loader.css" />
   <style>
-    :root{--glass:rgba(255,255,255,0.06);--glass-hover:rgba(255,255,255,0.1);--border:rgba(255,255,255,0.12);--text:#f0f0f0;--muted:rgba(255,255,255,0.5);--accent:#34d399;--accent-2:rgba(52,211,153,0.15);--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;--purple:#a78bfa}
-    *{box-sizing:border-box}body{font-family:'Inter',sans-serif;margin:0;padding:0;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);color:var(--text)}.gradient-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%)}
-    main{max-width:700px;margin:0 auto;padding:1rem 1.5rem 3rem}
-    .page-header h1{font-family:'Space Grotesk',sans-serif;font-size:2rem;margin:0}.page-header h1 span{color:var(--accent)}.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:.2rem}
-    .btn{padding:.5rem 1.2rem;border-radius:10px;border:none;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem}.btn-primary{background:var(--accent);color:#0f172a}.btn-primary:hover{background:#6ee7b7}.btn-ghost{background:var(--glass);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--glass-hover)}
-    .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(14px);padding:1.5rem;margin-bottom:1.5rem}
-    .section-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;margin:0 0 1rem;display:flex;align-items:center;gap:.5rem}
+    /* Profile-specific styles using design system variables */
+    .profile-page { max-width: 800px; margin: 0 auto; }
 
-    /* Avatar */
-    .avatar-section{display:flex;flex-direction:column;align-items:center;margin-bottom:1rem}
-    .avatar-wrapper{position:relative;width:120px;height:120px;border-radius:50%;overflow:hidden;cursor:pointer;border:3px solid var(--border);transition:border-color .2s}
-    .avatar-wrapper:hover{border-color:var(--accent)}
-    .avatar-wrapper img{width:100%;height:100%;object-fit:cover}
-    .avatar-placeholder{width:100%;height:100%;background:linear-gradient(135deg,rgba(52,211,153,.2),rgba(167,139,250,.2));display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;color:var(--accent)}
-    .avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-size:.8rem;font-weight:600}
-    .avatar-wrapper:hover .avatar-overlay{opacity:1}
-    .avatar-hint{font-size:.78rem;color:var(--muted);margin-top:.5rem}
-    .pw-requirements{display:none;padding:.4rem 0 0;font-size:.75rem;line-height:1.6}
-    .pw-requirements.visible{display:block}
-    .pw-req{color:var(--muted);transition:color .2s}
-    .pw-req.met{color:var(--accent)}
-    .pw-match-error{font-size:.75rem;color:var(--danger);margin-top:.25rem;display:none}
+    .glass-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(var(--blur, 20px));
+      -webkit-backdrop-filter: blur(var(--blur, 20px));
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
 
-    /* Form */
-    .form-group{margin-bottom:1rem}
-    .form-group label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:.3rem}
-    .form-group input,.form-group select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;border-radius:8px;font-family:inherit;font-size:.85rem;outline:none;transition:border-color .2s}
-    .form-group input:focus,.form-group select:focus{border-color:var(--accent)}
-    .form-group select option{background:#1e1b4b}
-    .form-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1rem}
-    .msg{padding:.6rem 1rem;border-radius:8px;font-size:.82rem;margin-bottom:1rem;display:none}.msg.success{display:block;background:rgba(52,211,153,.15);color:#6ee7b7;border:1px solid rgba(52,211,153,.3)}.msg.error{display:block;background:rgba(248,113,113,.15);color:#fca5a5;border:1px solid rgba(248,113,113,.3)}
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Identity card */
+    .identity-card { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .avatar-wrapper {
+      position: relative; width: 120px; height: 120px; border-radius: 50%;
+      overflow: hidden; cursor: pointer; border: 3px solid var(--border-glass);
+      transition: border-color var(--duration) var(--ease); flex-shrink: 0;
+    }
+    .avatar-wrapper:hover { border-color: var(--color-accent); }
+    .avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(167,139,250,0.25), rgba(96,165,250,0.25));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; font-weight: 700; color: var(--color-accent);
+    }
+    .avatar-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.55);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity var(--duration) var(--ease);
+      font-size: 0.8rem; font-weight: 600; color: #fff;
+    }
+    .avatar-wrapper:hover .avatar-overlay { opacity: 1; }
+
+    .identity-info { flex: 1; min-width: 200px; }
+    .identity-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin: 0;
+      display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .identity-username { font-size: 0.9rem; color: var(--text-muted); margin: 0.15rem 0 0; }
+    .identity-email { font-size: 0.85rem; color: var(--text-secondary); margin: 0.25rem 0 0; }
+    .identity-member-since { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+    .role-pill {
+      display: inline-block; padding: 0.2rem 0.65rem; border-radius: 999px;
+      background: rgba(167,139,250,0.15); color: var(--color-accent);
+      font-size: 0.75rem; font-weight: 600;
+    }
+
+    .group-tag {
+      display: inline-block; padding: 0.2rem 0.65rem; border-radius: 999px;
+      background: rgba(52,211,153,0.15); color: var(--color-success);
+      font-size: 0.75rem; font-weight: 600;
+    }
+
+    /* About */
+    .bio-textarea {
+      width: 100%; min-height: 80px; resize: vertical;
+      background: var(--bg-glass-input); border: 1px solid var(--border-input);
+      color: var(--text-primary); padding: 0.65rem 0.8rem; border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; outline: none;
+      transition: border-color var(--duration) var(--ease);
+    }
+    .bio-textarea:focus { border-color: var(--border-input-focus); }
+    .char-counter { text-align: right; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .char-counter.warn { color: var(--color-warning); }
+    .char-counter.over { color: var(--color-danger); }
+
+    /* Contact & Work grid */
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .field-grid { grid-template-columns: 1fr; } }
+    .field-item label {
+      display: flex; align-items: center; gap: 0.35rem;
+      font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.3rem; font-weight: 500;
+    }
+    .field-item input {
+      width: 100%; background: var(--bg-glass-input); border: 1px solid var(--border-input);
+      color: var(--text-primary); padding: 0.55rem 0.8rem; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 0.85rem; outline: none;
+      transition: border-color var(--duration) var(--ease);
+    }
+    .field-item input:focus { border-color: var(--border-input-focus); }
+    .field-item input[readonly] { opacity: 0.6; cursor: not-allowed; }
+
+    /* Roles & Groups */
+    .rg-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media (max-width: 600px) { .rg-columns { grid-template-columns: 1fr; } }
+    .rg-col h4 { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.6rem; }
+    .rg-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .rg-empty { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
+    .rg-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border-glass); }
+
+    /* Security */
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block; font-size: 0.8rem; color: var(--text-muted);
+      margin-bottom: 0.3rem; font-weight: 500;
+    }
+    .form-group input {
+      width: 100%; background: var(--bg-glass-input); border: 1px solid var(--border-input);
+      color: var(--text-primary); padding: 0.55rem 0.8rem; border-radius: var(--radius-sm);
+      font-family: inherit; font-size: 0.85rem; outline: none;
+      transition: border-color var(--duration) var(--ease);
+    }
+    .form-group input:focus { border-color: var(--border-input-focus); }
+
+    .pw-requirements { display: none; padding: 0.4rem 0 0; font-size: 0.75rem; line-height: 1.6; }
+    .pw-requirements.visible { display: block; }
+    .pw-req { color: var(--text-muted); transition: color var(--duration); }
+    .pw-req.met { color: var(--color-success); }
+    .pw-match-error { font-size: 0.75rem; color: var(--color-danger); margin-top: 0.25rem; display: none; }
+
+    /* Buttons */
+    .btn {
+      padding: 0.5rem 1.2rem; border-radius: var(--radius-sm); border: none;
+      font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      transition: all var(--duration) var(--ease); display: inline-flex;
+      align-items: center; gap: 0.4rem;
+    }
+    .btn-primary { background: var(--color-accent); color: var(--text-inverse); }
+    .btn-primary:hover { filter: brightness(1.15); }
+    .form-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1rem; }
+
+    /* Messages */
+    .msg {
+      padding: 0.6rem 1rem; border-radius: var(--radius-sm); font-size: 0.82rem;
+      margin-bottom: 1rem; display: none;
+    }
+    .msg.success { display: block; background: var(--color-success-bg); color: var(--color-success); border: 1px solid rgba(52,211,153,0.3); }
+    .msg.error { display: block; background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid rgba(248,113,113,0.3); }
 
     /* Theme */
-    .theme-options{display:flex;gap:.8rem;flex-wrap:wrap}
-    .theme-option{width:60px;height:40px;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative}
-    .theme-option.selected{border-color:var(--accent);box-shadow:0 0 12px rgba(52,211,153,.3)}
-    .theme-option:hover{transform:scale(1.05)}
-    .theme-check{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--accent);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:.7rem;color:#0f172a;font-weight:700}
-    .theme-option.selected .theme-check{display:flex}
+    .theme-options { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .theme-option {
+      width: 60px; height: 40px; border-radius: var(--radius-sm); cursor: pointer;
+      border: 2px solid transparent; transition: all var(--duration) var(--ease); position: relative;
+    }
+    .theme-option.selected { border-color: var(--color-accent); box-shadow: 0 0 12px rgba(167,139,250,0.3); }
+    .theme-option:hover { transform: scale(1.05); }
+    .theme-check {
+      position: absolute; top: -6px; right: -6px; width: 18px; height: 18px;
+      background: var(--color-accent); border-radius: 50%; display: none;
+      align-items: center; justify-content: center; font-size: 0.7rem;
+      color: var(--text-inverse); font-weight: 700;
+    }
+    .theme-option.selected .theme-check { display: flex; }
+
+    .page-header h1 {
+      font-family: 'Space Grotesk', sans-serif; font-size: 2rem; margin: 0; color: var(--text-primary);
+    }
+    .page-header h1 span { color: var(--color-accent); }
+    .eyebrow {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--text-muted); margin-bottom: 0.2rem;
+    }
   </style>
 </head>
 <body>
-  <div class="gradient-bg"></div>
   <script src="nav.js"></script>
-  <main>
-    <div class="page-header" style="margin-bottom:1.5rem">
-      <p class="eyebrow">Your Identity</p>
-      <h1>👤 <span>My</span> Profile</h1>
-    </div>
-
-    <div id="profileMsg" class="msg"></div>
-
-    <!-- Avatar -->
-    <div class="glass-card">
-      <h3 class="section-title">📸 Avatar</h3>
-      <div class="avatar-section">
-        <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
-          <div id="avatarDisplay"></div>
-          <div class="avatar-overlay">📷 Change</div>
-        </div>
-        <p class="avatar-hint">Click to upload a new avatar</p>
-        <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+  <div id="page-content">
+    <div class="profile-page">
+      <div class="page-header" style="margin-bottom:1.5rem">
+        <p class="eyebrow">Your Identity</p>
+        <h1>👤 <span>My</span> Profile</h1>
       </div>
-    </div>
 
-    <!-- Personal Info -->
-    <div class="glass-card">
-      <h3 class="section-title">✨ Personal Info</h3>
-      <div class="form-group"><label>Username</label><input type="text" id="username" /></div>
-      <div class="form-group"><label>Display Name</label><input type="text" id="displayName" placeholder="How you want to be known..." /></div>
-      <div class="form-group"><label>Email</label><input type="email" id="email" /></div>
-      <div class="form-actions"><button class="btn btn-primary" onclick="saveProfile()">💾 Save Changes</button></div>
-    </div>
+      <div id="profileMsg" class="msg"></div>
 
-    <!-- Password -->
-    <div class="glass-card" id="password">
-      <h3 class="section-title">🔒 Change Password</h3>
-      <div class="form-group"><label>Current Password</label><input type="password" id="currentPw" /></div>
-      <div class="form-group"><label>New Password</label><input type="password" id="newPw" placeholder="Min 8 characters" />
-        <div class="pw-requirements" id="pw-requirements">
-          <div class="pw-req" id="req-length">✗ At least 8 characters</div>
-          <div class="pw-req" id="req-upper">✗ Contains uppercase letter</div>
-          <div class="pw-req" id="req-lower">✗ Contains lowercase letter</div>
-          <div class="pw-req" id="req-number">✗ Contains a number</div>
+      <!-- 1. Avatar + Identity Card -->
+      <div class="glass-card">
+        <div class="identity-card">
+          <div class="avatar-wrapper" onclick="document.getElementById('avatarInput').click()">
+            <div id="avatarDisplay"></div>
+            <div class="avatar-overlay">📷 Change</div>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+          <div class="identity-info">
+            <h2 class="identity-name">
+              <span id="identityName">—</span>
+              <span id="identityRoles"></span>
+            </h2>
+            <p class="identity-username" id="identityUsername">@—</p>
+            <p class="identity-email" id="identityEmail">—</p>
+            <p class="identity-member-since" id="identityMemberSince"></p>
+          </div>
         </div>
       </div>
-      <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPw" />
-        <div class="pw-match-error" id="pw-match-error">Passwords don't match</div>
-      </div>
-      <div class="form-actions"><button class="btn btn-primary" onclick="changePassword()">🔑 Update Password</button></div>
-    </div>
 
-    <!-- Theme -->
-    <div class="glass-card">
-      <h3 class="section-title">🎨 Theme Preference</h3>
-      <p style="font-size:.82rem;color:var(--muted);margin-bottom:.8rem">Choose your vibe. Because DevOps should look good. 💅</p>
-      <div class="theme-options">
-        <div class="theme-option selected" data-theme="dark-purple" style="background:linear-gradient(135deg,#0f172a,#1e1b4b)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
-        <div class="theme-option" data-theme="dark-teal" style="background:linear-gradient(135deg,#0f172a,#134e4a)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
-        <div class="theme-option" data-theme="dark-rose" style="background:linear-gradient(135deg,#0f172a,#4a1942)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
-        <div class="theme-option" data-theme="midnight" style="background:linear-gradient(135deg,#0a0a0a,#1a1a2e)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
+      <!-- 2. About -->
+      <div class="glass-card">
+        <h3 class="section-title">📝 About</h3>
+        <textarea class="bio-textarea" id="bioInput" maxlength="500" placeholder="Tell us about yourself..."></textarea>
+        <div class="char-counter" id="bioCounter">0 / 500</div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveBio()">💾 Save Bio</button>
+        </div>
+      </div>
+
+      <!-- 3. Contact & Work -->
+      <div class="glass-card">
+        <h3 class="section-title">📇 Contact &amp; Work</h3>
+        <div class="field-grid">
+          <div class="field-item">
+            <label>✉️ Email</label>
+            <input type="email" id="fieldEmail" readonly />
+          </div>
+          <div class="field-item">
+            <label>📱 Phone</label>
+            <input type="tel" id="fieldPhone" placeholder="Your phone number" />
+          </div>
+          <div class="field-item">
+            <label>📍 Location</label>
+            <input type="text" id="fieldLocation" placeholder="City, Country" />
+          </div>
+          <div class="field-item">
+            <label>💼 Job Title</label>
+            <input type="text" id="fieldJobTitle" placeholder="Your role" />
+          </div>
+          <div class="field-item">
+            <label>🏢 Department</label>
+            <input type="text" id="fieldDepartment" placeholder="Your department" />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="saveContactWork()">💾 Save Details</button>
+        </div>
+      </div>
+
+      <!-- 4. Roles & Groups -->
+      <div class="glass-card">
+        <h3 class="section-title">🛡️ Roles &amp; Groups</h3>
+        <div class="rg-columns">
+          <div class="rg-col">
+            <h4>Roles</h4>
+            <div class="rg-list" id="rolesList">
+              <span class="rg-empty">No roles assigned</span>
+            </div>
+          </div>
+          <div class="rg-col">
+            <h4>Groups</h4>
+            <div class="rg-list" id="groupsList">
+              <span class="rg-empty">No groups assigned</span>
+            </div>
+          </div>
+        </div>
+        <p class="rg-note">Roles and groups are managed by administrators.</p>
+      </div>
+
+      <!-- 5. Security -->
+      <div class="glass-card" id="password">
+        <h3 class="section-title">🔒 Security</h3>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="currentPw" />
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="newPw" placeholder="Min 8 characters" />
+          <div class="pw-requirements" id="pw-requirements">
+            <div class="pw-req" id="req-length">✗ At least 8 characters</div>
+            <div class="pw-req" id="req-upper">✗ Contains uppercase letter</div>
+            <div class="pw-req" id="req-lower">✗ Contains lowercase letter</div>
+            <div class="pw-req" id="req-number">✗ Contains a number</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="confirmPw" />
+          <div class="pw-match-error" id="pw-match-error">Passwords don't match</div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="changePassword()">🔑 Update Password</button>
+        </div>
+      </div>
+
+      <!-- 6. Preferences -->
+      <div class="glass-card">
+        <h3 class="section-title">🎨 Preferences</h3>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.8rem">Choose your vibe. Because DevOps should look good. 💅</p>
+        <div class="theme-options">
+          <div class="theme-option selected" data-theme="dark-purple" style="background:linear-gradient(135deg,#0f172a,#1e1b4b)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
+          <div class="theme-option" data-theme="dark-teal" style="background:linear-gradient(135deg,#0f172a,#134e4a)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
+          <div class="theme-option" data-theme="dark-rose" style="background:linear-gradient(135deg,#0f172a,#4a1942)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
+          <div class="theme-option" data-theme="midnight" style="background:linear-gradient(135deg,#0a0a0a,#1a1a2e)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
 
   <script src="loader.js"></script>
   <script>
     const TOKEN = localStorage.getItem('token');
     const H = () => ({ 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' });
+    let profileData = {};
 
     function showMsg(text, type) {
       const el = document.getElementById('profileMsg');
@@ -129,13 +329,13 @@
     }
 
     async function loadProfile() {
-      AppLoader.show();
+      if (typeof AppLoader !== 'undefined') AppLoader.show();
       try {
         const r = await fetch('/api/profile', { headers: H() });
         const p = await r.json();
-        document.getElementById('username').value = p.Username || '';
-        document.getElementById('displayName').value = p.DisplayName || '';
-        document.getElementById('email').value = p.Email || '';
+        profileData = p;
+
+        // Avatar
         const display = document.getElementById('avatarDisplay');
         if (p.AvatarPath) {
           display.innerHTML = `<img src="${p.AvatarPath}" alt="Avatar" />`;
@@ -143,26 +343,96 @@
           const initials = (p.DisplayName || p.Username || '?').substring(0, 2).toUpperCase();
           display.innerHTML = `<div class="avatar-placeholder">${initials}</div>`;
         }
-        // Load theme preference
+
+        // Identity
+        document.getElementById('identityName').textContent = p.DisplayName || p.Username || '—';
+        document.getElementById('identityUsername').textContent = '@' + (p.Username || '—');
+        document.getElementById('identityEmail').textContent = p.Email || '';
+        if (p.CreatedAt) {
+          const d = new Date(p.CreatedAt);
+          document.getElementById('identityMemberSince').textContent = '📅 Member since ' + d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // Role pills in identity header
+        const rolesSpan = document.getElementById('identityRoles');
+        rolesSpan.innerHTML = (p.roles || []).map(r => `<span class="role-pill">${r}</span>`).join(' ');
+
+        // Bio
+        document.getElementById('bioInput').value = p.Bio || '';
+        updateBioCounter();
+
+        // Contact & Work fields
+        document.getElementById('fieldEmail').value = p.Email || '';
+        document.getElementById('fieldPhone').value = p.Phone || '';
+        document.getElementById('fieldLocation').value = p.Location || '';
+        document.getElementById('fieldJobTitle').value = p.JobTitle || '';
+        document.getElementById('fieldDepartment').value = p.Department || '';
+
+        // Roles & Groups lists
+        const rolesList = document.getElementById('rolesList');
+        if (p.roles && p.roles.length) {
+          rolesList.innerHTML = p.roles.map(r => `<span class="role-pill">${r}</span>`).join('');
+        } else {
+          rolesList.innerHTML = '<span class="rg-empty">No roles assigned</span>';
+        }
+        const groupsList = document.getElementById('groupsList');
+        if (p.groups && p.groups.length) {
+          groupsList.innerHTML = p.groups.map(g => `<span class="group-tag">${g}</span>`).join('');
+        } else {
+          groupsList.innerHTML = '<span class="rg-empty">No groups assigned</span>';
+        }
+
+        // Theme
         const savedTheme = localStorage.getItem('theme') || 'dark-purple';
         document.querySelectorAll('.theme-option').forEach(t => t.classList.toggle('selected', t.dataset.theme === savedTheme));
-      } catch(e) { console.error(e); } finally { AppLoader.hide(); }
+      } catch(e) { console.error(e); } finally { if (typeof AppLoader !== 'undefined') AppLoader.hide(); }
     }
 
-    async function saveProfile() {
+    // Bio
+    function updateBioCounter() {
+      const textarea = document.getElementById('bioInput');
+      const counter = document.getElementById('bioCounter');
+      const len = textarea.value.length;
+      counter.textContent = len + ' / 500';
+      counter.className = 'char-counter' + (len >= 500 ? ' over' : len >= 450 ? ' warn' : '');
+    }
+    document.getElementById('bioInput').addEventListener('input', updateBioCounter);
+
+    async function saveBio() {
       try {
         const body = {
-          username: document.getElementById('username').value,
-          displayName: document.getElementById('displayName').value,
-          email: document.getElementById('email').value,
+          displayName: profileData.DisplayName || '',
+          bio: document.getElementById('bioInput').value,
+          phone: profileData.Phone || '',
+          location: profileData.Location || '',
+          jobTitle: profileData.JobTitle || '',
+          department: profileData.Department || ''
         };
         const r = await fetch('/api/profile', { method: 'PUT', headers: H(), body: JSON.stringify(body) });
         const data = await r.json();
-        showMsg(data.message || 'Profile updated! ✨', r.ok ? 'success' : 'error');
-      } catch(e) { showMsg('Failed to save profile', 'error'); }
+        showMsg(data.message || 'Bio updated! ✨', r.ok ? 'success' : 'error');
+        if (r.ok) profileData.Bio = body.bio;
+      } catch(e) { showMsg('Failed to save bio', 'error'); }
     }
 
-    // Password requirements live check
+    async function saveContactWork() {
+      try {
+        const body = {
+          displayName: profileData.DisplayName || '',
+          bio: profileData.Bio || '',
+          phone: document.getElementById('fieldPhone').value,
+          location: document.getElementById('fieldLocation').value,
+          jobTitle: document.getElementById('fieldJobTitle').value,
+          department: document.getElementById('fieldDepartment').value
+        };
+        const r = await fetch('/api/profile', { method: 'PUT', headers: H(), body: JSON.stringify(body) });
+        const data = await r.json();
+        showMsg(data.message || 'Details updated! ✨', r.ok ? 'success' : 'error');
+        if (r.ok) Object.assign(profileData, { Phone: body.phone, Location: body.location, JobTitle: body.jobTitle, Department: body.department });
+      } catch(e) { showMsg('Failed to save details', 'error'); }
+    }
+
+    // Password requirements
     const newPwInput = document.getElementById('newPw');
     const confirmPwInput = document.getElementById('confirmPw');
     const preqsDiv = document.getElementById('pw-requirements');
@@ -186,21 +456,21 @@
     newPwInput.addEventListener('focus', () => preqsDiv.classList.add('visible'));
     newPwInput.addEventListener('input', checkPwReqs);
     confirmPwInput.addEventListener('input', function() {
-      const match = this.value === newPwInput.value;
-      document.getElementById('pw-match-error').style.display = (!match && this.value.length > 0) ? 'block' : 'none';
+      document.getElementById('pw-match-error').style.display =
+        (this.value.length > 0 && this.value !== newPwInput.value) ? 'block' : 'none';
     });
 
     async function changePassword() {
       const current = document.getElementById('currentPw').value;
-      const newPw = document.getElementById('newPw').value;
-      const confirm = document.getElementById('confirmPw').value;
+      const newPw = newPwInput.value;
+      const confirm = confirmPwInput.value;
       if (!checkPwReqs()) return showMsg('Password does not meet all requirements', 'error');
-      if (newPw !== confirm) return showMsg('Passwords don\'t match! 🤔', 'error');
+      if (newPw !== confirm) return showMsg("Passwords don't match! 🤔", 'error');
       try {
-        const r = await fetch('/api/profile/password', { method: 'PUT', headers: H(), body: JSON.stringify({ currentPassword: current, newPassword: newPw }) });
+        const r = await fetch('/api/profile/change-password', { method: 'POST', headers: H(), body: JSON.stringify({ currentPassword: current, newPassword: newPw }) });
         const data = await r.json();
         showMsg(data.message || 'Password updated!', r.ok ? 'success' : 'error');
-        if (r.ok) { document.getElementById('currentPw').value=''; document.getElementById('newPw').value=''; document.getElementById('confirmPw').value=''; }
+        if (r.ok) { document.getElementById('currentPw').value = ''; newPwInput.value = ''; confirmPwInput.value = ''; }
       } catch(e) { showMsg('Failed to change password', 'error'); }
     }
 
@@ -229,7 +499,6 @@
       showMsg('Theme saved! Refresh for full effect. 🎨', 'success');
     }
 
-    // Scroll to password section if hash
     if (window.location.hash === '#password') {
       setTimeout(() => document.getElementById('password').scrollIntoView({ behavior: 'smooth' }), 500);
     }
