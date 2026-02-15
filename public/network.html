@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="loader.css" />
+  <link rel="stylesheet" href="refresh-indicator.css" />
+  <script src="refresh-indicator.js"></script>
   <style>
     :root { --green:#34d399; --yellow:#fbbf24; --red:#f87171; --glass-card:rgba(255,255,255,0.06); --glass-border:rgba(255,255,255,0.12); --text:#e2e8f0; --text-dim:#94a3b8; }
     * { box-sizing: border-box; }
@@ -304,6 +306,7 @@
     Promise.all([fetchInterfaces(), fetchHistory()])
       .finally(() => AppLoader.hide());
     setInterval(fetchInterfaces, 5000);
+    RefreshIndicator.set(true);
   </script>
 </body>
 </html>

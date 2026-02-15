@@ -100,6 +100,7 @@
     const interval = w.RefreshInterval;
     if (!interval || interval <= 0) return;
     refreshTimers[w.InstanceID] = setInterval(() => renderWidgetContent(el, w), interval * 1000);
+    if (interval < 10 && window.RefreshIndicator) RefreshIndicator.set(true);
   }
 
   function clearRefreshTimers() {

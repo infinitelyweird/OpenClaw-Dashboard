@@ -1,0 +1,47 @@
+/* Refresh Indicator — sparkling dot traveling the ∞ logo path */
+.refresh-indicator {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 900;
+  width: 40px;
+  height: 24px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.refresh-indicator.active {
+  opacity: 1;
+}
+
+.refresh-indicator svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* The ∞ path outline — subtle, muted */
+.refresh-indicator .infinity-path {
+  fill: none;
+  stroke: var(--text-muted, #64748b);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.3;
+}
+
+/* The sparkling dot that travels along the path */
+.refresh-indicator .spark {
+  fill: var(--color-accent, #a78bfa);
+  filter: drop-shadow(0 0 4px var(--color-accent, #a78bfa)) drop-shadow(0 0 8px var(--color-accent, #a78bfa));
+}
+
+/* Subtle pulse on the glow */
+@keyframes sparkGlow {
+  0%, 100% { filter: drop-shadow(0 0 3px var(--color-accent, #a78bfa)) drop-shadow(0 0 6px var(--color-accent, #a78bfa)); }
+  50% { filter: drop-shadow(0 0 5px var(--color-accent, #a78bfa)) drop-shadow(0 0 10px var(--color-accent, #a78bfa)); }
+}
+
+.refresh-indicator.active .spark {
+  animation: sparkGlow 1s ease-in-out infinite;
+}
