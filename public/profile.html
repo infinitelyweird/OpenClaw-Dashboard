@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="loader.css" />
   <style>
     :root{--glass:rgba(255,255,255,0.06);--glass-hover:rgba(255,255,255,0.1);--border:rgba(255,255,255,0.12);--text:#f0f0f0;--muted:rgba(255,255,255,0.5);--accent:#34d399;--accent-2:rgba(52,211,153,0.15);--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;--purple:#a78bfa}
     *{box-sizing:border-box}body{font-family:'Inter',sans-serif;margin:0;padding:0;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);color:var(--text)}.gradient-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%)}
@@ -115,6 +116,7 @@
     </div>
   </main>
 
+  <script src="loader.js"></script>
   <script>
     const TOKEN = localStorage.getItem('token');
     const H = () => ({ 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' });
@@ -127,6 +129,7 @@
     }
 
     async function loadProfile() {
+      AppLoader.show();
       try {
         const r = await fetch('/api/profile', { headers: H() });
         const p = await r.json();
@@ -143,7 +146,7 @@
         // Load theme preference
         const savedTheme = localStorage.getItem('theme') || 'dark-purple';
         document.querySelectorAll('.theme-option').forEach(t => t.classList.toggle('selected', t.dataset.theme === savedTheme));
-      } catch(e) { console.error(e); }
+      } catch(e) { console.error(e); } finally { AppLoader.hide(); }
     }
 
     async function saveProfile() {

@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="loader.css" />
   <style>
     :root {
       --green: #34d399; --yellow: #fbbf24; --red: #f87171;
@@ -161,6 +162,7 @@
     </div>
   </main>
 
+  <script src="loader.js"></script>
   <script>
     const TOKEN = localStorage.getItem('token');
     const headers = { 'Authorization': `Bearer ${TOKEN}` };
@@ -308,7 +310,9 @@
     }
 
     function fetchAll() {
-      fetchCPU(); fetchMemory(); fetchOS(); fetchStorage(); fetchProcesses();
+      AppLoader.show();
+      Promise.all([fetchCPU(), fetchMemory(), fetchOS(), fetchStorage(), fetchProcesses()])
+        .finally(() => AppLoader.hide());
       document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
     }
 

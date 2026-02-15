@@ -6,6 +6,7 @@
   <title>Dashboards — Infinitely Weird</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="custom-dashboard.css" />
+  <link rel="stylesheet" href="loader.css" />
 </head>
 <body>
   <div id="page-content">
@@ -52,6 +53,7 @@
   </div>
 
   <script src="nav.js"></script>
+  <script src="loader.js"></script>
   <script>
   (function(){
     'use strict';
@@ -59,8 +61,13 @@
     let editingId = null;
 
     async function load() {
-      const res = await window.apiFetch('/api/dashboards');
-      if (res && res.ok) dashboards = await res.json();
+      AppLoader.show();
+      try {
+        const res = await window.apiFetch('/api/dashboards');
+        if (res && res.ok) dashboards = await res.json();
+      } finally {
+        AppLoader.hide();
+      }
       render();
     }
 

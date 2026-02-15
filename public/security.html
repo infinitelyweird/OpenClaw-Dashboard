@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="loader.css" />
   <style>
     :root { --green:#34d399; --yellow:#fbbf24; --red:#f87171; --glass-card:rgba(255,255,255,0.06); --glass-border:rgba(255,255,255,0.12); --text:#e2e8f0; --text-dim:#94a3b8; }
     * { box-sizing: border-box; }
@@ -116,6 +117,7 @@
     </div>
   </main>
 
+  <script src="loader.js"></script>
   <script>
     const TOKEN = localStorage.getItem('token');
     const headers = { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' };
@@ -193,6 +195,7 @@
     async function runScan() {
       const btn = document.getElementById('scanBtn');
       btn.disabled = true; btn.classList.add('running'); btn.textContent = '🔍 Scanning…';
+      AppLoader.show();
       addEvent('good', 'Security scan initiated');
       renderEvents();
 
@@ -282,6 +285,7 @@
       btn.disabled = false; btn.classList.remove('running'); btn.textContent = '🔍 Run Security Scan';
       addEvent('good', `Scan complete — score: ${score}/100`);
       renderEvents();
+      AppLoader.hide();
     }
 
     // Auto-run initial scan

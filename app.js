@@ -61,6 +61,7 @@ app.use('/', require('./routes/network-security'));
 app.use('/', require('./routes/versionRoute'));
 app.use('/', require('./routes/snarkRoute'));
 app.use('/', require('./routes/dashboardRoute'));
+app.use('/', require('./routes/projectRoute'));
 
 // Default route
 app.get('/', (req, res) => {
