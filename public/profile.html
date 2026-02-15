@@ -197,6 +197,7 @@
         <h1>👤 <span>My</span> Profile</h1>
       </div>
 
+      <div id="forcePasswordBanner" style="display:none;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.4);color:#fbbf24;padding:1rem 1.25rem;border-radius:var(--radius-lg);margin-bottom:1.5rem;font-size:0.9rem;font-weight:600">⚠️ Your password was reset by an administrator. Please set a new password below.</div>
       <div id="profileMsg" class="msg"></div>
 
       <!-- 1. Avatar + Identity Card -->
@@ -491,7 +492,7 @@
         const r = await fetch('/api/profile/change-password', { method: 'POST', headers: H(), body: JSON.stringify({ currentPassword: current, newPassword: newPw }) });
         const data = await r.json();
         showMsg(data.message || 'Password updated!', r.ok ? 'success' : 'error');
-        if (r.ok) { document.getElementById('currentPw').value = ''; newPwInput.value = ''; confirmPwInput.value = ''; }
+        if (r.ok) { document.getElementById('currentPw').value = ''; newPwInput.value = ''; confirmPwInput.value = ''; localStorage.removeItem('forcePasswordChange'); document.getElementById('forcePasswordBanner').style.display = 'none'; }
       } catch(e) { showMsg('Failed to change password', 'error'); }
     }
 
@@ -526,7 +527,10 @@
       showMsg('Theme applied! 🎨', 'success');
     }
 
-    if (window.location.hash === '#password') {
+    if (localStorage.getItem('forcePasswordChange') === 'true') {
+      document.getElementById('forcePasswordBanner').style.display = 'block';
+      setTimeout(() => document.getElementById('password').scrollIntoView({ behavior: 'smooth' }), 500);
+    } else if (window.location.hash === '#password') {
       setTimeout(() => document.getElementById('password').scrollIntoView({ behavior: 'smooth' }), 500);
     }
 

@@ -108,7 +108,7 @@ router.post('/api/profile/change-password', authenticateToken, ...changePassword
     await pool.request()
       .input('UserID', sql.Int, req.user.userId)
       .input('PasswordHash', sql.NVarChar, hashed)
-      .query('UPDATE Users SET PasswordHash=@PasswordHash WHERE UserID=@UserID');
+      .query('UPDATE Users SET PasswordHash=@PasswordHash, ForcePasswordChange=0 WHERE UserID=@UserID');
     logAudit(AUDIT.PASSWORD_CHANGE, req.user.userId, 'Password changed', req);
     res.json({ message: 'Password changed successfully.' });
   } catch (err) {

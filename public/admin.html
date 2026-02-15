@@ -215,7 +215,9 @@
     <div class="modal">
       <h2>🔑 Reset Password</h2>
       <input type="hidden" id="resetPwUserId" />
-      <label>New Password (min 6 characters)</label><input type="password" id="resetPwInput" placeholder="Enter new password..." />
+      <label>New Password</label><input type="password" id="resetPwInput" placeholder="Enter new password..." />
+      <p style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem">Must be 8+ characters with uppercase, lowercase, and a number.</p>
+      <label>Confirm Password</label><input type="password" id="resetPwConfirm" placeholder="Confirm new password..." />
       <div class="modal-actions">
         <button class="btn btn-ghost" onclick="closeModal('resetPwModal')">Cancel</button>
         <button class="btn btn-primary" onclick="resetPassword()">🔑 Reset</button>
@@ -377,16 +379,19 @@
     function openResetPwModal(id) {
       document.getElementById('resetPwUserId').value = id;
       document.getElementById('resetPwInput').value = '';
+      document.getElementById('resetPwConfirm').value = '';
       openModal('resetPwModal');
     }
     async function resetPassword() {
       const id = document.getElementById('resetPwUserId').value;
       const pw = document.getElementById('resetPwInput').value;
-      if (pw.length < 6) return alert('Password must be at least 6 characters');
+      const pwConfirm = document.getElementById('resetPwConfirm').value;
+      if (pw.length < 8 || !/[A-Z]/.test(pw) || !/[a-z]/.test(pw) || !/[0-9]/.test(pw)) return alert('Password must be 8+ characters with uppercase, lowercase, and a number.');
+      if (pw !== pwConfirm) return alert('Passwords do not match.');
       const r = await fetch(`/api/admin/users/${id}/reset-password`, { method:'POST', headers:H(), body:JSON.stringify({ newPassword:pw }) });
       const data = await r.json();
       alert(data.message);
-      closeModal('resetPwModal');
+      if (r.ok) { document.getElementById('resetPwInput').value = ''; document.getElementById('resetPwConfirm').value = ''; closeModal('resetPwModal'); }
     }
 
     // ─── MANAGE USER ROLES ──

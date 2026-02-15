@@ -270,7 +270,13 @@
         if (!res.ok) throw new Error(data.error || data.message || 'Login failed');
         AppLoader.hide();
         localStorage.setItem('token', data.token);
-        window.location.href = 'index.html';
+        if (data.forcePasswordChange) {
+          localStorage.setItem('forcePasswordChange', 'true');
+          alert('Your password was reset by an administrator. Please set a new password.');
+          window.location.href = 'profile.html#password';
+        } else {
+          window.location.href = 'index.html';
+        }
       } catch (ex) {
         AppLoader.hide();
         const card = document.querySelector('.login-card');

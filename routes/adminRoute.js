@@ -131,7 +131,7 @@ router.post('/api/admin/users/:id/reset-password', async (req, res) => {
     await pool.request()
       .input('UserID', sql.Int, req.params.id)
       .input('PasswordHash', sql.NVarChar, hashed)
-      .query('UPDATE Users SET PasswordHash = @PasswordHash WHERE UserID = @UserID');
+      .query('UPDATE Users SET PasswordHash = @PasswordHash, ForcePasswordChange = 1 WHERE UserID = @UserID');
     logAudit(AUDIT.PASSWORD_RESET, req.user.userId, { targetUserId: req.params.id }, req);
     res.json({ message: 'Password reset successfully.' });
   } catch (err) {

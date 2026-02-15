@@ -14,7 +14,7 @@ router.post('/api/login', ...loginRules, async (req, res) => {
     const pool = await getPool();
     const result = await pool.request()
       .input('Username', sql.NVarChar, username)
-      .query('SELECT UserID, Username, PasswordHash, IsApproved FROM Users WHERE Username = @Username');
+      .query('SELECT UserID, Username, PasswordHash, IsApproved, ForcePasswordChange FROM Users WHERE Username = @Username');
 
     if (result.recordset.length === 0) {
       return res.status(400).json({ message: 'Invalid username or password.' });
@@ -50,12 +50,12 @@ router.post('/api/login', ...loginRules, async (req, res) => {
     const isAdmin = adminCheck.recordset.length > 0;
 
     const token = jwt.sign(
-      { userId: user.UserID, username: user.Username, isAdmin },
+      { userId: user.UserID, username: user.Username, isAdmin, forcePasswordChange: user.ForcePasswordChange ? true : false },
       JWT_SECRET,
       { expiresIn: '24h' }
     );
     logAudit(AUDIT.LOGIN_SUCCESS, user.UserID, { username }, req);
-    res.status(200).json({ message: 'Login successful!', token, isAdmin });
+    res.status(200).json({ message: 'Login successful!', token, isAdmin, forcePasswordChange: user.ForcePasswordChange ? true : false });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error.' });
