@@ -1,5 +1,5 @@
 # HEARTBEAT.md
 
-# Keep this file empty (or with only comments) to skip heartbeat API calls.
-
-# Add tasks below when you want the agent to check something periodically.
+## Auto-start Dashboard Server
+- Check if the Infinitely Weird DevOps Dashboard is running on port 3000
+- If not running, start it: `cd I:\OpenClaw; node app.js` (background)

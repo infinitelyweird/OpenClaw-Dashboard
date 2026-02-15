@@ -4,6 +4,14 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
+// Prevent crashes from unhandled promise rejections and exceptions
+process.on('uncaughtException', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]', err.message || err);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('[UNHANDLED REJECTION]', reason?.message || reason);
+});
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
