@@ -120,6 +120,7 @@
   flex-direction: column;
   min-height: 100vh;
   transition: margin-left 0.3s ease;
+  max-width: none !important;
 }
 
 /* Header */
@@ -336,6 +337,10 @@
 .page-content {
   padding: 1.5rem;
   flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Mobile overlay */

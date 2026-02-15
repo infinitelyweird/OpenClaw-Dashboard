@@ -231,61 +231,223 @@
   <script src="nav.js"></script>
   <script src="dashboard.js"></script>
   <script>
-    (async function () {
-      // Greeting
+    (function () {
       const token = localStorage.getItem('token');
       if (!token) return;
+
+      // Greeting
       try {
         const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
         document.getElementById('greeting-name').textContent = payload.username || 'Operator';
       } catch { document.getElementById('greeting-name').textContent = 'Operator'; }
 
-      AppLoader.show();
-      // Fetch tasks
-      try {
-        const res = await apiFetch('/api/tasks');
-        if (res && res.ok) {
-          const data = await res.json();
-          const tasks = Array.isArray(data) ? data : (data.tasks || []);
-          document.getElementById('kpi-tasks').textContent = tasks.length;
-          const pending = tasks.filter(t => t.status === 'pending' || t.status === 'open').length;
+      // ── Helpers ──
+      function relativeTime(dateStr) {
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const s = Math.floor(diff / 1000);
+        if (s < 60) return 'just now';
+        const m = Math.floor(s / 60);
+        if (m < 60) return m + ' min ago';
+        const h = Math.floor(m / 60);
+        if (h < 24) return h + ' hour' + (h > 1 ? 's' : '') + ' ago';
+        const d = Math.floor(h / 24);
+        return d + ' day' + (d > 1 ? 's' : '') + ' ago';
+      }
 
-          // Populate activity from recent tasks
-          const feed = document.getElementById('activity-feed');
-          const recent = tasks.slice(0, 5);
-          if (recent.length) {
-            feed.innerHTML = recent.map(t => `
-              <div class="activity-item">
-                <div class="activity-dot" style="background:${t.status === 'done' ? '#22c55e' : t.status === 'in-progress' ? '#eab308' : '#a78bfa'}"></div>
-                <div>
-                  <div class="activity-text">${t.title || t.name || 'Task'} — <em>${t.status || 'open'}</em></div>
-                  <div class="activity-time">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}</div>
-                </div>
-              </div>
-            `).join('');
+      function formatUptime(seconds) {
+        const d = Math.floor(seconds / 86400);
+        const h = Math.floor((seconds % 86400) / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const parts = [];
+        if (d > 0) parts.push(d + 'd');
+        if (h > 0) parts.push(h + 'h');
+        parts.push(m + 'm');
+        return parts.join(' ');
+      }
+
+      function setKPI(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+
+      function dotColor(statusEl, color) {
+        const dot = statusEl.querySelector('.status-dot');
+        if (dot) { dot.className = 'status-dot status-' + color; }
+      }
+
+      // ── Fetch All KPIs ──
+      async function fetchKPIs() {
+        // Active Tasks
+        try {
+          const res = await apiFetch('/api/tasks');
+          if (res && res.ok) {
+            const data = await res.json();
+            const tasks = Array.isArray(data) ? data : (data.tasks || []);
+            const active = tasks.filter(t => t.Status !== 'Completed' && t.Status !== 'Cancelled').length;
+            setKPI('kpi-tasks', active);
           }
+        } catch { setKPI('kpi-tasks', '—'); }
+
+        // Open Projects
+        try {
+          const res = await apiFetch('/api/projects');
+          if (res && res.ok) {
+            const data = await res.json();
+            const projects = Array.isArray(data) ? data : (data.projects || []);
+            const open = projects.filter(p => p.Status === 'Active' || p.Status === 'Planning').length;
+            setKPI('kpi-projects', open);
+          }
+        } catch { setKPI('kpi-projects', '—'); }
+
+        // Pending Deploys — no backend yet
+        setKPI('kpi-deployments', '0');
+
+        // System Health — derive from CPU/memory
+        try {
+          const [cpuRes, memRes] = await Promise.all([
+            apiFetch('/api/widgets/system/cpu'),
+            apiFetch('/api/widgets/system/memory')
+          ]);
+          let cpuLoad = 0, memPct = 0;
+          if (cpuRes && cpuRes.ok) { const d = await cpuRes.json(); cpuLoad = d.currentLoad || 0; }
+          if (memRes && memRes.ok) { const d = await memRes.json(); memPct = d.usedPercent || 0; }
+          const health = Math.round(100 - (cpuLoad + memPct) / 2);
+          setKPI('kpi-health', health + '%');
+        } catch { setKPI('kpi-health', '—'); }
+
+        // Security Score — based on open ports count
+        try {
+          const res = await apiFetch('/api/security/open-ports');
+          if (res && res.ok) {
+            const ports = await res.json();
+            const count = Array.isArray(ports) ? ports.length : 0;
+            // Fewer open ports = higher score. 100 if ≤5, subtract 2 per extra port, min 50
+            const score = Math.max(50, 100 - Math.max(0, count - 5) * 2);
+            setKPI('kpi-security', score + '%');
+          }
+        } catch { setKPI('kpi-security', '—'); }
+
+        // Team Members
+        try {
+          const res = await apiFetch('/api/widgets/users/stats');
+          if (res && res.ok) {
+            const d = await res.json();
+            setKPI('kpi-team', d.totalUsers || '—');
+          }
+        } catch { setKPI('kpi-team', '—'); }
+      }
+
+      // ── Recent Activity (audit logs or fallback to recent tasks) ──
+      async function fetchActivity() {
+        const feed = document.getElementById('activity-feed');
+        // Try audit logs first
+        try {
+          const res = await apiFetch('/api/admin/audit-logs?limit=10');
+          if (res && res.ok) {
+            const data = await res.json();
+            const logs = Array.isArray(data) ? data : (data.logs || data.auditLogs || []);
+            if (logs.length) {
+              feed.innerHTML = logs.map(log => {
+                const user = log.Username || log.username || 'System';
+                const action = log.Action || log.action || log.event || 'action';
+                const detail = log.Details || log.details || '';
+                const time = log.CreatedAt || log.createdAt || log.timestamp;
+                const color = action.toLowerCase().includes('delete') ? '#ef4444' :
+                              action.toLowerCase().includes('create') ? '#22c55e' : '#a78bfa';
+                return `<div class="activity-item">
+                  <div class="activity-dot" style="background:${color}"></div>
+                  <div><div class="activity-text"><strong>${user}</strong> ${action} ${detail}</div>
+                  <div class="activity-time">${time ? relativeTime(time) : ''}</div></div>
+                </div>`;
+              }).join('');
+              return;
+            }
+          }
+        } catch {}
+
+        // Fallback: recent tasks
+        try {
+          const res = await apiFetch('/api/tasks');
+          if (res && res.ok) {
+            const tasks = (await res.json()).slice(0, 8);
+            if (tasks.length) {
+              feed.innerHTML = tasks.map(t => {
+                const statusColor = t.Status === 'Completed' ? '#22c55e' :
+                                    t.Status === 'In Progress' ? '#eab308' : '#a78bfa';
+                return `<div class="activity-item">
+                  <div class="activity-dot" style="background:${statusColor}"></div>
+                  <div><div class="activity-text">${t.Title || 'Task'} — <em>${t.Status || 'Open'}</em></div>
+                  <div class="activity-time">${t.CreatedAt ? relativeTime(t.CreatedAt) : ''}</div></div>
+                </div>`;
+              }).join('');
+              return;
+            }
+          }
+        } catch {}
+
+        feed.innerHTML = '<div class="activity-item"><div class="activity-dot status-yellow"></div><div><div class="activity-text">No recent activity</div></div></div>';
+      }
+
+      // ── System Status ──
+      async function fetchSystemStatus() {
+        const rows = document.querySelectorAll('#system-status .status-row');
+
+        // API Server
+        try {
+          const res = await apiFetch('/api/version');
+          if (res && res.ok) {
+            rows[0].querySelector('span:last-child').textContent = 'Online';
+            dotColor(rows[0], 'green');
+          } else throw new Error();
+        } catch {
+          rows[0].querySelector('span:last-child').textContent = 'Offline';
+          dotColor(rows[0], 'red');
         }
-      } catch {}
 
-      // Mock KPIs (replace with real endpoints when available)
-      document.getElementById('kpi-projects').textContent = '4';
-      document.getElementById('kpi-deployments').textContent = '2';
-      document.getElementById('kpi-health').textContent = '98%';
-      document.getElementById('kpi-security').textContent = '94%';
-      document.getElementById('kpi-team').textContent = '7';
+        // CPU, Memory, Uptime
+        try {
+          const res = await apiFetch('/api/widgets/system/cpu');
+          if (res && res.ok) {
+            const d = await res.json();
+            setKPI('sys-cpu', d.currentLoad + '%');
+            const pct = d.currentLoad;
+            dotColor(rows[1], pct > 90 ? 'red' : pct > 70 ? 'yellow' : 'green');
+          }
+        } catch { setKPI('sys-cpu', '—'); }
 
-      // System info
-      try {
-        const res = await apiFetch('/api/widgets/system-info');
-        if (res && res.ok) {
-          const info = await res.json();
-          document.getElementById('sys-cpu').textContent = info.cpuUsage != null ? info.cpuUsage + '%' : '—';
-          document.getElementById('sys-mem').textContent = info.memoryUsage != null ? info.memoryUsage + '%' : (info.memory || '—');
-          document.getElementById('sys-uptime').textContent = info.uptime || '—';
-        }
-      } catch {}
+        try {
+          const res = await apiFetch('/api/widgets/system/memory');
+          if (res && res.ok) {
+            const d = await res.json();
+            setKPI('sys-mem', d.usedPercent + '%');
+            dotColor(rows[2], d.usedPercent > 90 ? 'red' : d.usedPercent > 70 ? 'yellow' : 'green');
+          }
+        } catch { setKPI('sys-mem', '—'); }
 
-      AppLoader.hide();
+        try {
+          const res = await apiFetch('/api/widgets/system/os');
+          if (res && res.ok) {
+            const d = await res.json();
+            setKPI('sys-uptime', d.uptimeFormatted || formatUptime(d.uptime || 0));
+          }
+        } catch { setKPI('sys-uptime', '—'); }
+      }
+
+      // ── Init ──
+      async function init() {
+        AppLoader.show();
+        await Promise.all([fetchKPIs(), fetchActivity(), fetchSystemStatus()]);
+        AppLoader.hide();
+      }
+
+      init();
+
+      // Auto-refresh system status every 10s
+      setInterval(fetchSystemStatus, 10000);
+      // Refresh KPIs every 60s
+      setInterval(fetchKPIs, 60000);
+      // Refresh activity every 30s
+      setInterval(fetchActivity, 30000);
     })();
   </script>
 </body>
