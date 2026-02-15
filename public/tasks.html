@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="loader.css" />
   <style>
     :root {
       --glass: rgba(255,255,255,0.06);
@@ -128,6 +129,7 @@
 </head>
 <body>
   <div class="gradient-bg"></div>
+  <script src="loader.js"></script>
   <script src="nav.js"></script>
   <main>
     <div class="page-header">
@@ -245,6 +247,7 @@
 
     async function loadTasks() {
       try {
+        AppLoader.show();
         const params = new URLSearchParams();
         const s = document.getElementById('filterStatus').value; if(s) params.set('status', s);
         const p = document.getElementById('filterPriority').value; if(p) params.set('priority', p);
@@ -255,7 +258,8 @@
         const search = document.getElementById('searchInput').value.toLowerCase();
         if (search) tasks = tasks.filter(t => t.Title.toLowerCase().includes(search) || (t.Description||'').toLowerCase().includes(search));
         render();
-      } catch(e) { console.error('Failed to load tasks', e); }
+        AppLoader.hide();
+      } catch(e) { AppLoader.hide(); console.error('Failed to load tasks', e); }
     }
 
     function render() {

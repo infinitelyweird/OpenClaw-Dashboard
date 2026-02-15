@@ -195,6 +195,7 @@
       backdrop-filter: blur(12px);
     }
   </style>
+  <link rel="stylesheet" href="loader.css">
 </head>
 <body>
   <div class="bg-animated"></div>
@@ -231,6 +232,7 @@
     <p class="forgot-note">Forgot your password? Contact your administrator.</p>
   </div>
 
+  <script src="loader.js"></script>
   <script>
     // Redirect if already logged in
     if (localStorage.getItem('token')) window.location.href = 'index.html';
@@ -254,6 +256,7 @@
       btn.disabled = true;
       btn.textContent = 'Signing in...';
 
+      AppLoader.show();
       try {
         const res = await fetch('/api/login', {
           method: 'POST',
@@ -265,15 +268,29 @@
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || data.message || 'Login failed');
+        AppLoader.hide();
         localStorage.setItem('token', data.token);
         window.location.href = 'index.html';
       } catch (ex) {
-        err.textContent = 'Please check your credentials and try again.';
-        err.style.display = 'block';
+        AppLoader.hide();
         const card = document.querySelector('.login-card');
         card.classList.remove('shake');
-        void card.offsetWidth; // reflow to restart animation
+        void card.offsetWidth;
         card.classList.add('shake');
+        fetch('/api/snark/random?category=login_fail')
+          .then(r => r.json())
+          .then(data => {
+            err.textContent = data.phrase || 'Invalid credentials.';
+            err.style.display = 'block';
+            err.style.opacity = '0';
+            requestAnimationFrame(() => { err.style.transition = 'opacity 0.3s'; err.style.opacity = '1'; });
+          })
+          .catch(() => {
+            err.textContent = 'Invalid credentials.';
+            err.style.display = 'block';
+            err.style.opacity = '0';
+            requestAnimationFrame(() => { err.style.transition = 'opacity 0.3s'; err.style.opacity = '1'; });
+          });
         btn.disabled = false;
         btn.textContent = 'Sign In';
       }

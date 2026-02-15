@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="nav.css">
   <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="loader.css">
   <style>
     :root {
       --bg: #0a0a1a;
@@ -226,6 +227,7 @@
     </div>
   </div>
 
+  <script src="loader.js"></script>
   <script src="nav.js"></script>
   <script src="dashboard.js"></script>
   <script>
@@ -238,6 +240,7 @@
         document.getElementById('greeting-name').textContent = payload.username || 'Operator';
       } catch { document.getElementById('greeting-name').textContent = 'Operator'; }
 
+      AppLoader.show();
       // Fetch tasks
       try {
         const res = await apiFetch('/api/tasks');
@@ -281,6 +284,8 @@
           document.getElementById('sys-uptime').textContent = info.uptime || '—';
         }
       } catch {}
+
+      AppLoader.hide();
     })();
   </script>
 </body>
