@@ -20,7 +20,8 @@
     return {
       username: payload.username || payload.sub || 'User',
       roles: payload.roles || [],
-      userId: payload.userId || payload.id
+      userId: payload.userId || payload.id,
+      isAdmin: payload.isAdmin || false
     };
   }
 
@@ -73,7 +74,7 @@
   function injectShell() {
     const user = getUser();
     const page = currentPage();
-    const isAdmin = user && user.roles && user.roles.includes('admin');
+    const isAdmin = user && (user.isAdmin || (user.roles && user.roles.includes('admin')) || (user.roles && user.roles.includes('Administrator')));
     const initials = user ? user.username.slice(0, 2).toUpperCase() : '??';
     const theme = getTheme();
 
