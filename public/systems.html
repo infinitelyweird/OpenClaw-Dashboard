@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Systems — Infinitely Weird DevOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <style>
+    :root {
+      --green: #34d399; --yellow: #fbbf24; --red: #f87171;
+      --glass-card: rgba(255,255,255,0.06);
+      --glass-border: rgba(255,255,255,0.12);
+      --text: #e2e8f0; --text-dim: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+    h1 { font-family: 'Space Grotesk', sans-serif; margin: 0 0 0.25rem; }
+    .eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin: 0; }
+    .subtitle { color: var(--text-dim); font-size: 0.85rem; margin: 0 0 1.5rem; }
+
+    /* Glass card */
+    .card { background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.25rem; backdrop-filter: blur(12px); }
+
+    /* Grid layouts */
+    .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+
+    /* Circular gauge */
+    .gauge-wrap { display: flex; flex-direction: column; align-items: center; }
+    .gauge-svg { width: 120px; height: 120px; }
+    .gauge-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 10; }
+    .gauge-fg { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease, stroke 0.5s; }
+    .gauge-text { fill: var(--text); font-size: 22px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+    .gauge-label { fill: var(--text-dim); font-size: 10px; }
+
+    /* Stat value */
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 0.5rem; }
+    .stat-value { font-size: 1.6rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+    .stat-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+    /* Progress bar */
+    .bar-wrap { margin: 0.5rem 0; }
+    .bar-track { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 5px; transition: width 0.8s ease, background 0.5s; }
+    .bar-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.2rem; }
+
+    /* Pulse dot */
+    .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; animation: pulse-anim 2s infinite; }
+    @keyframes pulse-anim { 0%,100% { opacity:1; box-shadow: 0 0 0 0 currentColor; } 50% { opacity:0.7; box-shadow: 0 0 8px 4px currentColor; } }
+
+    /* Canvas charts */
+    .chart-container { position: relative; }
+    .chart-container canvas { width: 100%; height: 200px; display: block; }
+
+    /* Table */
+    .proc-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .proc-table th { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--glass-border); color: var(--text-dim); cursor: pointer; user-select: none; }
+    .proc-table th:hover { color: var(--green); }
+    .proc-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+    /* Toggle switch */
+    .toggle-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
+    .toggle input { display: none; }
+    .toggle-slider { position: absolute; inset: 0; background: rgba(255,255,255,0.15); border-radius: 12px; transition: 0.3s; }
+    .toggle-slider::before { content:''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; margin: 0 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .card-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="gradient-bg"></div>
+  <script src="nav.js"></script>
+  <main>
+    <p class="eyebrow">System Monitoring</p>
+    <h1>🖥️ The Machine's Vital Signs</h1>
+    <p class="subtitle">Your server's heartbeat, RAM cravings, and existential disk space crisis — live.</p>
+
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="autoRefresh" checked><span class="toggle-slider"></span></label>
+      <span style="font-size:0.85rem;">Auto-refresh (5s)</span>
+      <span id="lastUpdate" style="font-size:0.7rem;color:var(--text-dim);margin-left:auto;"></span>
+    </div>
+
+    <!-- Overview cards -->
+    <div class="overview-grid">
+      <div class="card gauge-wrap" id="cpuCard">
+        <div class="stat-label">CPU Usage</div>
+        <svg class="gauge-svg" viewBox="0 0 120 120">
+          <circle class="gauge-bg" cx="60" cy="60" r="50"/>
+          <circle class="gauge-fg" id="cpuGauge" cx="60" cy="60" r="50" stroke="var(--green)"
+            stroke-dasharray="314.16" stroke-dashoffset="314.16" transform="rotate(-90 60 60)"/>
+          <text class="gauge-text" x="60" y="60" text-anchor="middle" dominant-baseline="central" id="cpuText">—</text>
+          <text class="gauge-label" x="60" y="80" text-anchor="middle" id="cpuModel"></text>
+        </svg>
+        <div class="stat-sub" id="cpuCores"></div>
+      </div>
+
+      <div class="card">
+        <div class="stat-label">Memory</div>
+        <div class="stat-value" id="memValue">—</div>
+        <div class="bar-wrap">
+          <div class="bar-label"><span id="memUsed"></span><span id="memTotal"></span></div>
+          <div class="bar-track"><div class="bar-fill" id="memBar" style="width:0;background:var(--green)"></div></div>
+        </div>
+        <div class="stat-sub" id="memSwap"></div>
+      </div>
+
+      <div class="card">
+        <div class="stat-label">Uptime</div>
+        <div class="stat-value" id="uptimeValue">—</div>
+        <div class="stat-sub" id="osInfo"></div>
+      </div>
+
+      <div class="card">
+        <div class="stat-label">Processes</div>
+        <div class="stat-value" id="procCount">—</div>
+        <div class="stat-sub" id="procBreakdown"></div>
+      </div>
+    </div>
+
+    <!-- Disk usage -->
+    <div class="card" style="margin-bottom:1.5rem;" id="diskCard">
+      <div class="section-title">💾 Disk Usage</div>
+      <div id="diskBars">
+        <div style="color:var(--text-dim);font-size:0.85rem;">Scanning drives…</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="card chart-container">
+        <div class="section-title">📈 CPU History</div>
+        <canvas id="cpuChart" height="200"></canvas>
+      </div>
+      <div class="card chart-container">
+        <div class="section-title">📊 Memory History</div>
+        <canvas id="memChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Process table -->
+    <div class="card">
+      <div class="section-title">⚡ Top Processes</div>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+        <button class="nav-btn" style="font-size:0.75rem;padding:0.3rem 0.6rem;" onclick="sortMode='cpu';fetchProcesses()" id="sortCpu">Sort: CPU%</button>
+        <button class="nav-btn" style="font-size:0.75rem;padding:0.3rem 0.6rem;" onclick="sortMode='mem';fetchProcesses()" id="sortMem">Sort: Memory%</button>
+      </div>
+      <table class="proc-table">
+        <thead><tr><th>PID</th><th>Name</th><th>CPU %</th><th>Memory %</th></tr></thead>
+        <tbody id="procBody"><tr><td colspan="4" style="color:var(--text-dim);">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const TOKEN = localStorage.getItem('token');
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    let sortMode = 'cpu';
+    const cpuHistory = [], memHistory = [];
+    const MAX_HISTORY = 60;
+    let refreshTimer = null;
+
+    function statusColor(pct) { return pct > 80 ? 'var(--red)' : pct > 50 ? 'var(--yellow)' : 'var(--green)'; }
+    function fmtBytes(b) { if (!b) return '0 B'; const u = ['B','KB','MB','GB','TB']; let i = 0; let v = b; while (v >= 1024 && i < u.length-1) { v /= 1024; i++; } return v.toFixed(1) + ' ' + u[i]; }
+
+    function setGauge(el, pct) {
+      const circ = 314.16;
+      el.setAttribute('stroke-dashoffset', circ - (circ * pct / 100));
+      el.setAttribute('stroke', statusColor(pct));
+    }
+
+    async function fetchCPU() {
+      try {
+        const r = await fetch('/api/widgets/system/cpu', { headers });
+        const d = await r.json();
+        setGauge(document.getElementById('cpuGauge'), d.currentLoad);
+        document.getElementById('cpuText').textContent = d.currentLoad + '%';
+        document.getElementById('cpuModel').textContent = '';
+        document.getElementById('cpuCores').textContent = d.cores + ' cores • ' + d.speed + ' GHz';
+        cpuHistory.push(d.currentLoad);
+        if (cpuHistory.length > MAX_HISTORY) cpuHistory.shift();
+        drawLineChart('cpuChart', cpuHistory, 'CPU %');
+      } catch {}
+    }
+
+    async function fetchMemory() {
+      try {
+        const r = await fetch('/api/widgets/system/memory', { headers });
+        const d = await r.json();
+        document.getElementById('memValue').textContent = d.usedPercent + '%';
+        document.getElementById('memUsed').textContent = fmtBytes(d.used);
+        document.getElementById('memTotal').textContent = fmtBytes(d.total);
+        const bar = document.getElementById('memBar');
+        bar.style.width = d.usedPercent + '%';
+        bar.style.background = statusColor(d.usedPercent);
+        document.getElementById('memSwap').textContent = d.swapTotal ? 'Swap: ' + fmtBytes(d.swapUsed) + ' / ' + fmtBytes(d.swapTotal) : '';
+        memHistory.push(d.usedPercent);
+        if (memHistory.length > MAX_HISTORY) memHistory.shift();
+        drawLineChart('memChart', memHistory, 'Mem %');
+      } catch {}
+    }
+
+    async function fetchOS() {
+      try {
+        const r = await fetch('/api/widgets/system/os', { headers });
+        const d = await r.json();
+        document.getElementById('uptimeValue').textContent = d.uptimeFormatted;
+        document.getElementById('osInfo').textContent = d.distro + ' • ' + d.hostname;
+      } catch {}
+    }
+
+    async function fetchStorage() {
+      try {
+        const r = await fetch('/api/widgets/system/storage', { headers });
+        const disks = await r.json();
+        document.getElementById('diskBars').innerHTML = disks.map(d => `
+          <div class="bar-wrap">
+            <div class="bar-label"><span>${d.mount || d.fs}</span><span>${d.usedPercent}% — ${fmtBytes(d.used)} / ${fmtBytes(d.size)}</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${d.usedPercent}%;background:${statusColor(d.usedPercent)}"></div></div>
+          </div>
+        `).join('') || '<div style="color:var(--text-dim);">No drives found. The server lives in the void.</div>';
+      } catch {}
+    }
+
+    async function fetchProcesses() {
+      try {
+        const r = await fetch('/api/widgets/system/processes', { headers });
+        const d = await r.json();
+        document.getElementById('procCount').textContent = d.all;
+        document.getElementById('procBreakdown').textContent = `${d.running} running • ${d.sleeping} sleeping`;
+        const list = sortMode === 'cpu' ? d.topCpu : d.topMem;
+        document.getElementById('procBody').innerHTML = list.map(p => `
+          <tr><td>${p.pid}</td><td>${p.name}</td>
+          <td style="color:${statusColor(p.cpu * 10)}">${p.cpu}%</td>
+          <td style="color:${statusColor(p.mem * 5)}">${p.mem}%</td></tr>
+        `).join('');
+      } catch {}
+    }
+
+    // Simple canvas line chart
+    function drawLineChart(canvasId, data, label) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = 200 * dpr;
+      ctx.scale(dpr, dpr);
+      const W = rect.width, H = 200;
+      ctx.clearRect(0, 0, W, H);
+
+      if (data.length < 2) return;
+
+      const max = 100, pad = 30;
+      const plotW = W - pad - 10, plotH = H - 40;
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = 20 + plotH * i / 4;
+        ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W - 10, y); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.3)';
+        ctx.font = '10px Inter';
+        ctx.fillText((100 - 25 * i) + '%', 2, y + 3);
+      }
+
+      // Line + gradient
+      ctx.beginPath();
+      const step = plotW / (data.length - 1);
+      data.forEach((v, i) => {
+        const x = pad + i * step;
+        const y = 20 + plotH * (1 - v / max);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      const lastVal = data[data.length - 1];
+      const lineColor = statusColor(lastVal).replace('var(--', '').replace(')', '');
+      const colors = { green: '#34d399', yellow: '#fbbf24', red: '#f87171' };
+      const c = colors[lineColor] || '#34d399';
+      ctx.strokeStyle = c;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Fill
+      const grad = ctx.createLinearGradient(0, 20, 0, 20 + plotH);
+      grad.addColorStop(0, c + '40');
+      grad.addColorStop(1, c + '00');
+      ctx.lineTo(pad + (data.length - 1) * step, 20 + plotH);
+      ctx.lineTo(pad, 20 + plotH);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Current value dot
+      const lx = pad + (data.length - 1) * step;
+      const ly = 20 + plotH * (1 - lastVal / max);
+      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI * 2); ctx.fillStyle = c; ctx.fill();
+      ctx.beginPath(); ctx.arc(lx, ly, 7, 0, Math.PI * 2); ctx.strokeStyle = c + '60'; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    function fetchAll() {
+      fetchCPU(); fetchMemory(); fetchOS(); fetchStorage(); fetchProcesses();
+      document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+    }
+
+    function startAutoRefresh() {
+      if (refreshTimer) clearInterval(refreshTimer);
+      refreshTimer = setInterval(fetchAll, 5000);
+    }
+
+    document.getElementById('autoRefresh').addEventListener('change', function() {
+      if (this.checked) startAutoRefresh(); else { clearInterval(refreshTimer); refreshTimer = null; }
+    });
+
+    fetchAll();
+    startAutoRefresh();
+  </script>
+</body>
+</html>

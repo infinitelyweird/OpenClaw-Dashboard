@@ -1,69 +1,267 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login - Infinitely Weird DevOps</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="gradient-bg"></div>
-    <main id="app">
-      <section id="login-card" class="glass-card">
-        <div class="logo">Infinitely Weird DevOps</div>
-        <p class="subtitle">Securely manage your projects, tasks & operations.</p>
-        <form id="login-form">
-          <label>
-            <span>Username</span>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required />
-          </label>
-          <label>
-            <span>Password</span>
-            <input type="password" id="password" name="password" placeholder="••••••••" required />
-          </label>
-          <button type="submit">Sign In</button>
-          <p id="login-error" class="error hidden"></p>
-        </form>
-        <p style="margin-top: 1.5rem; color: var(--muted); font-size: 0.9rem;">
-          Don't have an account? <a href="/register.html" style="color: var(--accent); text-decoration: none;">Register here</a>
-        </p>
-      </section>
-    </main>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In · Infinitely Weird DevOps</title>
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --glass: rgba(255,255,255,0.06);
+      --glass-hover: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.1);
+      --text: #f0f0ff;
+      --text-muted: rgba(255,255,255,0.5);
+      --accent: #a78bfa;
+      --accent-2: #06b6d4;
+      --gradient-accent: linear-gradient(135deg, #a78bfa, #06b6d4);
+      --input-bg: rgba(255,255,255,0.06);
+    }
+    [data-theme="light"] {
+      --bg: #f4f4fb;
+      --glass: rgba(255,255,255,0.8);
+      --glass-hover: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.12);
+      --text: #1a1a2e;
+      --text-muted: rgba(0,0,0,0.5);
+      --input-bg: rgba(0,0,0,0.04);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      overflow: hidden;
+    }
+    /* Animated gradient background */
+    .bg-animated {
+      position: fixed; inset: 0; z-index: 0;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a4e, #0f2027);
+      background-size: 400% 400%;
+      animation: gradMove 15s ease infinite;
+    }
+    [data-theme="light"] .bg-animated {
+      background: linear-gradient(-45deg, #e0e7ff, #ddd6fe, #cffafe, #e0f2fe, #f0f9ff);
+      background-size: 400% 400%;
+    }
+    @keyframes gradMove {
+      0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}
+    }
+    /* Floating orbs */
+    .orb {
+      position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.3; z-index: 0;
+      animation: float 8s ease-in-out infinite;
+    }
+    .orb-1 { width: 400px; height: 400px; background: #a78bfa; top: -100px; left: -100px; }
+    .orb-2 { width: 300px; height: 300px; background: #06b6d4; bottom: -80px; right: -80px; animation-delay: -4s; }
+    .orb-3 { width: 200px; height: 200px; background: #ec4899; top: 50%; right: 20%; animation-delay: -2s; }
+    @keyframes float {
+      0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)}
+    }
 
-    <script>
-      document.getElementById('login-form').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const errorEl = document.getElementById('login-error');
+    .login-card {
+      position: relative; z-index: 1;
+      background: var(--glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      margin: 1rem;
+      animation: cardIn 0.6s ease;
+    }
+    @keyframes cardIn { from{opacity:0;transform:translateY(20px)scale(0.97)} to{opacity:1;transform:translateY(0)scale(1)} }
 
-        try {
-          const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-          });
+    .brand {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .brand-logo {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      animation: spin 20s linear infinite;
+    }
+    @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .brand p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
 
-          if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('token', data.token);
-            window.location.href = '/index.html';
-          } else {
-            const error = await response.json();
-            errorEl.textContent = error.message;
-            errorEl.classList.remove('hidden');
-          }
-        } catch (err) {
-          errorEl.textContent = 'Connection error. Please try again.';
-          errorEl.classList.remove('hidden');
-        }
-      });
-    </script>
-  </body>
+    .form-group {
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .form-group .icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      opacity: 0.5;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.75rem;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .form-group input::placeholder { color: var(--text-muted); }
+    .form-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border: none;
+      border-radius: 12px;
+      background: var(--gradient-accent);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 0.5rem;
+    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(139,92,246,0.3); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .alt-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .alt-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .alt-link a:hover { text-decoration: underline; }
+
+    .error-msg {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .theme-corner {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <button class="theme-corner" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+  <div class="login-card">
+    <div class="brand">
+      <span class="brand-logo">∞</span>
+      <h1>Infinitely Weird DevOps</h1>
+      <p>Deploy the impossible. Monitor the absurd.</p>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <div class="form-group">
+        <span class="icon">👤</span>
+        <input type="text" id="username" placeholder="Username" required autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <span class="icon">🔒</span>
+        <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn">Sign In</button>
+    </form>
+
+    <div class="alt-link">
+      Don't have an account? <a href="register.html">Register</a>
+    </div>
+  </div>
+
+  <script>
+    // Redirect if already logged in
+    if (localStorage.getItem('token')) window.location.href = 'index.html';
+
+    // Theme
+    function getTheme() { return localStorage.getItem('theme') || 'dark'; }
+    function toggleTheme() {
+      const t = getTheme() === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', t);
+      document.documentElement.setAttribute('data-theme', t);
+      document.getElementById('theme-toggle').textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    document.documentElement.setAttribute('data-theme', getTheme());
+    document.getElementById('theme-toggle').textContent = getTheme() === 'dark' ? '🌙' : '☀️';
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const err = document.getElementById('error-msg');
+      err.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || data.message || 'Login failed');
+        localStorage.setItem('token', data.token);
+        window.location.href = 'index.html';
+      } catch (ex) {
+        err.textContent = ex.message;
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+    }
+  </script>
+</body>
 </html>

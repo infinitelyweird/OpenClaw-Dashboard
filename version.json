@@ -1,0 +1,15 @@
+{
+  "app": "Infinitely Weird DevOps Dashboard",
+  "version": "2.0.0",
+  "buildDate": "2026-02-14",
+  "modules": {
+    "module-loader": "1.0.0",
+    "sidebar": "1.0.0",
+    "theme": "1.0.0",
+    "auth": "1.0.0",
+    "api": "1.0.0",
+    "toast": "1.0.0",
+    "charts": "1.0.0",
+    "modal": "1.0.0"
+  }
+}

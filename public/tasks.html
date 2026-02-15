@@ -1,384 +1,419 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tasks - Infinitely Weird DevOps</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="nav.css" />
-    <style>
-      .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-      .tab-btn { border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 1.2rem; background: transparent; color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.9rem; transition: all 0.2s; }
-      .tab-btn.active { background: linear-gradient(120deg, #c084fc, #60a5fa, #34d399); color: var(--bg); font-weight: 600; border-color: transparent; }
-      .tab-content { display: none; }
-      .tab-content.active { display: block; }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tasks - Infinitely Weird DevOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <style>
+    :root {
+      --glass: rgba(255,255,255,0.06);
+      --glass-hover: rgba(255,255,255,0.1);
+      --border: rgba(255,255,255,0.12);
+      --text: #f0f0f0;
+      --muted: rgba(255,255,255,0.5);
+      --accent: #34d399;
+      --accent-2: rgba(52,211,153,0.15);
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --info: #60a5fa;
+      --purple: #a78bfa;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); color: var(--text); }
+    .gradient-bg { position: fixed; inset: 0; z-index: -1; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); }
+    main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .page-header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; margin: 0; }
+    .page-header h1 span { color: var(--accent); }
+    .eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 0.2rem; }
 
-      .filter-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
-      .filter-bar select, .filter-bar input { border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); padding: 0.4rem 0.7rem; background: rgba(5,6,10,0.4); color: var(--text); font-size: 0.85rem; font-family: inherit; }
+    /* Buttons */
+    .btn { padding: 0.5rem 1.2rem; border-radius: 10px; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .btn-primary { background: var(--accent); color: #0f172a; }
+    .btn-primary:hover { background: #6ee7b7; transform: translateY(-1px); }
+    .btn-ghost { background: var(--glass); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--glass-hover); }
+    .btn-danger { background: rgba(248,113,113,0.15); color: var(--danger); border: 1px solid rgba(248,113,113,0.3); }
+    .btn-danger:hover { background: rgba(248,113,113,0.25); }
+    .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.78rem; }
 
-      .task-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 1rem; flex-wrap: wrap; }
-      .task-row:last-child { border-bottom: none; }
-      .task-info { flex: 1; min-width: 200px; }
-      .task-info h4 { margin: 0; font-size: 1rem; }
-      .task-info p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    /* Filter bar */
+    .filter-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center; background: var(--glass); padding: 0.8rem 1rem; border-radius: 14px; border: 1px solid var(--border); }
+    .filter-bar select, .filter-bar input { background: rgba(255,255,255,0.08); border: 1px solid var(--border); color: var(--text); padding: 0.45rem 0.8rem; border-radius: 8px; font-family: inherit; font-size: 0.82rem; outline: none; transition: border-color 0.2s; }
+    .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+    .filter-bar select option { background: #1e1b4b; }
+    .view-toggle { margin-left: auto; display: flex; gap: 0.3rem; }
+    .view-toggle button { background: var(--glass); border: 1px solid var(--border); color: var(--muted); padding: 0.4rem 0.7rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .view-toggle button.active { background: var(--accent-2); color: var(--accent); border-color: var(--accent); }
 
-      .action-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-      .btn-sm { border: none; border-radius: 10px; padding: 0.4rem 0.9rem; font-size: 0.8rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: transform 0.15s; }
-      .btn-sm:hover { transform: translateY(-1px); }
-      .btn-edit { background: var(--accent); color: var(--bg); }
-      .btn-delete { background: var(--danger); color: #fff; }
-      .btn-add { background: linear-gradient(120deg, #c084fc, #60a5fa); color: var(--bg); }
-      .btn-tag { background: rgba(167,139,250,0.3); color: #c4b5fd; }
+    /* Glass cards */
+    .glass-card { background: var(--glass); border: 1px solid var(--border); border-radius: 16px; backdrop-filter: blur(14px); padding: 1rem 1.2rem; transition: all 0.25s; cursor: pointer; }
+    .glass-card:hover { background: var(--glass-hover); box-shadow: 0 8px 32px rgba(0,0,0,0.3); transform: translateY(-2px); }
 
-      .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 8px; font-size: 0.75rem; margin: 0.1rem; }
-      .badge-status-open { background: rgba(96,165,250,0.25); color: #93bbfd; }
-      .badge-status-in-progress, .badge-status-in_progress { background: rgba(251,191,36,0.25); color: #fcd34d; }
-      .badge-status-done, .badge-status-completed, .badge-status-closed { background: rgba(52,211,153,0.25); color: #6ee7b7; }
-      .badge-priority-high, .badge-priority-critical { background: rgba(239,68,68,0.25); color: #fca5a5; }
-      .badge-priority-medium { background: rgba(251,191,36,0.25); color: #fcd34d; }
-      .badge-priority-low { background: rgba(52,211,153,0.25); color: #6ee7b7; }
-      .badge-tag { background: rgba(167,139,250,0.25); color: #c4b5fd; }
+    /* Task list view */
+    .task-list { display: flex; flex-direction: column; gap: 0.7rem; }
+    .task-card { display: grid; grid-template-columns: 1fr auto auto auto auto; align-items: center; gap: 1rem; }
+    .task-title { font-weight: 600; font-size: 0.95rem; }
+    .task-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
 
-      .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 100; }
-      .modal { background: rgba(20,20,30,0.95); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; max-width: 550px; width: 90%; backdrop-filter: blur(18px); }
-      .modal h3 { margin-top: 0; }
-      .modal label { display: block; margin-top: 0.8rem; font-size: 0.85rem; color: var(--muted); }
-      .modal input, .modal select, .modal textarea { width: 100%; box-sizing: border-box; margin-top: 0.3rem; padding: 0.5rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(5,6,10,0.4); color: var(--text); font-family: inherit; font-size: 0.9rem; }
-      .modal textarea { min-height: 80px; resize: vertical; }
-      .modal-actions { display: flex; gap: 0.5rem; margin-top: 1.2rem; justify-content: flex-end; }
+    /* Badges */
+    .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge-open { background: rgba(96,165,250,0.2); color: #93c5fd; }
+    .badge-in-progress, .badge-inprogress { background: rgba(251,191,36,0.2); color: #fcd34d; }
+    .badge-review { background: rgba(167,139,250,0.2); color: #c4b5fd; }
+    .badge-done, .badge-closed { background: rgba(52,211,153,0.2); color: #6ee7b7; }
+    .priority-high { color: var(--danger); }
+    .priority-medium { color: var(--warning); }
+    .priority-low { color: var(--accent); }
+    .priority-critical { color: #f472b6; }
+    .tag { display: inline-block; padding: 0.1rem 0.45rem; border-radius: 5px; font-size: 0.7rem; background: rgba(167,139,250,0.15); color: #c4b5fd; margin-right: 0.3rem; }
 
-      .tag-row { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-      .tag-row:last-child { border-bottom: none; }
+    /* Kanban board */
+    .kanban-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .kanban-col { background: var(--glass); border: 1px solid var(--border); border-radius: 16px; padding: 1rem; min-height: 300px; }
+    .kanban-col-header { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+    .kanban-col-header .count { background: var(--glass-hover); padding: 0.1rem 0.5rem; border-radius: 10px; font-size: 0.75rem; color: var(--muted); }
+    .kanban-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 0.8rem; margin-bottom: 0.6rem; cursor: pointer; transition: all 0.2s; }
+    .kanban-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
 
-      .empty-state { text-align: center; color: var(--muted); padding: 2rem; }
-    </style>
-  </head>
-  <body>
-    <div class="gradient-bg"></div>
-    <script src="nav.js"></script>
-    <main id="app">
-      <header style="margin-bottom:1.5rem;">
+    /* Modal */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: rgba(20,20,35,0.97); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.25s; }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal h2 { font-family: 'Space Grotesk', sans-serif; margin: 0 0 1.2rem; font-size: 1.3rem; }
+    .modal label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.3rem; margin-top: 0.8rem; }
+    .modal input, .modal select, .modal textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text); padding: 0.5rem 0.8rem; border-radius: 8px; font-family: inherit; font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
+    .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); }
+    .modal textarea { resize: vertical; min-height: 80px; }
+    .modal select option { background: #1e1b4b; }
+    .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+    /* Slide-out detail panel */
+    .detail-panel { position: fixed; top: 0; right: -500px; width: 480px; max-width: 95vw; height: 100vh; background: rgba(15,15,30,0.98); border-left: 1px solid var(--border); backdrop-filter: blur(18px); z-index: 250; transition: right 0.35s ease; overflow-y: auto; padding: 2rem; }
+    .detail-panel.open { right: 0; }
+    .detail-panel h2 { font-family: 'Space Grotesk', sans-serif; margin: 0 0 0.5rem; font-size: 1.4rem; }
+    .detail-panel .close-btn { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; }
+    .detail-section { margin-top: 1.5rem; }
+    .detail-section h3 { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    .detail-field { margin-bottom: 1rem; }
+    .detail-field label { font-size: 0.78rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+    .detail-field input, .detail-field select, .detail-field textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text); padding: 0.5rem; border-radius: 8px; font-family: inherit; font-size: 0.85rem; outline: none; }
+    .detail-field textarea { resize: vertical; min-height: 80px; }
+    .tag-manage { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+    .tag-manage .tag { cursor: pointer; position: relative; }
+    .tag-manage .tag .remove-tag { margin-left: 0.3rem; color: rgba(255,255,255,0.4); cursor: pointer; }
+    .tag-manage .tag .remove-tag:hover { color: var(--danger); }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state h3 { color: var(--text); margin-bottom: 0.5rem; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .kanban-board { grid-template-columns: 1fr 1fr; }
+      .task-card { grid-template-columns: 1fr; gap: 0.4rem; }
+    }
+    @media (max-width: 600px) {
+      .kanban-board { grid-template-columns: 1fr; }
+      main { padding: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gradient-bg"></div>
+  <script src="nav.js"></script>
+  <main>
+    <div class="page-header">
+      <div>
         <p class="eyebrow">Task Management</p>
-        <h1 style="margin:0.1rem 0 0; font-size:2rem;">Tasks</h1>
-      </header>
-
-      <div class="tab-bar">
-        <button class="tab-btn active" data-tab="tasks">✅ Tasks</button>
-        <button class="tab-btn" data-tab="tags">🏷️ Tags</button>
+        <h1>✅ <span>Task</span> Command Center</h1>
       </div>
+      <button class="btn btn-primary" onclick="openCreateModal()">➕ Create Task</button>
+    </div>
 
-      <!-- TASKS TAB -->
-      <section id="tab-tasks" class="tab-content active">
-        <div class="filter-bar">
-          <select id="filter-status">
-            <option value="">All Statuses</option>
-            <option value="Open">Open</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-            <option value="Closed">Closed</option>
-          </select>
-          <select id="filter-priority">
-            <option value="">All Priorities</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-            <option value="Critical">Critical</option>
-          </select>
-          <select id="filter-tag">
-            <option value="">All Tags</option>
-          </select>
-          <button class="btn-sm btn-add" onclick="openTaskModal()">+ New Task</button>
-        </div>
-        <div class="glass-card" id="tasks-list">
-          <div class="empty-state">Loading tasks...</div>
-        </div>
-      </section>
-
-      <!-- TAGS TAB -->
-      <section id="tab-tags" class="tab-content">
-        <div class="glass-card">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-            <h2 style="margin:0;">Tags</h2>
-            <button class="btn-sm btn-add" onclick="openTagModal()">+ New Tag</button>
-          </div>
-          <div id="tags-list"><div class="empty-state">Loading tags...</div></div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Task Modal -->
-    <div id="task-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeTaskModal()">
-      <div class="modal">
-        <h3 id="task-modal-title">New Task</h3>
-        <input type="hidden" id="task-id" />
-        <label>Title *
-          <input type="text" id="task-title" placeholder="Task title" />
-        </label>
-        <label>Description
-          <textarea id="task-desc" placeholder="Optional description"></textarea>
-        </label>
-        <label>Status
-          <select id="task-status">
-            <option value="Open">Open</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-            <option value="Closed">Closed</option>
-          </select>
-        </label>
-        <label>Priority
-          <select id="task-priority">
-            <option value="Low">Low</option>
-            <option value="Medium" selected>Medium</option>
-            <option value="High">High</option>
-            <option value="Critical">Critical</option>
-          </select>
-        </label>
-        <label>Assign To
-          <select id="task-assigned"><option value="">Unassigned</option></select>
-        </label>
-        <div class="modal-actions">
-          <button class="btn-sm" style="background:rgba(255,255,255,0.15);color:var(--text);" onclick="closeTaskModal()">Cancel</button>
-          <button class="btn-sm btn-add" onclick="saveTask()">Save</button>
-        </div>
+    <div class="filter-bar">
+      <select id="filterStatus"><option value="">All Statuses</option><option>Open</option><option>In Progress</option><option>Review</option><option>Done</option></select>
+      <select id="filterPriority"><option value="">All Priorities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select>
+      <select id="filterAssignee"><option value="">All Assignees</option></select>
+      <select id="filterTag"><option value="">All Tags</option></select>
+      <input type="text" id="searchInput" placeholder="🔍 Search tasks..." />
+      <div class="view-toggle">
+        <button id="listViewBtn" class="active" onclick="setView('list')">☰ List</button>
+        <button id="boardViewBtn" onclick="setView('board')">▦ Board</button>
       </div>
     </div>
 
-    <!-- Tag Modal -->
-    <div id="tag-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeTagModal()">
-      <div class="modal">
-        <h3>New Tag</h3>
-        <label>Tag Name *
-          <input type="text" id="tag-name" placeholder="e.g. bug, feature, urgent" />
-        </label>
-        <div class="modal-actions">
-          <button class="btn-sm" style="background:rgba(255,255,255,0.15);color:var(--text);" onclick="closeTagModal()">Cancel</button>
-          <button class="btn-sm btn-add" onclick="saveTag()">Create</button>
-        </div>
+    <div id="taskContainer"></div>
+  </main>
+
+  <!-- Create / Edit Modal -->
+  <div class="modal-overlay" id="createModal">
+    <div class="modal">
+      <h2 id="modalTitle">✨ Create a New Task</h2>
+      <input type="hidden" id="editTaskId" />
+      <label>Title *</label>
+      <input type="text" id="taskTitleInput" placeholder="Something infinitely weird..." />
+      <label>Description</label>
+      <textarea id="taskDescInput" placeholder="Describe the weirdness..."></textarea>
+      <label>Status</label>
+      <select id="taskStatusInput"><option>Open</option><option>In Progress</option><option>Review</option><option>Done</option></select>
+      <label>Priority</label>
+      <select id="taskPriorityInput"><option>Medium</option><option>Critical</option><option>High</option><option>Low</option></select>
+      <label>Assign To</label>
+      <select id="taskAssigneeInput"><option value="">Unassigned</option></select>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeCreateModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTask()">💾 Save</button>
       </div>
     </div>
+  </div>
 
-    <!-- Tag Assignment Modal -->
-    <div id="tag-assign-modal" class="modal-overlay" style="display:none;" onclick="if(event.target===this)closeTagAssignModal()">
-      <div class="modal">
-        <h3>Manage Tags</h3>
-        <p style="color:var(--muted);font-size:0.85rem;" id="tag-assign-task-name"></p>
-        <div id="tag-assign-list"></div>
-        <div class="modal-actions">
-          <button class="btn-sm" style="background:rgba(255,255,255,0.15);color:var(--text);" onclick="closeTagAssignModal()">Close</button>
-        </div>
+  <!-- Detail Panel -->
+  <div class="detail-panel" id="detailPanel">
+    <button class="close-btn" onclick="closeDetail()">✕</button>
+    <h2 id="detailTitle"></h2>
+    <div class="detail-section">
+      <h3>Details</h3>
+      <div class="detail-field"><label>Status</label><select id="detailStatus"><option>Open</option><option>In Progress</option><option>Review</option><option>Done</option></select></div>
+      <div class="detail-field"><label>Priority</label><select id="detailPriority"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></div>
+      <div class="detail-field"><label>Assignee</label><select id="detailAssignee"><option value="">Unassigned</option></select></div>
+      <div class="detail-field"><label>Description</label><textarea id="detailDesc"></textarea></div>
+    </div>
+    <div class="detail-section">
+      <h3>Tags</h3>
+      <div class="tag-manage" id="detailTags"></div>
+      <div style="display:flex;gap:0.4rem;margin-top:0.6rem;">
+        <select id="addTagSelect" style="flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);padding:0.4rem;border-radius:8px;font-size:0.8rem;"><option value="">Add tag...</option></select>
+        <button class="btn btn-sm btn-ghost" onclick="addTagToTask()">+ Add</button>
       </div>
     </div>
+    <div class="detail-section">
+      <h3>Info</h3>
+      <p style="font-size:0.8rem;color:var(--muted);">Created by: <span id="detailCreatedBy"></span></p>
+      <p style="font-size:0.8rem;color:var(--muted);">Created: <span id="detailCreatedAt"></span></p>
+      <p style="font-size:0.8rem;color:var(--muted);">Updated: <span id="detailUpdatedAt"></span></p>
+    </div>
+    <div class="modal-actions" style="margin-top:2rem;">
+      <button class="btn btn-danger btn-sm" onclick="deleteCurrentTask()">🗑 Delete</button>
+      <button class="btn btn-primary" onclick="updateTask()">💾 Save Changes</button>
+    </div>
+  </div>
 
-    <script>
-      const token = localStorage.getItem('token');
-      const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
-      let allTags = [];
-      let allUsers = [];
+  <script>
+    const TOKEN = localStorage.getItem('token');
+    const headers = () => ({ 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' });
+    let tasks = [], users = [], tags = [], currentView = 'list', currentTaskId = null;
 
-      // ─── Tabs ────────────────────────────
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    async function init() {
+      await Promise.all([loadUsers(), loadTags()]);
+      await loadTasks();
+    }
+
+    async function loadUsers() {
+      try {
+        const r = await fetch('/api/tasks/users/list', { headers: headers() });
+        users = await r.json();
+        ['filterAssignee','taskAssigneeInput','detailAssignee'].forEach(id => {
+          const el = document.getElementById(id);
+          const val = el.value;
+          el.innerHTML = '<option value="">'+( id==='filterAssignee'?'All Assignees':'Unassigned')+'</option>';
+          users.forEach(u => el.innerHTML += `<option value="${u.UserID}">${u.Username}</option>`);
+          el.value = val;
         });
-      });
+      } catch(e) { console.error('Failed to load users', e); }
+    }
 
-      // ─── Init ────────────────────────────
-      async function init() {
-        await Promise.all([loadTags(), loadUsers()]);
-        populateFilterTags();
-        loadTasks();
-      }
+    async function loadTags() {
+      try {
+        const r = await fetch('/api/tags', { headers: headers() });
+        tags = await r.json();
+        const el = document.getElementById('filterTag');
+        el.innerHTML = '<option value="">All Tags</option>';
+        tags.forEach(t => el.innerHTML += `<option value="${t.TagName}">${t.TagName}</option>`);
+        const addSel = document.getElementById('addTagSelect');
+        addSel.innerHTML = '<option value="">Add tag...</option>';
+        tags.forEach(t => addSel.innerHTML += `<option value="${t.TagID}">${t.TagName}</option>`);
+      } catch(e) { console.error('Failed to load tags', e); }
+    }
 
-      // ─── Tasks ───────────────────────────
-      async function loadTasks() {
+    async function loadTasks() {
+      try {
         const params = new URLSearchParams();
-        const s = document.getElementById('filter-status').value;
-        const p = document.getElementById('filter-priority').value;
-        const t = document.getElementById('filter-tag').value;
-        if (s) params.set('status', s);
-        if (p) params.set('priority', p);
-        if (t) params.set('tag', t);
+        const s = document.getElementById('filterStatus').value; if(s) params.set('status', s);
+        const p = document.getElementById('filterPriority').value; if(p) params.set('priority', p);
+        const a = document.getElementById('filterAssignee').value; if(a) params.set('assignedTo', a);
+        const t = document.getElementById('filterTag').value; if(t) params.set('tag', t);
+        const r = await fetch('/api/tasks?' + params.toString(), { headers: headers() });
+        tasks = await r.json();
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        if (search) tasks = tasks.filter(t => t.Title.toLowerCase().includes(search) || (t.Description||'').toLowerCase().includes(search));
+        render();
+      } catch(e) { console.error('Failed to load tasks', e); }
+    }
 
-        try {
-          const res = await fetch('/api/tasks?' + params.toString(), { headers });
-          const tasks = await res.json();
-          const container = document.getElementById('tasks-list');
-          if (!tasks.length) {
-            container.innerHTML = '<div class="empty-state">No tasks found.</div>';
-            return;
-          }
-          container.innerHTML = tasks.map(t => {
-            const statusClass = 'badge-status-' + (t.Status || '').toLowerCase().replace(/\s+/g, '-');
-            const prioClass = 'badge-priority-' + (t.Priority || '').toLowerCase();
-            const tags = t.Tags ? t.Tags.split(', ').map(tg => `<span class="badge badge-tag">${esc(tg)}</span>`).join('') : '';
-            return `<div class="task-row">
-              <div class="task-info">
-                <h4>${esc(t.Title)}</h4>
-                <p>${esc(t.Description || '')}</p>
-                <div style="margin-top:0.4rem;">
-                  <span class="badge ${statusClass}">${esc(t.Status)}</span>
-                  <span class="badge ${prioClass}">${esc(t.Priority)}</span>
-                  ${tags}
-                  ${t.AssignedToName ? `<span style="color:var(--muted);font-size:0.75rem;margin-left:0.5rem;">→ ${esc(t.AssignedToName)}</span>` : ''}
-                </div>
+    function render() {
+      const c = document.getElementById('taskContainer');
+      if (tasks.length === 0) {
+        c.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><h3>No tasks? That's weird... in a good way!</h3><p>Create your first task to get the weirdness started.</p></div>`;
+        return;
+      }
+      if (currentView === 'list') renderList(c);
+      else renderBoard(c);
+    }
+
+    function statusClass(s) { return 'badge-' + (s||'open').toLowerCase().replace(/\s+/g,''); }
+    function priorityClass(p) { return 'priority-' + (p||'medium').toLowerCase(); }
+
+    function renderList(c) {
+      c.innerHTML = '<div class="task-list">' + tasks.map(t => `
+        <div class="glass-card task-card" onclick="openDetail(${t.TaskID})">
+          <div>
+            <div class="task-title">${esc(t.Title)}</div>
+            <div class="task-meta">${(t.Tags||'').split(', ').filter(Boolean).map(tg=>'<span class="tag">'+esc(tg)+'</span>').join('')}</div>
+          </div>
+          <span class="badge ${statusClass(t.Status)}">${esc(t.Status)}</span>
+          <span class="${priorityClass(t.Priority)}" style="font-weight:600;font-size:0.8rem;">● ${esc(t.Priority)}</span>
+          <span style="font-size:0.82rem;color:var(--muted);">${esc(t.AssignedToName||'Unassigned')}</span>
+          <span style="font-size:0.75rem;color:var(--muted);">${fmtDate(t.CreatedAt)}</span>
+        </div>
+      `).join('') + '</div>';
+    }
+
+    function renderBoard(c) {
+      const cols = { 'Open': [], 'In Progress': [], 'Review': [], 'Done': [] };
+      tasks.forEach(t => { const k = cols[t.Status] !== undefined ? t.Status : 'Open'; (cols[k] = cols[k]||[]).push(t); });
+      const icons = { 'Open':'📋', 'In Progress':'🔧', 'Review':'👀', 'Done':'✅' };
+      c.innerHTML = '<div class="kanban-board">' + Object.entries(cols).map(([col, items]) => `
+        <div class="kanban-col">
+          <div class="kanban-col-header">${icons[col]||''} ${col} <span class="count">${items.length}</span></div>
+          ${items.length === 0 ? '<p style="color:var(--muted);font-size:0.8rem;text-align:center;">Nothing here yet 🌀</p>' : items.map(t => `
+            <div class="kanban-card" onclick="openDetail(${t.TaskID})">
+              <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">${esc(t.Title)}</div>
+              <div style="display:flex;gap:0.4rem;align-items:center;font-size:0.75rem;">
+                <span class="${priorityClass(t.Priority)}">● ${esc(t.Priority)}</span>
+                <span style="color:var(--muted);margin-left:auto;">${esc(t.AssignedToName||'')}</span>
               </div>
-              <div class="action-btns">
-                <button class="btn-sm btn-tag" onclick="openTagAssignModal(${t.TaskID}, '${esc(t.Title)}')">🏷️</button>
-                <button class="btn-sm btn-edit" onclick="editTask(${t.TaskID})">Edit</button>
-                <button class="btn-sm btn-delete" onclick="deleteTask(${t.TaskID})">Delete</button>
-              </div>
-            </div>`;
-          }).join('');
-        } catch (err) {
-          console.error(err);
-          document.getElementById('tasks-list').innerHTML = '<div class="empty-state">Failed to load tasks.</div>';
-        }
-      }
+              ${t.Tags ? '<div style="margin-top:0.3rem;">'+t.Tags.split(', ').filter(Boolean).map(tg=>'<span class="tag">'+esc(tg)+'</span>').join('')+'</div>' : ''}
+            </div>
+          `).join('')}
+        </div>
+      `).join('') + '</div>';
+    }
 
-      // Filters
-      document.getElementById('filter-status').addEventListener('change', loadTasks);
-      document.getElementById('filter-priority').addEventListener('change', loadTasks);
-      document.getElementById('filter-tag').addEventListener('change', loadTasks);
+    function setView(v) {
+      currentView = v;
+      document.getElementById('listViewBtn').classList.toggle('active', v==='list');
+      document.getElementById('boardViewBtn').classList.toggle('active', v==='board');
+      render();
+    }
 
-      // ─── Task Modal ──────────────────────
-      function openTaskModal(task) {
-        document.getElementById('task-modal-title').textContent = task ? 'Edit Task' : 'New Task';
-        document.getElementById('task-id').value = task ? task.TaskID : '';
-        document.getElementById('task-title').value = task ? task.Title : '';
-        document.getElementById('task-desc').value = task ? (task.Description || '') : '';
-        document.getElementById('task-status').value = task ? task.Status : 'Open';
-        document.getElementById('task-priority').value = task ? task.Priority : 'Medium';
-        document.getElementById('task-assigned').value = task ? (task.AssignedTo || '') : '';
-        // Populate user dropdown
-        const sel = document.getElementById('task-assigned');
-        sel.innerHTML = '<option value="">Unassigned</option>' + allUsers.map(u => `<option value="${u.UserID}" ${task && task.AssignedTo === u.UserID ? 'selected' : ''}>${esc(u.Username)}</option>`).join('');
-        document.getElementById('task-modal').style.display = 'flex';
-      }
-      function closeTaskModal() { document.getElementById('task-modal').style.display = 'none'; }
+    // Filters
+    ['filterStatus','filterPriority','filterAssignee','filterTag'].forEach(id => document.getElementById(id).addEventListener('change', loadTasks));
+    document.getElementById('searchInput').addEventListener('input', debounce(loadTasks, 300));
 
-      async function editTask(id) {
-        const res = await fetch('/api/tasks/' + id, { headers });
-        const task = await res.json();
-        openTaskModal(task);
-      }
+    function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; }
 
-      async function saveTask() {
-        const id = document.getElementById('task-id').value;
-        const body = {
-          title: document.getElementById('task-title').value,
-          description: document.getElementById('task-desc').value,
-          status: document.getElementById('task-status').value,
-          priority: document.getElementById('task-priority').value,
-          assignedTo: document.getElementById('task-assigned').value || null,
-        };
-        if (!body.title) return alert('Title is required.');
-        const url = id ? '/api/tasks/' + id : '/api/tasks';
-        const method = id ? 'PUT' : 'POST';
-        await fetch(url, { method, headers, body: JSON.stringify(body) });
-        closeTaskModal();
+    // Create modal
+    function openCreateModal() {
+      document.getElementById('modalTitle').textContent = '✨ Create a New Task';
+      document.getElementById('editTaskId').value = '';
+      document.getElementById('taskTitleInput').value = '';
+      document.getElementById('taskDescInput').value = '';
+      document.getElementById('taskStatusInput').value = 'Open';
+      document.getElementById('taskPriorityInput').value = 'Medium';
+      document.getElementById('taskAssigneeInput').value = '';
+      document.getElementById('createModal').classList.add('open');
+    }
+    function closeCreateModal() { document.getElementById('createModal').classList.remove('open'); }
+
+    async function saveTask() {
+      const body = {
+        title: document.getElementById('taskTitleInput').value,
+        description: document.getElementById('taskDescInput').value,
+        status: document.getElementById('taskStatusInput').value,
+        priority: document.getElementById('taskPriorityInput').value,
+        assignedTo: document.getElementById('taskAssigneeInput').value || null,
+      };
+      if (!body.title) return alert('Title is required!');
+      try {
+        await fetch('/api/tasks', { method: 'POST', headers: headers(), body: JSON.stringify(body) });
+        closeCreateModal();
         loadTasks();
-      }
+      } catch(e) { alert('Failed to create task'); }
+    }
 
-      async function deleteTask(id) {
-        if (!confirm('Delete this task?')) return;
-        await fetch('/api/tasks/' + id, { method: 'DELETE', headers });
-        loadTasks();
-      }
+    // Detail panel
+    async function openDetail(id) {
+      currentTaskId = id;
+      try {
+        const r = await fetch(`/api/tasks/${id}`, { headers: headers() });
+        const t = await r.json();
+        document.getElementById('detailTitle').textContent = t.Title;
+        document.getElementById('detailStatus').value = t.Status;
+        document.getElementById('detailPriority').value = t.Priority;
+        document.getElementById('detailAssignee').value = t.AssignedTo || '';
+        document.getElementById('detailDesc').value = t.Description || '';
+        document.getElementById('detailCreatedBy').textContent = t.CreatedByName || 'Unknown';
+        document.getElementById('detailCreatedAt').textContent = fmtDate(t.CreatedAt);
+        document.getElementById('detailUpdatedAt').textContent = fmtDate(t.UpdatedAt);
+        renderDetailTags(t.tags || []);
+        document.getElementById('detailPanel').classList.add('open');
+      } catch(e) { console.error(e); }
+    }
 
-      // ─── Tags ────────────────────────────
-      async function loadTags() {
-        const res = await fetch('/api/tags', { headers });
-        allTags = await res.json();
-        renderTags();
-      }
+    function renderDetailTags(taskTags) {
+      const c = document.getElementById('detailTags');
+      c.innerHTML = taskTags.map(t => `<span class="tag">${esc(t.TagName)} <span class="remove-tag" onclick="event.stopPropagation();removeTag(${t.TagID})">✕</span></span>`).join('');
+      if (taskTags.length === 0) c.innerHTML = '<span style="color:var(--muted);font-size:0.8rem;">No tags yet 🏷️</span>';
+    }
 
-      function renderTags() {
-        const container = document.getElementById('tags-list');
-        if (!allTags.length) {
-          container.innerHTML = '<div class="empty-state">No tags yet.</div>';
-          return;
-        }
-        container.innerHTML = allTags.map(t => `<div class="tag-row">
-          <span class="badge badge-tag">${esc(t.TagName)}</span>
-          <button class="btn-sm btn-delete" onclick="deleteTag(${t.TagID})">Delete</button>
-        </div>`).join('');
-      }
+    async function addTagToTask() {
+      const tagId = document.getElementById('addTagSelect').value;
+      if (!tagId || !currentTaskId) return;
+      await fetch(`/api/tasks/${currentTaskId}/tags/${tagId}`, { method: 'POST', headers: headers() });
+      openDetail(currentTaskId);
+    }
 
-      function populateFilterTags() {
-        const sel = document.getElementById('filter-tag');
-        sel.innerHTML = '<option value="">All Tags</option>' + allTags.map(t => `<option value="${esc(t.TagName)}">${esc(t.TagName)}</option>`).join('');
-      }
+    async function removeTag(tagId) {
+      if (!currentTaskId) return;
+      await fetch(`/api/tasks/${currentTaskId}/tags/${tagId}`, { method: 'DELETE', headers: headers() });
+      openDetail(currentTaskId);
+    }
 
-      function openTagModal() { document.getElementById('tag-name').value = ''; document.getElementById('tag-modal').style.display = 'flex'; }
-      function closeTagModal() { document.getElementById('tag-modal').style.display = 'none'; }
+    async function updateTask() {
+      if (!currentTaskId) return;
+      const body = {
+        title: document.getElementById('detailTitle').textContent,
+        description: document.getElementById('detailDesc').value,
+        status: document.getElementById('detailStatus').value,
+        priority: document.getElementById('detailPriority').value,
+        assignedTo: document.getElementById('detailAssignee').value || null,
+      };
+      await fetch(`/api/tasks/${currentTaskId}`, { method: 'PUT', headers: headers(), body: JSON.stringify(body) });
+      closeDetail();
+      loadTasks();
+    }
 
-      async function saveTag() {
-        const tagName = document.getElementById('tag-name').value.trim();
-        if (!tagName) return alert('Tag name is required.');
-        await fetch('/api/tags', { method: 'POST', headers, body: JSON.stringify({ tagName }) });
-        closeTagModal();
-        await loadTags();
-        populateFilterTags();
-      }
+    async function deleteCurrentTask() {
+      if (!currentTaskId || !confirm('Delete this task? This is irreversible! 😱')) return;
+      await fetch(`/api/tasks/${currentTaskId}`, { method: 'DELETE', headers: headers() });
+      closeDetail();
+      loadTasks();
+    }
 
-      async function deleteTag(id) {
-        if (!confirm('Delete this tag?')) return;
-        const res = await fetch('/api/tags/' + id, { method: 'DELETE', headers });
-        if (res.status === 403) return alert('Admin access required to delete tags.');
-        await loadTags();
-        populateFilterTags();
-        loadTasks();
-      }
+    function closeDetail() { document.getElementById('detailPanel').classList.remove('open'); currentTaskId = null; }
 
-      // ─── Tag Assignment ──────────────────
-      let tagAssignTaskId = null;
-      function openTagAssignModal(taskId, title) {
-        tagAssignTaskId = taskId;
-        document.getElementById('tag-assign-task-name').textContent = 'Task: ' + title;
-        document.getElementById('tag-assign-modal').style.display = 'flex';
-        loadTagAssignments();
-      }
-      function closeTagAssignModal() { document.getElementById('tag-assign-modal').style.display = 'none'; tagAssignTaskId = null; }
+    function esc(s) { if(!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }); }
 
-      async function loadTagAssignments() {
-        const res = await fetch('/api/tasks/' + tagAssignTaskId, { headers });
-        const task = await res.json();
-        const assignedIds = (task.tags || []).map(t => t.TagID);
-        const container = document.getElementById('tag-assign-list');
-        container.innerHTML = allTags.map(t => {
-          const assigned = assignedIds.includes(t.TagID);
-          return `<div class="tag-row">
-            <span class="badge badge-tag">${esc(t.TagName)}</span>
-            <button class="btn-sm ${assigned ? 'btn-delete' : 'btn-add'}" onclick="toggleTag(${tagAssignTaskId}, ${t.TagID}, ${assigned})">${assigned ? 'Remove' : 'Add'}</button>
-          </div>`;
-        }).join('') || '<div class="empty-state">No tags available. Create some first!</div>';
-      }
-
-      async function toggleTag(taskId, tagId, remove) {
-        const method = remove ? 'DELETE' : 'POST';
-        await fetch(`/api/tasks/${taskId}/tags/${tagId}`, { method, headers });
-        loadTagAssignments();
-        loadTasks();
-      }
-
-      // ─── Users ───────────────────────────
-      async function loadUsers() {
-        try {
-          const res = await fetch('/api/tasks/users/list', { headers });
-          allUsers = await res.json();
-        } catch { allUsers = []; }
-      }
-
-      // ─── Helpers ─────────────────────────
-      function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-      init();
-    </script>
-  </body>
+    init();
+  </script>
+</body>
 </html>

@@ -1,45 +1,282 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard - Infinitely Weird DevOps</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="nav.css" />
-    <link rel="stylesheet" href="widgets.css" />
-  </head>
-  <body>
-<link rel="stylesheet" href="styles.css" />
-<link rel="stylesheet" href="widgets.css" />
-<link rel="stylesheet" href="styles.css">
-    <div class="gradient-bg"></div>
-    <script src="nav.js"></script>
-    <main id="app">
-      <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
-        <div>
-          <div style="display:flex;gap:1rem;margin-bottom:10px;">
-            <a href="/network-security" class="nav-btn">Network Security</a>
-            <a href="/admin" class="nav-btn">Admin</a>
-          </div>
-          <p class="eyebrow">Operations Dashboard</p>
-          <h1 style="margin:0.1rem 0 0;font-size:2rem;">Mission Control</h1>
-        </div>
-      </header>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · Infinitely Weird DevOps</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="nav.css">
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --bg-surface: #12122a;
+      --glass: rgba(255,255,255,0.06);
+      --glass-hover: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0ff;
+      --text-muted: rgba(255,255,255,0.5);
+      --accent: #a78bfa;
+      --accent-2: #06b6d4;
+      --accent-glass: rgba(139,92,246,0.2);
+      --gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      --gradient-accent: linear-gradient(135deg, #a78bfa, #06b6d4);
+    }
+    [data-theme="light"] {
+      --bg: #f4f4fb;
+      --bg-surface: #ffffff;
+      --glass: rgba(0,0,0,0.04);
+      --glass-hover: rgba(0,0,0,0.08);
+      --border: rgba(0,0,0,0.1);
+      --text: #1a1a2e;
+      --text-muted: rgba(0,0,0,0.5);
+      --accent-glass: rgba(139,92,246,0.1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-      <div class="widget-toolbar">
-        <div class="widget-toolbar-left">
-          <button class="add-widget-btn" id="add-widget-btn">+ Add Widget</button>
-          <button class="add-widget-btn" id="reset-layout-btn">↺ Reset Layout</button>
+    /* KPI Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      transition: all 0.25s ease;
+    }
+    .glass-card:hover {
+      background: var(--glass-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .kpi-card .kpi-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .kpi-card .kpi-value {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .kpi-card .kpi-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    /* Widgets grid */
+    .widgets-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.25rem;
+    }
+    @media (max-width: 900px) { .widgets-grid { grid-template-columns: 1fr; } }
+
+    .widget-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Activity feed */
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .activity-text { font-size: 0.85rem; }
+    .activity-time { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* Quick actions */
+    .quick-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--glass);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .action-btn:hover {
+      background: var(--accent-glass);
+      border-color: var(--accent);
+    }
+    .action-btn .action-icon { font-size: 1.3rem; }
+
+    /* System status */
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .status-row:last-child { border-bottom: none; }
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+    .status-green { background: #22c55e; }
+    .status-yellow { background: #eab308; }
+    .status-red { background: #ef4444; }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+    .page-title span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Skeleton loading */
+    .skeleton {
+      background: linear-gradient(90deg, var(--glass) 25%, var(--glass-hover) 50%, var(--glass) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  </style>
+</head>
+<body>
+  <div id="page-content">
+    <h1 class="page-title">Welcome back, <span id="greeting-name">...</span> 👋</h1>
+
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="glass-card kpi-card"><div class="kpi-icon">📋</div><div class="kpi-value" id="kpi-tasks">—</div><div class="kpi-label">Active Tasks</div></div>
+      <div class="glass-card kpi-card"><div class="kpi-icon">📁</div><div class="kpi-value" id="kpi-projects">—</div><div class="kpi-label">Open Projects</div></div>
+      <div class="glass-card kpi-card"><div class="kpi-icon">🚀</div><div class="kpi-value" id="kpi-deployments">—</div><div class="kpi-label">Pending Deploys</div></div>
+      <div class="glass-card kpi-card"><div class="kpi-icon">💚</div><div class="kpi-value" id="kpi-health">—</div><div class="kpi-label">System Health</div></div>
+      <div class="glass-card kpi-card"><div class="kpi-icon">🛡️</div><div class="kpi-value" id="kpi-security">—</div><div class="kpi-label">Security Score</div></div>
+      <div class="glass-card kpi-card"><div class="kpi-icon">👥</div><div class="kpi-value" id="kpi-team">—</div><div class="kpi-label">Team Members</div></div>
+    </div>
+
+    <div class="widgets-grid">
+      <div>
+        <div class="glass-card">
+          <div class="widget-title">⚡ Recent Activity</div>
+          <div id="activity-feed">
+            <div class="activity-item"><div class="activity-dot status-green"></div><div><div class="activity-text">Loading activity...</div><div class="activity-time">just now</div></div></div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="margin-top:1.25rem">
+          <div class="widget-title">🖥️ System Status</div>
+          <div id="system-status">
+            <div class="status-row"><span><span class="status-dot status-green"></span>API Server</span><span>Checking...</span></div>
+            <div class="status-row"><span><span class="status-dot status-green"></span>CPU Usage</span><span id="sys-cpu">—</span></div>
+            <div class="status-row"><span><span class="status-dot status-green"></span>Memory</span><span id="sys-mem">—</span></div>
+            <div class="status-row"><span><span class="status-dot status-green"></span>Uptime</span><span id="sys-uptime">—</span></div>
+          </div>
         </div>
       </div>
 
-      <div class="widget-grid" id="widget-grid"></div>
-      <div id="widget-picker-container"></div>
-    </main>
+      <div>
+        <div class="glass-card">
+          <div class="widget-title">⚡ Quick Actions</div>
+          <div class="quick-actions">
+            <button class="action-btn" onclick="window.location.href='tasks.html'"><span class="action-icon">➕</span> Create Task</button>
+            <button class="action-btn" onclick="window.location.href='projects.html'"><span class="action-icon">📁</span> New Project</button>
+            <button class="action-btn" onclick="window.location.href='deployments.html'"><span class="action-icon">🚀</span> Start Deployment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script src="widgets.js"></script>
-  </body>
+  <script src="nav.js"></script>
+  <script>
+    (async function () {
+      // Greeting
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+        document.getElementById('greeting-name').textContent = payload.username || 'Operator';
+      } catch { document.getElementById('greeting-name').textContent = 'Operator'; }
+
+      // Fetch tasks
+      try {
+        const res = await apiFetch('/api/tasks');
+        if (res && res.ok) {
+          const data = await res.json();
+          const tasks = Array.isArray(data) ? data : (data.tasks || []);
+          document.getElementById('kpi-tasks').textContent = tasks.length;
+          const pending = tasks.filter(t => t.status === 'pending' || t.status === 'open').length;
+
+          // Populate activity from recent tasks
+          const feed = document.getElementById('activity-feed');
+          const recent = tasks.slice(0, 5);
+          if (recent.length) {
+            feed.innerHTML = recent.map(t => `
+              <div class="activity-item">
+                <div class="activity-dot" style="background:${t.status === 'done' ? '#22c55e' : t.status === 'in-progress' ? '#eab308' : '#a78bfa'}"></div>
+                <div>
+                  <div class="activity-text">${t.title || t.name || 'Task'} — <em>${t.status || 'open'}</em></div>
+                  <div class="activity-time">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : ''}</div>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      } catch {}
+
+      // Mock KPIs (replace with real endpoints when available)
+      document.getElementById('kpi-projects').textContent = '4';
+      document.getElementById('kpi-deployments').textContent = '2';
+      document.getElementById('kpi-health').textContent = '98%';
+      document.getElementById('kpi-security').textContent = '94%';
+      document.getElementById('kpi-team').textContent = '7';
+
+      // System info
+      try {
+        const res = await apiFetch('/api/widgets/system-info');
+        if (res && res.ok) {
+          const info = await res.json();
+          document.getElementById('sys-cpu').textContent = info.cpuUsage != null ? info.cpuUsage + '%' : '—';
+          document.getElementById('sys-mem').textContent = info.memoryUsage != null ? info.memoryUsage + '%' : (info.memory || '—');
+          document.getElementById('sys-uptime').textContent = info.uptime || '—';
+        }
+      } catch {}
+    })();
+  </script>
+</body>
 </html>

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Network — Infinitely Weird DevOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="nav.css" />
+  <style>
+    :root { --green:#34d399; --yellow:#fbbf24; --red:#f87171; --glass-card:rgba(255,255,255,0.06); --glass-border:rgba(255,255,255,0.12); --text:#e2e8f0; --text-dim:#94a3b8; }
+    * { box-sizing: border-box; }
+    main { max-width: 1400px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+    h1 { font-family: 'Space Grotesk', sans-serif; margin: 0 0 0.25rem; }
+    .eyebrow { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin: 0; }
+    .subtitle { color: var(--text-dim); font-size: 0.85rem; margin: 0 0 1.5rem; }
+    .card { background: var(--glass-card); border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.25rem; backdrop-filter: blur(12px); margin-bottom: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+    .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 0.3rem; }
+    .stat-value { font-size: 1.6rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+    .stat-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem; }
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; margin: 0 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; animation: pulse-anim 2s infinite; }
+    @keyframes pulse-anim { 0%,100% { opacity:1; box-shadow: 0 0 0 0 currentColor; } 50% { opacity:0.7; box-shadow: 0 0 8px 4px currentColor; } }
+    .status-up { color: var(--green); }
+    .status-down { color: var(--red); }
+
+    /* Speed test button */
+    .speed-btn { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; padding: 1rem 2.5rem; border: 2px solid var(--green); background: transparent; color: var(--green); border-radius: 50px; cursor: pointer; transition: all 0.3s; font-weight: 700; }
+    .speed-btn:hover { background: var(--green); color: #0f172a; box-shadow: 0 0 30px rgba(52,211,153,0.3); }
+    .speed-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .speed-btn.running { animation: btn-pulse 1.5s infinite; }
+    @keyframes btn-pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); } 50% { box-shadow: 0 0 20px 8px rgba(52,211,153,0.2); } }
+
+    .speed-results { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; text-align: center; }
+    @media (max-width: 600px) { .speed-results { grid-template-columns: 1fr 1fr; } }
+    .speed-num { font-size: 2rem; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
+
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .data-table th { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--glass-border); color: var(--text-dim); }
+    .data-table td { padding: 0.4rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+
+    .dns-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .dns-input { flex: 1; padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: var(--text); font-size: 0.9rem; outline: none; }
+    .dns-input:focus { border-color: var(--green); }
+    .dns-btn { padding: 0.6rem 1.2rem; border-radius: 8px; border: none; background: var(--green); color: #0f172a; font-weight: 700; cursor: pointer; }
+
+    canvas { width: 100%; height: 200px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="gradient-bg"></div>
+  <script src="nav.js"></script>
+  <main>
+    <p class="eyebrow">Network Monitoring</p>
+    <h1>🌐 Packets, Pipes & Cosmic Pings</h1>
+    <p class="subtitle">Where your bits go when they leave home — tracked, charted, and mildly judged.</p>
+
+    <!-- Network interfaces -->
+    <div class="section-title">📡 Network Interfaces</div>
+    <div class="grid-3" id="ifaceGrid">
+      <div class="card" style="color:var(--text-dim);">Sniffing interfaces…</div>
+    </div>
+
+    <!-- Speed test -->
+    <div class="card" style="text-align:center;">
+      <div class="section-title" style="justify-content:center;">🚀 Speed Test</div>
+      <button class="speed-btn" id="speedBtn" onclick="runSpeedTest()">▶ Run Speed Test</button>
+      <div id="speedStatus" style="font-size:0.8rem;color:var(--text-dim);margin-top:0.75rem;"></div>
+      <div class="speed-results" id="speedResults" style="display:none;">
+        <div><div class="speed-num status-up" id="dlSpeed">—</div><div class="stat-label">Download Mbps</div></div>
+        <div><div class="speed-num" style="color:var(--yellow)" id="ulSpeed">—</div><div class="stat-label">Upload Mbps</div></div>
+        <div><div class="speed-num" id="pingVal">—</div><div class="stat-label">Ping ms</div></div>
+        <div><div class="speed-num" id="jitterVal">—</div><div class="stat-label">Jitter ms</div></div>
+      </div>
+    </div>
+
+    <!-- Speed history + Bandwidth -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="section-title">📉 Speed Test History</div>
+        <canvas id="speedChart" height="200"></canvas>
+      </div>
+      <div class="card">
+        <div class="section-title">📊 Bandwidth (rx/tx per sec)</div>
+        <canvas id="bwChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- DNS lookup -->
+    <div class="card">
+      <div class="section-title">🔍 DNS Lookup</div>
+      <div class="dns-row">
+        <input class="dns-input" id="dnsInput" placeholder="Enter hostname (e.g. example.com)" onkeydown="if(event.key==='Enter')dnsLookup()"/>
+        <button class="dns-btn" onclick="dnsLookup()">Resolve</button>
+      </div>
+      <div id="dnsResult" style="font-size:0.85rem;color:var(--text-dim);"></div>
+    </div>
+
+    <!-- Speed history table -->
+    <div class="card">
+      <div class="section-title">📋 Recent Speed Tests</div>
+      <table class="data-table">
+        <thead><tr><th>Date</th><th>↓ Download</th><th>↑ Upload</th><th>Ping</th><th>Server</th></tr></thead>
+        <tbody id="historyBody"><tr><td colspan="5" style="color:var(--text-dim)">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const TOKEN = localStorage.getItem('token');
+    const headers = { 'Authorization': `Bearer ${TOKEN}` };
+    const bwRxHistory = [], bwTxHistory = [];
+    const MAX_H = 60;
+
+    function fmtBytes(b) { if (!b) return '0 B'; const u=['B','KB','MB','GB','TB']; let i=0,v=b; while(v>=1024&&i<u.length-1){v/=1024;i++;} return v.toFixed(1)+' '+u[i]; }
+
+    // Fetch interfaces via system/network widget
+    async function fetchInterfaces() {
+      try {
+        const r = await fetch('/api/widgets/system/network', { headers });
+        const nets = await r.json();
+        if (!nets.length) { document.getElementById('ifaceGrid').innerHTML = '<div class="card" style="color:var(--text-dim)">No interfaces. Are you even real?</div>'; return; }
+        document.getElementById('ifaceGrid').innerHTML = nets.map(n => `
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+              <span class="pulse" style="color:var(--green);background:var(--green);"></span>
+              <strong>${n.iface}</strong>
+            </div>
+            <div class="stat-sub">↓ ${fmtBytes(n.rxBytes)} received</div>
+            <div class="stat-sub">↑ ${fmtBytes(n.txBytes)} sent</div>
+            <div class="stat-sub">${n.rxSec !== null ? '↓ ' + fmtBytes(n.rxSec) + '/s • ↑ ' + fmtBytes(n.txSec) + '/s' : ''}</div>
+          </div>
+        `).join('');
+
+        // Bandwidth history
+        const totalRx = nets.reduce((s, n) => s + (n.rxSec || 0), 0);
+        const totalTx = nets.reduce((s, n) => s + (n.txSec || 0), 0);
+        bwRxHistory.push(totalRx); bwTxHistory.push(totalTx);
+        if (bwRxHistory.length > MAX_H) { bwRxHistory.shift(); bwTxHistory.shift(); }
+        drawBwChart();
+      } catch {}
+    }
+
+    // Speed test
+    async function runSpeedTest() {
+      const btn = document.getElementById('speedBtn');
+      btn.disabled = true; btn.classList.add('running'); btn.textContent = '⏳ Running…';
+      document.getElementById('speedStatus').textContent = 'Speed test initiated — this may take up to 60 seconds…';
+      try {
+        await fetch('/api/speedtest/run', { method: 'POST', headers });
+        // Poll for completion
+        let attempts = 0;
+        const poll = setInterval(async () => {
+          attempts++;
+          const sr = await fetch('/api/speedtest/status', { headers });
+          const st = await sr.json();
+          if (!st.isRunning || attempts > 30) {
+            clearInterval(poll);
+            btn.disabled = false; btn.classList.remove('running'); btn.textContent = '▶ Run Speed Test';
+            document.getElementById('speedStatus').textContent = st.isRunning ? 'Still running…' : 'Complete!';
+            fetchHistory();
+          }
+        }, 3000);
+      } catch (e) {
+        btn.disabled = false; btn.classList.remove('running'); btn.textContent = '▶ Run Speed Test';
+        document.getElementById('speedStatus').textContent = 'Error: ' + e.message;
+      }
+    }
+
+    async function fetchHistory() {
+      try {
+        const r = await fetch('/api/speedtest/history?limit=20', { headers });
+        const d = await r.json();
+        const results = d.results || [];
+        if (results.length > 0) {
+          const latest = results[0];
+          document.getElementById('speedResults').style.display = 'grid';
+          animateNumber('dlSpeed', latest.DownloadMbps);
+          animateNumber('ulSpeed', latest.UploadMbps);
+          animateNumber('pingVal', latest.PingMs);
+          animateNumber('jitterVal', latest.JitterMs);
+        }
+        document.getElementById('historyBody').innerHTML = results.length === 0
+          ? '<tr><td colspan="5" style="color:var(--text-dim)">No tests yet. The void stares back.</td></tr>'
+          : results.map(r => `<tr>
+              <td>${new Date(r.TestedAt).toLocaleString()}</td>
+              <td style="color:var(--green)">${r.DownloadMbps} Mbps</td>
+              <td style="color:var(--yellow)">${r.UploadMbps} Mbps</td>
+              <td>${r.PingMs} ms</td>
+              <td>${r.ServerName || '—'}</td>
+            </tr>`).join('');
+        drawSpeedChart(results.reverse());
+      } catch {}
+    }
+
+    function animateNumber(id, target) {
+      const el = document.getElementById(id);
+      let current = 0;
+      const step = target / 30;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = current.toFixed(1);
+      }, 30);
+    }
+
+    // DNS lookup — client-side only (uses a public DoH endpoint)
+    async function dnsLookup() {
+      const host = document.getElementById('dnsInput').value.trim();
+      if (!host) return;
+      const el = document.getElementById('dnsResult');
+      el.textContent = 'Resolving…';
+      try {
+        const r = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(host)}&type=A`);
+        const d = await r.json();
+        if (d.Answer && d.Answer.length) {
+          el.innerHTML = d.Answer.map(a => `<div><strong>${a.name}</strong> → ${a.data} (TTL: ${a.TTL}s)</div>`).join('');
+        } else {
+          el.textContent = d.Comment || 'No records found. This domain might be a ghost. 👻';
+        }
+      } catch (e) { el.textContent = 'Lookup failed: ' + e.message; }
+    }
+
+    // Canvas charts
+    function drawLineChart(canvasId, data, label, color) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr; canvas.height = 200 * dpr;
+      ctx.scale(dpr, dpr);
+      const W = rect.width, H = 200;
+      ctx.clearRect(0, 0, W, H);
+      if (data.length < 2) { ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = '12px Inter'; ctx.fillText('Waiting for data…', W/2 - 50, H/2); return; }
+      const max = Math.max(...data) * 1.2 || 100, pad = 10, plotW = W - pad*2, plotH = H - 30;
+      ctx.beginPath();
+      const step = plotW / (data.length - 1);
+      data.forEach((v, i) => { const x = pad + i*step, y = 15 + plotH*(1-v/max); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+      ctx.lineTo(pad+(data.length-1)*step, 15+plotH); ctx.lineTo(pad, 15+plotH); ctx.closePath();
+      const grad = ctx.createLinearGradient(0,15,0,15+plotH);
+      grad.addColorStop(0, color+'40'); grad.addColorStop(1, color+'00');
+      ctx.fillStyle = grad; ctx.fill();
+    }
+
+    function drawSpeedChart(results) {
+      if (!results.length) return;
+      const dl = results.map(r => r.DownloadMbps);
+      const ul = results.map(r => r.UploadMbps);
+      const canvas = document.getElementById('speedChart');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr; canvas.height = 200 * dpr;
+      ctx.scale(dpr, dpr);
+      const W = rect.width, H = 200, pad = 10, plotW = W-pad*2, plotH = H-30;
+      ctx.clearRect(0, 0, W, H);
+      const max = Math.max(...dl, ...ul) * 1.2 || 100;
+      const step = dl.length > 1 ? plotW/(dl.length-1) : plotW;
+      // Download line
+      ctx.beginPath();
+      dl.forEach((v,i) => { const x=pad+i*step, y=15+plotH*(1-v/max); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+      ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2; ctx.stroke();
+      // Upload line
+      ctx.beginPath();
+      ul.forEach((v,i) => { const x=pad+i*step, y=15+plotH*(1-v/max); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.stroke();
+      // Legend
+      ctx.fillStyle='#34d399'; ctx.fillRect(W-120,5,10,10); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='10px Inter'; ctx.fillText('Download',W-106,14);
+      ctx.fillStyle='#fbbf24'; ctx.fillRect(W-120,20,10,10); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText('Upload',W-106,29);
+    }
+
+    function drawBwChart() {
+      const canvas = document.getElementById('bwChart');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr; canvas.height = 200 * dpr;
+      ctx.scale(dpr, dpr);
+      const W = rect.width, H = 200, pad = 10, plotW = W-pad*2, plotH = H-30;
+      ctx.clearRect(0, 0, W, H);
+      if (bwRxHistory.length < 2) { ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.font='12px Inter'; ctx.fillText('Collecting bandwidth data…',W/2-80,H/2); return; }
+      const max = Math.max(...bwRxHistory, ...bwTxHistory) * 1.2 || 1;
+      const step = plotW/(bwRxHistory.length-1);
+      [{ d: bwRxHistory, c: '#34d399' }, { d: bwTxHistory, c: '#60a5fa' }].forEach(({ d, c }) => {
+        ctx.beginPath();
+        d.forEach((v,i) => { const x=pad+i*step, y=15+plotH*(1-v/max); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+        ctx.strokeStyle=c; ctx.lineWidth=2; ctx.stroke();
+        ctx.lineTo(pad+(d.length-1)*step,15+plotH); ctx.lineTo(pad,15+plotH); ctx.closePath();
+        const g=ctx.createLinearGradient(0,15,0,15+plotH); g.addColorStop(0,c+'30'); g.addColorStop(1,c+'00'); ctx.fillStyle=g; ctx.fill();
+      });
+      ctx.fillStyle='#34d399'; ctx.fillRect(W-100,5,10,10); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='10px Inter'; ctx.fillText('RX',W-86,14);
+      ctx.fillStyle='#60a5fa'; ctx.fillRect(W-100,20,10,10); ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.fillText('TX',W-86,29);
+    }
+
+    fetchInterfaces();
+    fetchHistory();
+    setInterval(fetchInterfaces, 5000);
+  </script>
+</body>
+</html>

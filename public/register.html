@@ -1,96 +1,208 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Register - Infinitely Weird DevOps</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="gradient-bg"></div>
-    <main id="app">
-      <section id="login-card" class="glass-card">
-        <div class="logo">Infinitely Weird DevOps</div>
-        <p class="subtitle">Create your account to get started.</p>
-        <form id="register-form">
-          <label>
-            <span>Username</span>
-            <input type="text" id="username" name="username" placeholder="Choose a username" required />
-          </label>
-          <label>
-            <span>Password</span>
-            <input type="password" id="password" name="password" placeholder="••••••••" required />
-          </label>
-          <label>
-            <span>Confirm Password</span>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required />
-          </label>
-          <label>
-            <span>Email</span>
-            <input type="email" id="email" name="email" placeholder="you@infinitelyweird.com" required />
-          </label>
-          <button type="submit">Register</button>
-          <p id="register-error" class="error hidden"></p>
-          <p id="register-success" class="hidden" style="color: var(--accent-2); margin: 0;"></p>
-        </form>
-        <p style="margin-top: 1.5rem; color: var(--muted); font-size: 0.9rem;">
-          Already have an account? <a href="/login.html" style="color: var(--accent); text-decoration: none;">Sign in</a>
-        </p>
-      </section>
-    </main>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register · Infinitely Weird DevOps</title>
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --glass: rgba(255,255,255,0.06);
+      --glass-hover: rgba(255,255,255,0.12);
+      --border: rgba(255,255,255,0.1);
+      --text: #f0f0ff;
+      --text-muted: rgba(255,255,255,0.5);
+      --accent: #a78bfa;
+      --accent-2: #06b6d4;
+      --gradient-accent: linear-gradient(135deg, #a78bfa, #06b6d4);
+      --input-bg: rgba(255,255,255,0.06);
+    }
+    [data-theme="light"] {
+      --bg: #f4f4fb;
+      --glass: rgba(255,255,255,0.8);
+      --glass-hover: rgba(255,255,255,0.9);
+      --border: rgba(0,0,0,0.12);
+      --text: #1a1a2e;
+      --text-muted: rgba(0,0,0,0.5);
+      --input-bg: rgba(0,0,0,0.04);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg); overflow: hidden;
+    }
+    .bg-animated {
+      position: fixed; inset: 0; z-index: 0;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a4e, #0f2027);
+      background-size: 400% 400%;
+      animation: gradMove 15s ease infinite;
+    }
+    [data-theme="light"] .bg-animated {
+      background: linear-gradient(-45deg, #e0e7ff, #ddd6fe, #cffafe, #e0f2fe, #f0f9ff);
+      background-size: 400% 400%;
+    }
+    @keyframes gradMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.3; z-index: 0; animation: float 8s ease-in-out infinite; }
+    .orb-1 { width: 400px; height: 400px; background: #06b6d4; top: -100px; right: -100px; }
+    .orb-2 { width: 300px; height: 300px; background: #a78bfa; bottom: -80px; left: -80px; animation-delay: -4s; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
 
-    <script>
-      document.getElementById('register-form').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const email = document.getElementById('email').value;
-        const errorEl = document.getElementById('register-error');
-        const successEl = document.getElementById('register-success');
+    .login-card {
+      position: relative; z-index: 1;
+      background: var(--glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border); border-radius: 24px;
+      padding: 2.5rem 2.5rem; width: 100%; max-width: 420px; margin: 1rem;
+      animation: cardIn 0.6s ease;
+    }
+    @keyframes cardIn { from{opacity:0;transform:translateY(20px)scale(0.97)} to{opacity:1;transform:translateY(0)scale(1)} }
+    .brand { text-align: center; margin-bottom: 1.75rem; }
+    .brand-logo { font-size: 2.5rem; display: block; margin-bottom: 0.4rem; }
+    .brand h1 { font-size: 1.3rem; font-weight: 800; background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .brand p { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+    .form-group { margin-bottom: 1rem; position: relative; }
+    .form-group .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.5; }
+    .form-group input {
+      width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem;
+      background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px;
+      color: var(--text); font-size: 0.9rem; outline: none; transition: all 0.2s;
+    }
+    .form-group input::placeholder { color: var(--text-muted); }
+    .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,92,246,0.2); }
+    .form-group input.invalid { border-color: #ef4444; }
+    .form-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; padding-left: 2.75rem; }
+    .form-error { font-size: 0.7rem; color: #fca5a5; margin-top: 0.25rem; padding-left: 2.75rem; display: none; }
+    .submit-btn {
+      width: 100%; padding: 0.8rem; border: none; border-radius: 12px;
+      background: var(--gradient-accent); color: #fff; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.3s; margin-top: 0.5rem;
+    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(139,92,246,0.3); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .alt-link { text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted); }
+    .alt-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .alt-link a:hover { text-decoration: underline; }
+    .error-msg, .success-msg {
+      padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; margin-bottom: 1rem; display: none;
+    }
+    .error-msg { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+    .success-msg { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #86efac; }
+    .theme-corner {
+      position: fixed; top: 1rem; right: 1rem; z-index: 10;
+      background: var(--glass); border: 1px solid var(--border); border-radius: 10px;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.2rem; backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
 
-        errorEl.classList.add('hidden');
-        successEl.classList.add('hidden');
+  <button class="theme-corner" id="theme-toggle" onclick="toggleTheme()">🌙</button>
 
-        if (password !== confirmPassword) {
-          errorEl.textContent = 'Passwords do not match.';
-          errorEl.classList.remove('hidden');
-          return;
-        }
+  <div class="login-card">
+    <div class="brand">
+      <span class="brand-logo">∞</span>
+      <h1>Join the Weirdness</h1>
+      <p>Create your Infinitely Weird DevOps account</p>
+    </div>
 
-        if (!email.endsWith('@infinitelyweird.com')) {
-          errorEl.textContent = 'Email must be an @infinitelyweird.com address.';
-          errorEl.classList.remove('hidden');
-          return;
-        }
+    <div class="error-msg" id="error-msg"></div>
+    <div class="success-msg" id="success-msg"></div>
 
-        try {
-          const response = await fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password, email })
-          });
+    <form id="register-form" onsubmit="return handleRegister(event)">
+      <div class="form-group">
+        <span class="icon">👤</span>
+        <input type="text" id="username" placeholder="Username" required minlength="3" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <span class="icon">📧</span>
+        <input type="email" id="email" placeholder="Email" required autocomplete="email" />
+        <div class="form-hint">e.g. you@infinitelyweird.com</div>
+      </div>
+      <div class="form-group">
+        <span class="icon">🔒</span>
+        <input type="password" id="password" placeholder="Password" required minlength="6" autocomplete="new-password" />
+      </div>
+      <div class="form-group">
+        <span class="icon">🔒</span>
+        <input type="password" id="confirm" placeholder="Confirm Password" required autocomplete="new-password" />
+        <div class="form-error" id="match-error">Passwords don't match</div>
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn">Create Account</button>
+    </form>
 
-          if (response.ok) {
-            successEl.textContent = 'Registration submitted! Your account is pending administrator approval.';
-            successEl.classList.remove('hidden');
-            document.getElementById('register-form').reset();
-          } else {
-            const error = await response.json();
-            errorEl.textContent = error.message;
-            errorEl.classList.remove('hidden');
-          }
-        } catch (err) {
-          errorEl.textContent = 'Connection error. Please try again.';
-          errorEl.classList.remove('hidden');
-        }
-      });
-    </script>
-  </body>
+    <div class="alt-link">
+      Already have an account? <a href="login.html">Sign in</a>
+    </div>
+  </div>
+
+  <script>
+    if (localStorage.getItem('token')) window.location.href = 'index.html';
+
+    function getTheme() { return localStorage.getItem('theme') || 'dark'; }
+    function toggleTheme() {
+      const t = getTheme() === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', t);
+      document.documentElement.setAttribute('data-theme', t);
+      document.getElementById('theme-toggle').textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    document.documentElement.setAttribute('data-theme', getTheme());
+    document.getElementById('theme-toggle').textContent = getTheme() === 'dark' ? '🌙' : '☀️';
+
+    // Live validation
+    document.getElementById('confirm').addEventListener('input', function () {
+      const match = this.value === document.getElementById('password').value;
+      this.classList.toggle('invalid', !match && this.value.length > 0);
+      document.getElementById('match-error').style.display = (!match && this.value.length > 0) ? 'block' : 'none';
+    });
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const err = document.getElementById('error-msg');
+      const suc = document.getElementById('success-msg');
+      err.style.display = 'none';
+      suc.style.display = 'none';
+
+      const pw = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+      if (pw !== confirm) {
+        err.textContent = 'Passwords do not match';
+        err.style.display = 'block';
+        return false;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Creating account...';
+
+      try {
+        const res = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            password: pw
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || data.message || 'Registration failed');
+        suc.textContent = data.message || 'Account created! Redirecting to login...';
+        suc.style.display = 'block';
+        setTimeout(() => window.location.href = 'login.html', 1500);
+      } catch (ex) {
+        err.textContent = ex.message;
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+      return false;
+    }
+  </script>
+</body>
 </html>

@@ -28,6 +28,7 @@ app.use('/', require('./routes/taskRoute'));
 app.use('/', require('./routes/widgetRoute'));
 app.use('/', require('./routes/speedtestRoute'));
 app.use('/', require('./routes/network-security'));
+app.use('/', require('./routes/versionRoute'));
 
 // Default route
 app.get('/', (req, res) => {

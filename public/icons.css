@@ -1,0 +1,51 @@
+/* ============================================
+   Infinitely Weird DevOps Dashboard — Icons
+   CSS-only icons via Unicode/Emoji
+   ============================================ */
+
+[class^="icon-"]::before,
+[class*=" icon-"]::before {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-size: 1.1em;
+  vertical-align: middle;
+  margin-right: 0.4em;
+}
+
+.icon-dashboard::before  { content: "⊞"; }
+.icon-tasks::before      { content: "☑"; }
+.icon-projects::before   { content: "◈"; }
+.icon-deploy::before     { content: "⬆"; }
+.icon-network::before    { content: "⛓"; }
+.icon-security::before   { content: "⛨"; }
+.icon-settings::before   { content: "⚙"; }
+.icon-users::before      { content: "♟"; }
+.icon-search::before     { content: "⌕"; }
+.icon-bell::before       { content: "🔔"; }
+.icon-sun::before        { content: "☀"; }
+.icon-moon::before       { content: "☾"; }
+.icon-chevron::before    { content: "›"; }
+.icon-plus::before       { content: "+"; }
+.icon-edit::before       { content: "✎"; }
+.icon-trash::before      { content: "🗑"; }
+.icon-check::before      { content: "✓"; }
+.icon-x-close::before    { content: "✕"; }
+.icon-filter::before     { content: "⧩"; }
+.icon-chart::before      { content: "◩"; }
+.icon-server::before     { content: "⬚"; }
+.icon-shield::before     { content: "⛊"; }
+.icon-clock::before      { content: "◷"; }
+.icon-tag::before        { content: "⏏"; }
+.icon-folder::before     { content: "📁"; }
+
+/* Directional chevron variants */
+.icon-chevron-down::before  { content: "›"; transform: rotate(90deg); }
+.icon-chevron-up::before    { content: "›"; transform: rotate(-90deg); }
+.icon-chevron-left::before  { content: "‹"; }
+
+/* Trend arrows for KPI cards */
+.icon-trend-up::before   { content: "↑"; color: var(--color-success); font-weight: 700; }
+.icon-trend-down::before { content: "↓"; color: var(--color-danger); font-weight: 700; }

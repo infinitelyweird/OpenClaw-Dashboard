@@ -1,94 +1,185 @@
-// nav.js — shared navigation bar component
-// Include via <script src="nav.js"></script> on every authenticated page
-
+// nav.js — Shared navigation logic for Infinitely Weird DevOps Dashboard
 (function () {
-  const token = localStorage.getItem('token');
-  if (!token) { window.location.href = '/login.html'; return; }
+  'use strict';
 
-  // Decode JWT for user info
-  function parseJwt(t) {
-    try { return JSON.parse(atob(t.split('.')[1])); } catch { return {}; }
+  // ── JWT helpers ──
+  function getToken() { return localStorage.getItem('token'); }
+
+  function parseJwt(token) {
+    try {
+      const b = token.split('.')[1];
+      return JSON.parse(atob(b.replace(/-/g, '+').replace(/_/g, '/')));
+    } catch { return null; }
   }
-  const user = parseJwt(token);
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-  function isActive(page) { return currentPage === page ? 'active' : ''; }
+  function getUser() {
+    const t = getToken();
+    if (!t) return null;
+    const payload = parseJwt(t);
+    if (!payload) return null;
+    return {
+      username: payload.username || payload.sub || 'User',
+      roles: payload.roles || [],
+      userId: payload.userId || payload.id
+    };
+  }
 
-  // Build nav items
+  function requireAuth() {
+    if (!getToken()) { window.location.href = 'login.html'; return false; }
+    return true;
+  }
+
+  // ── Theme ──
+  function getTheme() { return localStorage.getItem('theme') || 'dark'; }
+  function setTheme(t) {
+    localStorage.setItem('theme', t);
+    document.documentElement.setAttribute('data-theme', t);
+  }
+  function toggleTheme() {
+    const next = getTheme() === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
+  }
+
+  // ── Active page ──
+  function currentPage() {
+    const p = window.location.pathname.split('/').pop() || 'index.html';
+    return p;
+  }
+
+  // ── Nav items ──
   const navItems = [
-    { href: 'index.html', icon: '📊', label: 'Dashboard' },
-    { href: 'tasks.html', icon: '✅', label: 'Tasks' },
+    { icon: '🏠', label: 'Dashboard', href: 'index.html' },
+    { icon: '📋', label: 'Tasks', href: 'tasks.html' },
+    { icon: '📁', label: 'Projects', href: 'projects.html' },
+    { icon: '🚀', label: 'Deployments', href: 'deployments.html' },
+    { icon: '🖥️', label: 'Systems', href: 'systems.html' },
+    { icon: '🌐', label: 'Network', href: 'network.html' },
+    { icon: '🛡️', label: 'Security', href: 'security.html' },
+    { icon: '👥', label: 'Admin', href: 'admin.html', adminOnly: true },
+    { icon: '👤', label: 'Profile', href: 'profile.html' },
   ];
-  if (user.isAdmin) {
-    navItems.push({ href: 'admin.html', icon: '⚙️', label: 'Admin' });
-  }
 
-  const nav = document.createElement('nav');
-  nav.className = 'nav-bar';
-  nav.innerHTML = `
-    <a href="index.html" class="nav-brand"><span>Infinitely Weird</span> DevOps</a>
-    <button class="nav-hamburger" id="nav-hamburger">☰</button>
-    <ul class="nav-links" id="nav-links">
-      ${navItems.map(item => `<li><a href="${item.href}" class="${isActive(item.href)}">${item.icon} ${item.label}</a></li>`).join('')}
-    </ul>
-    <div class="nav-right">
-      <div style="position:relative;" id="nav-user-wrapper">
-        <div id="nav-avatar-trigger"></div>
-        <div class="nav-user-menu" id="nav-user-menu" style="display:none;">
-          <div class="user-info-header">
-            <strong id="nav-display-name">${user.username}</strong>
-            <small>${user.username}</small>
-          </div>
-          <a href="profile.html">👤 My Profile</a>
-          <a href="profile.html#password">🔒 Change Password</a>
-          <div class="menu-divider"></div>
-          <a href="#" id="nav-logout">🚪 Sign Out</a>
+  // ── Inject shell ──
+  function injectShell() {
+    const user = getUser();
+    const page = currentPage();
+    const isAdmin = user && user.roles && user.roles.includes('admin');
+    const initials = user ? user.username.slice(0, 2).toUpperCase() : '??';
+    const theme = getTheme();
+
+    const navLinks = navItems
+      .filter(n => !n.adminOnly || isAdmin)
+      .map(n => `<a href="${n.href}" class="${page === n.href ? 'active' : ''}"><span class="nav-icon">${n.icon}</span>${n.label}</a>`)
+      .join('');
+
+    // Create sidebar
+    const sidebar = document.createElement('aside');
+    sidebar.className = 'sidebar';
+    sidebar.id = 'sidebar';
+    sidebar.innerHTML = `
+      <div class="sidebar-brand">
+        <span class="brand-icon">∞</span>
+        <span>Infinitely Weird</span>
+      </div>
+      <nav class="sidebar-nav">${navLinks}</nav>
+      <div class="sidebar-footer">v1.0.0 · Made with 🤯</div>
+    `;
+
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    overlay.id = 'sidebar-overlay';
+    overlay.onclick = () => closeSidebar();
+
+    // Create header
+    const header = document.createElement('header');
+    header.className = 'header-bar';
+    header.innerHTML = `
+      <div class="header-left">
+        <button class="mobile-toggle" id="mobile-toggle" onclick="window.__toggleSidebar()">☰</button>
+        <div class="header-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" placeholder="Search anything..." />
         </div>
       </div>
-    </div>
-  `;
+      <div class="header-right">
+        <button class="header-btn" id="theme-toggle" onclick="window.__toggleTheme()" title="Toggle theme">${theme === 'dark' ? '🌙' : '☀️'}</button>
+        <button class="header-btn" title="Notifications">🔔<span class="badge"></span></button>
+        <div class="user-info" onclick="window.location.href='profile.html'">
+          <div class="user-avatar">${initials}</div>
+          <span class="user-name">${user ? user.username : 'Guest'}</span>
+        </div>
+      </div>
+    `;
 
-  document.body.insertBefore(nav, document.body.firstChild);
+    // Wrap existing content
+    const body = document.body;
+    const existingContent = document.getElementById('page-content');
 
-  // Load avatar
-  fetch('/api/profile', { headers: { 'Authorization': `Bearer ${token}` } })
-    .then(r => r.json())
-    .then(profile => {
-      const trigger = document.getElementById('nav-avatar-trigger');
-      const displayName = document.getElementById('nav-display-name');
-      if (profile.DisplayName) displayName.textContent = profile.DisplayName;
-      if (profile.AvatarPath) {
-        trigger.innerHTML = `<img src="${profile.AvatarPath}" class="nav-avatar" alt="Avatar" />`;
-      } else {
-        const initials = (profile.DisplayName || profile.Username || '?').substring(0, 2).toUpperCase();
-        trigger.innerHTML = `<div class="nav-avatar-placeholder">${initials}</div>`;
-      }
-    })
-    .catch(() => {
-      const trigger = document.getElementById('nav-avatar-trigger');
-      const initials = (user.username || '?').substring(0, 2).toUpperCase();
-      trigger.innerHTML = `<div class="nav-avatar-placeholder">${initials}</div>`;
-    });
+    // Build layout
+    const layout = document.createElement('div');
+    layout.className = 'app-layout';
 
-  // Toggle user menu
-  document.getElementById('nav-avatar-trigger').addEventListener('click', (e) => {
-    e.stopPropagation();
-    const menu = document.getElementById('nav-user-menu');
-    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-  });
-  document.addEventListener('click', () => {
-    document.getElementById('nav-user-menu').style.display = 'none';
-  });
+    const main = document.createElement('main');
+    main.className = 'main-content';
+    main.appendChild(header);
 
-  // Hamburger toggle
-  document.getElementById('nav-hamburger').addEventListener('click', () => {
-    document.getElementById('nav-links').classList.toggle('open');
-  });
+    if (existingContent) {
+      existingContent.classList.add('page-content');
+      main.appendChild(existingContent);
+    }
 
-  // Logout
-  document.getElementById('nav-logout').addEventListener('click', (e) => {
-    e.preventDefault();
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-  });
+    layout.appendChild(sidebar);
+    layout.appendChild(overlay);
+    layout.appendChild(main);
+
+    body.prepend(layout);
+
+    // Apply theme
+    setTheme(theme);
+  }
+
+  // ── Sidebar toggle ──
+  function openSidebar() {
+    document.getElementById('sidebar')?.classList.add('open');
+    document.getElementById('sidebar-overlay')?.classList.add('active');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar')?.classList.remove('open');
+    document.getElementById('sidebar-overlay')?.classList.remove('active');
+  }
+
+  // ── Expose globals ──
+  window.__toggleTheme = toggleTheme;
+  window.__toggleSidebar = function () {
+    const s = document.getElementById('sidebar');
+    s?.classList.contains('open') ? closeSidebar() : openSidebar();
+  };
+
+  // ── API helper ──
+  window.apiFetch = async function (url, opts = {}) {
+    const token = getToken();
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(url, { ...opts, headers });
+    if (res.status === 401) { localStorage.removeItem('token'); window.location.href = 'login.html'; return null; }
+    return res;
+  };
+
+  // ── Init ──
+  function init() {
+    // Only inject shell on authenticated pages (not login/register)
+    const page = currentPage();
+    if (page === 'login.html' || page === 'register.html') return;
+    if (!requireAuth()) return;
+    injectShell();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
