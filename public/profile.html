@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="loader.css" />
   <link rel="stylesheet" href="tooltips.css" />
+  <link rel="stylesheet" href="password-utils.css" />
   <style>
     /* Profile-specific styles using design system variables */
     .profile-page { max-width: 800px; margin: 0 auto; }
@@ -133,10 +134,6 @@
     }
     .form-group input:focus { border-color: var(--border-input-focus); }
 
-    .pw-requirements { display: none; padding: 0.4rem 0 0; font-size: 0.75rem; line-height: 1.6; }
-    .pw-requirements.visible { display: block; }
-    .pw-req { color: var(--text-muted); transition: color var(--duration); }
-    .pw-req.met { color: var(--color-success); }
     .pw-match-error { font-size: 0.75rem; color: var(--color-danger); margin-top: 0.25rem; display: none; }
 
     /* Buttons */
@@ -290,12 +287,6 @@
         <div class="form-group">
           <label>New Password</label>
           <input type="password" id="newPw" placeholder="Min 8 characters" />
-          <div class="pw-requirements" id="pw-requirements">
-            <div class="pw-req" id="req-length">✗ At least 8 characters</div>
-            <div class="pw-req" id="req-upper">✗ Contains uppercase letter</div>
-            <div class="pw-req" id="req-lower">✗ Contains lowercase letter</div>
-            <div class="pw-req" id="req-number">✗ Contains a number</div>
-          </div>
         </div>
         <div class="form-group">
           <label>Confirm New Password</label>
@@ -324,6 +315,7 @@
 
   <script src="loader.js"></script>
   <script src="tooltips.js"></script>
+  <script src="password-utils.js"></script>
   <script>
     // Safety: ensure loader hides even if something goes wrong
     window.addEventListener('load', () => { setTimeout(() => { if (typeof AppLoader !== 'undefined') AppLoader.hide(); }, 5000); });
@@ -457,40 +449,23 @@
     // Password requirements — admins need 13+ chars
     const newPwInput = document.getElementById('newPw');
     const confirmPwInput = document.getElementById('confirmPw');
-    const preqsDiv = document.getElementById('pw-requirements');
     const isAdmin = (() => { try { return JSON.parse(atob(TOKEN.split('.')[1])).isAdmin; } catch { return false; } })();
     const minPwLen = isAdmin ? 13 : 8;
-    document.getElementById('req-length').textContent = `✗ At least ${minPwLen} characters`;
     newPwInput.placeholder = `Min ${minPwLen} characters`;
-    const preqs = {
-      length: { el: document.getElementById('req-length'), test: v => v.length >= minPwLen },
-      upper:  { el: document.getElementById('req-upper'),  test: v => /[A-Z]/.test(v) },
-      lower:  { el: document.getElementById('req-lower'),  test: v => /[a-z]/.test(v) },
-      number: { el: document.getElementById('req-number'), test: v => /[0-9]/.test(v) },
-    };
-    function checkPwReqs() {
-      const v = newPwInput.value;
-      let allMet = true;
-      for (const k in preqs) {
-        const met = preqs[k].test(v);
-        preqs[k].el.classList.toggle('met', met);
-        preqs[k].el.textContent = (met ? '✓ ' : '✗ ') + preqs[k].el.textContent.slice(2);
-        if (!met) allMet = false;
-      }
-      return allMet;
-    }
-    newPwInput.addEventListener('focus', () => preqsDiv.classList.add('visible'));
-    newPwInput.addEventListener('input', checkPwReqs);
-    confirmPwInput.addEventListener('input', function() {
-      document.getElementById('pw-match-error').style.display =
-        (this.value.length > 0 && this.value !== newPwInput.value) ? 'block' : 'none';
+
+    // Password UI — auto-attaches meter, requirements, and generator
+    const pwUI = PasswordUtils.attachPasswordUI({
+      inputEl: newPwInput,
+      minLength: minPwLen,
+      confirmEl: confirmPwInput,
+      confirmErrorEl: document.getElementById('pw-match-error')
     });
 
     async function changePassword() {
       const current = document.getElementById('currentPw').value;
       const newPw = newPwInput.value;
       const confirm = confirmPwInput.value;
-      if (!checkPwReqs()) return showMsg('Password does not meet all requirements', 'error');
+      if (!pwUI.checkAll()) return showMsg('Password does not meet all requirements', 'error');
       if (newPw !== confirm) return showMsg("Passwords don't match! 🤔", 'error');
       try {
         const r = await fetch('/api/profile/change-password', { method: 'POST', headers: H(), body: JSON.stringify({ currentPassword: current, newPassword: newPw }) });

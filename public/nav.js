@@ -93,7 +93,10 @@
         <span>Infinitely Weird</span>
       </div>
       <nav class="sidebar-nav">${navLinks}</nav>
-      <div class="sidebar-footer">v1.0.0 · Made with 🤯</div>
+      <div class="sidebar-version">
+        <span class="version-number">v0.4.0</span>
+        <span class="version-tag">Alpha4</span>
+      </div>
     `;
 
     // Create overlay

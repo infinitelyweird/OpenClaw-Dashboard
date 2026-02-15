@@ -1,0 +1,1 @@
+openclaw gateway --token 818eb9bcc8d566316ce2899b70f0c0b39ce34c7ac40d12e6

@@ -21,7 +21,8 @@ const registerRules = [
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters.')
     .matches(/[A-Z]/).withMessage('Password needs an uppercase letter.')
     .matches(/[a-z]/).withMessage('Password needs a lowercase letter.')
-    .matches(/[0-9]/).withMessage('Password needs a number.'),
+    .matches(/[0-9]/).withMessage('Password needs a number.')
+    .matches(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/).withMessage('Password needs a special character.'),
   handleValidation
 ];
 
@@ -41,6 +42,7 @@ const changePasswordRules = [
     .matches(/[A-Z]/).withMessage('Password needs an uppercase letter.')
     .matches(/[a-z]/).withMessage('Password needs a lowercase letter.')
     .matches(/[0-9]/).withMessage('Password needs a number.')
+    .matches(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/).withMessage('Password needs a special character.')
     .custom((value, { req }) => {
       const minLen = req.user && req.user.isAdmin ? 13 : 8;
       if (value.length < minLen) {

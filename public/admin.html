@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="loader.css" />
   <link rel="stylesheet" href="tooltips.css" />
+  <link rel="stylesheet" href="password-utils.css" />
   <style>
     /* Admin-specific layout — uses design system vars only */
     .admin-tabs { display:flex; gap:4px; margin-bottom:1.5rem; background:var(--bg-glass); padding:4px; border-radius:var(--radius-md); border:1px solid var(--border-glass); overflow-x:auto; backdrop-filter:blur(var(--blur)); }
@@ -269,6 +270,7 @@
 
   <script src="loader.js"></script>
   <script src="tooltips.js"></script>
+  <script src="password-utils.js"></script>
   <script>
     const TOKEN = localStorage.getItem('token');
     const H = () => ({ 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' });
@@ -376,11 +378,23 @@
     }
 
     // Reset password
+    let _pwUtilsAttached = false;
     function openResetPwModal(id) {
       document.getElementById('resetPwUserId').value = id;
       document.getElementById('resetPwInput').value = '';
       document.getElementById('resetPwConfirm').value = '';
       openModal('resetPwModal');
+      // Attach PasswordUtils
+      if (!_pwUtilsAttached && typeof PasswordUtils !== 'undefined') {
+        const user = allUsers.find(u => u.UserID === id);
+        const isAdmin = user && (user.Roles || '').split(', ').some(r => r.trim() === 'Administrator');
+        PasswordUtils.attachPasswordUI({
+          inputEl: document.getElementById('resetPwInput'),
+          minLength: isAdmin ? 13 : 8,
+          confirmEl: document.getElementById('resetPwConfirm')
+        });
+        _pwUtilsAttached = true;
+      }
     }
     async function resetPassword() {
       const id = document.getElementById('resetPwUserId').value;

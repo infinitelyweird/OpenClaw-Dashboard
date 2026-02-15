@@ -83,12 +83,33 @@
   text-align: center;
 }
 
-.sidebar-footer {
-  padding: 1rem;
-  border-top: 1px solid var(--border, rgba(255,255,255,0.1));
-  font-size: 0.75rem;
-  color: var(--text-muted, rgba(255,255,255,0.4));
-  text-align: center;
+.sidebar-version {
+  padding: 1rem 1.25rem;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.7rem;
+  color: var(--text-muted, #64748b);
+  border-top: 1px solid var(--border-glass, rgba(148,163,184,0.12));
+}
+
+.version-number {
+  font-family: 'Space Grotesk', monospace;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.version-tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent, #a78bfa);
+  background: rgba(124,58,237,0.1);
+  padding: 0.1rem 0.5rem;
+  border-radius: 4px;
 }
 
 /* Main content area */
