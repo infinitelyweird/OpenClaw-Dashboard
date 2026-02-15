@@ -94,8 +94,8 @@
       </div>
       <nav class="sidebar-nav">${navLinks}</nav>
       <div class="sidebar-version">
-        <span class="version-number">v0.5.0</span>
-        <span class="version-tag">Alpha5</span>
+        <span class="version-number">v0.6.0</span>
+        <span class="version-tag">Alpha6</span>
       </div>
     `;
 
