@@ -6,62 +6,119 @@
   <title>Admin - Infinitely Weird DevOps</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="loader.css" />
+  <link rel="stylesheet" href="tooltips.css" />
   <style>
-    :root{--glass:rgba(255,255,255,0.06);--glass-hover:rgba(255,255,255,0.1);--border:rgba(255,255,255,0.12);--text:#f0f0f0;--muted:rgba(255,255,255,0.5);--accent:#34d399;--accent-2:rgba(52,211,153,0.15);--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;--purple:#a78bfa}
-    *{box-sizing:border-box}body{font-family:'Inter',sans-serif;margin:0;padding:0;min-height:100vh;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);color:var(--text)}.gradient-bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%)}
-    main{max-width:1400px;margin:0 auto;padding:1rem 1.5rem 3rem}
-    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}.page-header h1{font-family:'Space Grotesk',sans-serif;font-size:2rem;margin:0}.page-header h1 span{color:var(--accent)}.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted);margin-bottom:.2rem}
-    .btn{padding:.5rem 1.2rem;border-radius:10px;border:none;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem}.btn-primary{background:var(--accent);color:#0f172a}.btn-primary:hover{background:#6ee7b7}.btn-ghost{background:var(--glass);color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{background:var(--glass-hover)}.btn-danger{background:rgba(248,113,113,.15);color:var(--danger);border:1px solid rgba(248,113,113,.3)}.btn-danger:hover{background:rgba(248,113,113,.25)}.btn-sm{padding:.3rem .7rem;font-size:.75rem}.btn-approve{background:rgba(52,211,153,.15);color:var(--accent);border:1px solid rgba(52,211,153,.3)}.btn-approve:hover{background:rgba(52,211,153,.25)}
-    .glass-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(14px);padding:1.2rem;transition:all .25s}
+    /* Admin-specific layout — uses design system vars only */
+    .admin-tabs { display:flex; gap:4px; margin-bottom:1.5rem; background:var(--bg-glass); padding:4px; border-radius:var(--radius-md); border:1px solid var(--border-glass); overflow-x:auto; backdrop-filter:blur(var(--blur)); }
+    .admin-tab { padding:.55rem 1.2rem; border-radius:var(--radius-sm); border:none; background:transparent; color:var(--text-muted); font-family:'Inter',sans-serif; font-size:.85rem; font-weight:600; cursor:pointer; transition:all var(--duration) var(--ease); white-space:nowrap; }
+    .admin-tab.active { background:rgba(167,139,250,0.15); color:var(--color-accent); }
+    .admin-tab:hover:not(.active) { color:var(--text-primary); background:var(--bg-glass-hover); }
+    .tab-panel { display:none; } .tab-panel.active { display:block; }
 
-    /* Tabs */
-    .tabs{display:flex;gap:.3rem;margin-bottom:1.5rem;background:var(--glass);padding:.3rem;border-radius:12px;border:1px solid var(--border);overflow-x:auto}
-    .tab{padding:.5rem 1.2rem;border-radius:10px;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
-    .tab.active{background:var(--accent-2);color:var(--accent)}
-    .tab:hover:not(.active){color:var(--text)}
-    .tab-content{display:none}.tab-content.active{display:block}
+    /* Glass card */
+    .a-card { background:var(--bg-glass); border:1px solid var(--border-glass); border-radius:var(--radius-lg); backdrop-filter:blur(var(--blur)); padding:1.25rem; transition:all var(--duration) var(--ease); }
+    .a-card:hover { border-color:var(--border-glass-hover); }
 
-    /* Pending approvals */
-    .pending-section{margin-bottom:2rem}.pending-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.8rem}
-    .pending-card{display:flex;align-items:center;gap:1rem;padding:1rem}
-    .pending-avatar{width:42px;height:42px;border-radius:50%;background:rgba(251,191,36,.15);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:600;flex-shrink:0}
-    .pending-info{flex:1;min-width:0}.pending-info .name{font-weight:600;font-size:.9rem}.pending-info .email{font-size:.75rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .pending-actions{display:flex;gap:.4rem}
+    /* Section title */
+    .sec-title { font-family:'Space Grotesk',sans-serif; font-size:1.1rem; color:var(--text-primary); margin:1.5rem 0 .8rem; display:flex; align-items:center; gap:.5rem; }
+
+    /* Pending */
+    .pending-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:.75rem; margin-bottom:1.5rem; }
+    .pending-card { display:flex; align-items:center; gap:1rem; }
+    .pending-avatar { width:44px; height:44px; border-radius:50%; background:var(--color-warning-bg); display:flex; align-items:center; justify-content:center; font-size:1.1rem; font-weight:700; color:var(--color-warning); flex-shrink:0; }
+    .pending-info { flex:1; min-width:0; }
+    .pending-info .name { font-weight:600; font-size:.9rem; color:var(--text-primary); }
+    .pending-info .email { font-size:.75rem; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .pending-actions { display:flex; gap:.4rem; }
 
     /* User table */
-    .user-table{width:100%;border-collapse:collapse;font-size:.82rem}
-    .user-table th{text-align:left;color:var(--muted);font-weight:500;padding:.6rem .8rem;border-bottom:1px solid var(--border);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
-    .user-table td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
-    .user-table tr:hover td{background:rgba(255,255,255,.03)}
-    .user-avatar{width:30px;height:30px;border-radius:50%;background:var(--glass-hover);display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:600;margin-right:.5rem;vertical-align:middle}
-    .badge{display:inline-block;padding:.15rem .55rem;border-radius:6px;font-size:.7rem;font-weight:600;text-transform:uppercase}.badge-approved{background:rgba(52,211,153,.2);color:#6ee7b7}.badge-pending{background:rgba(251,191,36,.2);color:#fcd34d}
-    .role-chip{display:inline-block;padding:.1rem .4rem;border-radius:5px;font-size:.68rem;background:rgba(167,139,250,.15);color:#c4b5fd;margin-right:.2rem}
-    .action-btns{display:flex;gap:.3rem;flex-wrap:wrap}
+    .u-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+    .u-table th { text-align:left; color:var(--text-muted); font-weight:500; padding:.65rem .8rem; border-bottom:1px solid var(--border-glass); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
+    .u-table td { padding:.65rem .8rem; border-bottom:1px solid rgba(148,163,184,0.06); vertical-align:middle; color:var(--text-primary); }
+    .u-table tr:hover td { background:var(--bg-glass-hover); }
+    .u-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--color-accent),var(--color-info)); display:inline-flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:700; color:#fff; margin-right:.5rem; vertical-align:middle; }
 
-    /* Roles/Groups/Perms lists */
-    .entity-list{display:flex;flex-direction:column;gap:.5rem}
-    .entity-item{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1rem;flex-wrap:wrap;gap:.5rem}
-    .entity-name{font-weight:600;font-size:.9rem}
-    .entity-meta{font-size:.78rem;color:var(--muted)}
-    .add-row{display:flex;gap:.5rem;margin-bottom:1rem}
-    .add-row input{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:.45rem .8rem;border-radius:8px;font-family:inherit;font-size:.82rem;outline:none}
+    /* Badges */
+    .badge { display:inline-block; padding:.15rem .55rem; border-radius:6px; font-size:.7rem; font-weight:600; text-transform:uppercase; }
+    .badge-active { background:var(--color-success-bg); color:var(--color-success); }
+    .badge-pending { background:var(--color-warning-bg); color:var(--color-warning); }
+    .badge-count { background:var(--color-warning-bg); color:var(--color-warning); font-size:.8rem; padding:.1rem .5rem; border-radius:6px; font-weight:700; }
+
+    /* Pills */
+    .role-pill { display:inline-block; padding:.12rem .45rem; border-radius:5px; font-size:.7rem; font-weight:600; background:rgba(167,139,250,0.15); color:var(--color-accent); margin:1px 2px; }
+    .group-tag { display:inline-block; padding:.12rem .45rem; border-radius:5px; font-size:.7rem; font-weight:600; background:rgba(52,211,153,0.15); color:var(--color-success); margin:1px 2px; }
+
+    /* Buttons */
+    .btn { padding:.45rem 1rem; border-radius:var(--radius-sm); border:none; font-family:'Inter',sans-serif; font-size:.82rem; font-weight:600; cursor:pointer; transition:all var(--duration) var(--ease); display:inline-flex; align-items:center; gap:.35rem; }
+    .btn-primary { background:var(--color-accent); color:var(--text-inverse); }
+    .btn-primary:hover { filter:brightness(1.1); }
+    .btn-ghost { background:var(--bg-glass); color:var(--text-primary); border:1px solid var(--border-glass); }
+    .btn-ghost:hover { background:var(--bg-glass-hover); border-color:var(--border-glass-hover); }
+    .btn-danger { background:var(--color-danger-bg); color:var(--color-danger); border:1px solid rgba(248,113,113,0.3); }
+    .btn-danger:hover { background:rgba(248,113,113,0.25); }
+    .btn-success { background:var(--color-success-bg); color:var(--color-success); border:1px solid rgba(52,211,153,0.3); }
+    .btn-success:hover { background:rgba(52,211,153,0.25); }
+    .btn-sm { padding:.3rem .65rem; font-size:.75rem; }
+    .btn-xs { padding:.2rem .45rem; font-size:.7rem; }
+    .action-btns { display:flex; gap:.3rem; flex-wrap:wrap; }
+
+    /* Add row */
+    .add-row { display:flex; gap:.5rem; margin-bottom:1rem; }
+    .add-row input { flex:1; background:var(--bg-glass-input); border:1px solid var(--border-input); color:var(--text-primary); padding:.5rem .8rem; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:.82rem; outline:none; transition:border-color var(--duration); }
+    .add-row input:focus { border-color:var(--border-input-focus); box-shadow:0 0 0 3px rgba(167,139,250,0.15); }
+
+    /* Entity list */
+    .entity-list { display:flex; flex-direction:column; gap:.5rem; }
+    .entity-item { display:flex; align-items:center; justify-content:space-between; padding:.85rem 1rem; flex-wrap:wrap; gap:.5rem; }
+    .entity-name { font-weight:600; font-size:.9rem; color:var(--text-primary); }
+    .entity-meta { font-size:.78rem; color:var(--text-muted); margin-top:.15rem; }
 
     /* Modal */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}.modal-overlay.open{opacity:1;pointer-events:all}.modal{background:rgba(20,20,35,.97);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:600px;width:90%;max-height:85vh;overflow-y:auto}.modal h2{font-family:'Space Grotesk',sans-serif;margin:0 0 1.2rem;font-size:1.3rem}.modal label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:.3rem;margin-top:.8rem}.modal input,.modal select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:.5rem .8rem;border-radius:8px;font-family:inherit;font-size:.85rem;outline:none}.modal select option{background:#1e1b4b}.modal-actions{display:flex;gap:.6rem;justify-content:flex-end;margin-top:1.5rem}
+    .modal-overlay { position:fixed; inset:0; background:var(--bg-overlay); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:300; opacity:0; pointer-events:none; transition:opacity .25s var(--ease); }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal { background:rgba(15,23,42,0.97); border:1px solid var(--border-glass); border-radius:var(--radius-xl); padding:2rem; max-width:600px; width:92%; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow-lg); }
+    .modal h2 { font-family:'Space Grotesk',sans-serif; margin:0 0 1.2rem; font-size:1.25rem; color:var(--text-primary); }
+    .modal label { display:block; font-size:.8rem; color:var(--text-muted); margin-bottom:.3rem; margin-top:.8rem; }
+    .modal input, .modal select { width:100%; background:var(--bg-glass-input); border:1px solid var(--border-input); color:var(--text-primary); padding:.5rem .8rem; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:.85rem; outline:none; }
+    .modal input:focus, .modal select:focus { border-color:var(--border-input-focus); box-shadow:0 0 0 3px rgba(167,139,250,0.15); }
+    .modal-actions { display:flex; gap:.6rem; justify-content:flex-end; margin-top:1.5rem; }
 
-    .section-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;margin:1.5rem 0 .8rem;display:flex;align-items:center;gap:.5rem}
-    .empty-state{text-align:center;padding:2rem;color:var(--muted)}.empty-state .empty-icon{font-size:2.5rem;margin-bottom:.5rem}
-    @media(max-width:768px){.user-table{font-size:.75rem}.pending-grid{grid-template-columns:1fr}}
+    /* Checklist in modals */
+    .check-list { display:flex; flex-direction:column; gap:.35rem; max-height:350px; overflow-y:auto; }
+    .check-item { display:flex; align-items:center; gap:.6rem; padding:.5rem .7rem; border-radius:var(--radius-sm); transition:background var(--duration); cursor:pointer; }
+    .check-item:hover { background:var(--bg-glass-hover); }
+    .check-item input[type=checkbox] { accent-color:var(--color-accent); width:16px; height:16px; cursor:pointer; }
+    .check-item .check-label { font-size:.85rem; color:var(--text-primary); font-weight:500; }
+
+    /* Audit table */
+    .audit-table { width:100%; border-collapse:collapse; font-size:.8rem; }
+    .audit-table th { text-align:left; color:var(--text-muted); font-weight:500; padding:.6rem .7rem; border-bottom:1px solid var(--border-glass); font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; }
+    .audit-table td { padding:.55rem .7rem; border-bottom:1px solid rgba(148,163,184,0.06); color:var(--text-secondary); vertical-align:top; }
+    .audit-table tr:hover td { background:var(--bg-glass-hover); }
+    .audit-action { display:inline-block; padding:.12rem .4rem; border-radius:4px; font-size:.68rem; font-weight:600; background:var(--color-info-bg); color:var(--color-info); text-transform:uppercase; }
+    .audit-filter { display:flex; gap:.5rem; margin-bottom:1rem; flex-wrap:wrap; align-items:center; }
+    .audit-filter select { background:var(--bg-glass-input); border:1px solid var(--border-input); color:var(--text-primary); padding:.45rem .8rem; border-radius:var(--radius-sm); font-family:'Inter',sans-serif; font-size:.82rem; outline:none; }
+
+    .empty-state { text-align:center; padding:2.5rem; color:var(--text-muted); }
+    .empty-state .empty-icon { font-size:2.5rem; margin-bottom:.5rem; }
+
+    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem; }
+    .page-header h1 { font-family:'Space Grotesk',sans-serif; font-size:2rem; margin:0; color:var(--text-primary); }
+    .page-header h1 span { background:var(--gradient-brand-horizontal); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .eyebrow { font-size:.72rem; text-transform:uppercase; letter-spacing:.15em; color:var(--text-muted); margin-bottom:.2rem; }
+
+    @media(max-width:768px) { .u-table { font-size:.75rem; } .pending-grid { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <div class="gradient-bg"></div>
+  <div class="gradient-bg" style="position:fixed;inset:0;z-index:-1;background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%)"></div>
   <script src="nav.js"></script>
-  <main>
+
+  <div id="page-content">
     <div class="page-header">
       <div>
         <p class="eyebrow">Administration</p>
@@ -69,47 +126,77 @@
       </div>
     </div>
 
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('users')">👥 Users</button>
-      <button class="tab" onclick="switchTab('roles')">🎭 Roles</button>
-      <button class="tab" onclick="switchTab('groups')">📁 Groups</button>
-      <button class="tab" onclick="switchTab('permissions')">🔐 Permissions</button>
+    <div class="admin-tabs" id="adminTabs">
+      <button class="admin-tab active" data-tab="users">👥 Users</button>
+      <button class="admin-tab" data-tab="roles">🎭 Roles</button>
+      <button class="admin-tab" data-tab="groups">📁 Groups</button>
+      <button class="admin-tab" data-tab="permissions">🔐 Permissions</button>
+      <button class="admin-tab" data-tab="audit">📋 Audit Log</button>
     </div>
 
-    <!-- USERS TAB -->
-    <div class="tab-content active" id="tab-users">
-      <div class="pending-section" id="pendingSection"></div>
-      <div class="glass-card" style="overflow-x:auto">
-        <table class="user-table">
+    <!-- ═══ USERS TAB ═══ -->
+    <div class="tab-panel active" id="tab-users">
+      <div id="pendingSection"></div>
+      <div class="a-card" style="overflow-x:auto">
+        <table class="u-table">
           <thead><tr><th>User</th><th>Email</th><th>Status</th><th>Roles</th><th>Groups</th><th>Joined</th><th>Actions</th></tr></thead>
           <tbody id="userTableBody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ROLES TAB -->
-    <div class="tab-content" id="tab-roles">
-      <div class="add-row"><input type="text" id="newRoleName" placeholder="New role name..." /><button class="btn btn-primary btn-sm" onclick="createRole()">+ Add Role</button></div>
+    <!-- ═══ ROLES TAB ═══ -->
+    <div class="tab-panel" id="tab-roles">
+      <div class="add-row">
+        <input type="text" id="newRoleName" placeholder="New role name..." />
+        <button class="btn btn-primary btn-sm" onclick="createRole()">+ Add Role</button>
+      </div>
       <div class="entity-list" id="roleList"></div>
     </div>
 
-    <!-- GROUPS TAB -->
-    <div class="tab-content" id="tab-groups">
-      <div class="add-row"><input type="text" id="newGroupName" placeholder="New group name..." /><button class="btn btn-primary btn-sm" onclick="createGroup()">+ Add Group</button></div>
+    <!-- ═══ GROUPS TAB ═══ -->
+    <div class="tab-panel" id="tab-groups">
+      <div class="add-row">
+        <input type="text" id="newGroupName" placeholder="New group name..." />
+        <button class="btn btn-primary btn-sm" onclick="createGroup()">+ Add Group</button>
+      </div>
       <div class="entity-list" id="groupList"></div>
     </div>
 
-    <!-- PERMISSIONS TAB -->
-    <div class="tab-content" id="tab-permissions">
-      <p style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Permissions are assigned to roles. Select a role to manage its permissions.</p>
+    <!-- ═══ PERMISSIONS TAB ═══ -->
+    <div class="tab-panel" id="tab-permissions">
+      <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:1rem">Select a role to manage its permissions.</p>
       <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
-        <select id="permRoleSelect" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:.45rem .8rem;border-radius:8px;font-family:inherit;font-size:.82rem;outline:none"><option value="">Select a role...</option></select>
+        <select id="permRoleSelect" class="audit-filter select" style="background:var(--bg-glass-input);border:1px solid var(--border-input);color:var(--text-primary);padding:.45rem .8rem;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:.82rem;outline:none">
+          <option value="">Select a role...</option>
+        </select>
       </div>
       <div id="permList"></div>
     </div>
-  </main>
 
-  <!-- Edit User Modal -->
+    <!-- ═══ AUDIT LOG TAB ═══ -->
+    <div class="tab-panel" id="tab-audit">
+      <div class="audit-filter">
+        <select id="auditActionFilter">
+          <option value="">All actions</option>
+        </select>
+        <button class="btn btn-sm btn-ghost" onclick="loadAuditLogs(true)">🔄 Refresh</button>
+      </div>
+      <div class="a-card" style="overflow-x:auto">
+        <table class="audit-table">
+          <thead><tr><th>Timestamp</th><th>Action</th><th>User</th><th>IP</th><th>Details</th></tr></thead>
+          <tbody id="auditTableBody"></tbody>
+        </table>
+      </div>
+      <div style="text-align:center;margin-top:1rem">
+        <button class="btn btn-ghost btn-sm" id="auditLoadMore" onclick="loadAuditLogs()" style="display:none">Load More…</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MODALS ═══ -->
+
+  <!-- Edit User -->
   <div class="modal-overlay" id="editUserModal">
     <div class="modal">
       <h2>✏️ Edit User</h2>
@@ -117,22 +204,44 @@
       <label>Username</label><input type="text" id="editUsername" />
       <label>Email</label><input type="text" id="editEmail" />
       <div class="modal-actions">
-        <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-ghost" onclick="closeModal('editUserModal')">Cancel</button>
         <button class="btn btn-primary" onclick="saveUser()">💾 Save</button>
       </div>
     </div>
   </div>
 
-  <!-- Reset Password Modal -->
+  <!-- Reset Password -->
   <div class="modal-overlay" id="resetPwModal">
     <div class="modal">
       <h2>🔑 Reset Password</h2>
       <input type="hidden" id="resetPwUserId" />
       <label>New Password (min 6 characters)</label><input type="password" id="resetPwInput" placeholder="Enter new password..." />
       <div class="modal-actions">
-        <button class="btn btn-ghost" onclick="closeResetPwModal()">Cancel</button>
+        <button class="btn btn-ghost" onclick="closeModal('resetPwModal')">Cancel</button>
         <button class="btn btn-primary" onclick="resetPassword()">🔑 Reset</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Manage User Roles -->
+  <div class="modal-overlay" id="userRolesModal">
+    <div class="modal">
+      <h2>🎭 Manage User Roles</h2>
+      <p style="color:var(--text-muted);font-size:.82rem;margin-bottom:.8rem" id="userRolesSubtitle"></p>
+      <input type="hidden" id="userRolesUserId" />
+      <div class="check-list" id="userRolesChecklist"></div>
+      <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('userRolesModal')">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Manage User Groups -->
+  <div class="modal-overlay" id="userGroupsModal">
+    <div class="modal">
+      <h2>📁 Manage User Groups</h2>
+      <p style="color:var(--text-muted);font-size:.82rem;margin-bottom:.8rem" id="userGroupsSubtitle"></p>
+      <input type="hidden" id="userGroupsUserId" />
+      <div class="check-list" id="userGroupsChecklist"></div>
+      <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('userGroupsModal')">Close</button></div>
     </div>
   </div>
 
@@ -141,57 +250,85 @@
     <div class="modal">
       <h2 id="rolePermTitle">🎭 Role Permissions</h2>
       <input type="hidden" id="rolePermRoleId" />
-      <div id="rolePermBody"></div>
-      <div class="modal-actions"><button class="btn btn-ghost" onclick="closeRolePermModal()">Close</button></div>
+      <div class="check-list" id="rolePermBody"></div>
+      <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('rolePermModal')">Close</button></div>
+    </div>
+  </div>
+
+  <!-- Manage Group Roles Modal -->
+  <div class="modal-overlay" id="groupRolesModal">
+    <div class="modal">
+      <h2 id="groupRolesTitle">📁 Manage Group Roles</h2>
+      <input type="hidden" id="groupRolesGroupId" />
+      <div class="check-list" id="groupRolesChecklist"></div>
+      <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('groupRolesModal')">Close</button></div>
     </div>
   </div>
 
   <script src="loader.js"></script>
+  <script src="tooltips.js"></script>
   <script>
     const TOKEN = localStorage.getItem('token');
     const H = () => ({ 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' });
     let allUsers = [], allRoles = [], allGroups = [], allPerms = [];
+    let auditOffset = 0;
+    const AUDIT_LIMIT = 50;
+    const KNOWN_ACTIONS = ['LOGIN_SUCCESS','LOGIN_FAILED','USER_APPROVED','USER_DENIED','PASSWORD_RESET','ROLE_CREATED','ROLE_DELETED','ROLE_ASSIGNED','PERMISSION_ASSIGNED','PERMISSION_REVOKED'];
 
+    // ─── INIT ─────────────
     async function init() {
-      AppLoader.show();
+      if (typeof AppLoader !== 'undefined') AppLoader.show();
       try {
         await Promise.all([loadUsers(), loadPending(), loadRoles(), loadGroups(), loadPermissions()]);
+        populateAuditFilter();
       } finally {
-        AppLoader.hide();
+        if (typeof AppLoader !== 'undefined') AppLoader.hide();
       }
     }
 
     // ─── TABS ─────────────
-    function switchTab(name) {
-      document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', t.textContent.toLowerCase().includes(name)));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + name));
-    }
+    document.getElementById('adminTabs').addEventListener('click', e => {
+      const tab = e.target.closest('.admin-tab');
+      if (!tab) return;
+      const name = tab.dataset.tab;
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+      if (name === 'audit' && auditOffset === 0) loadAuditLogs(true);
+    });
+
+    // ─── MODAL HELPERS ────
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+    });
 
     // ─── USERS ────────────
     async function loadUsers() {
-      try {
-        const r = await fetch('/api/admin/users', { headers: H() });
-        allUsers = await r.json();
-        renderUsers();
-      } catch(e) { console.error(e); }
+      try { const r = await fetch('/api/admin/users', { headers: H() }); allUsers = await r.json(); renderUsers(); } catch(e) { console.error(e); }
     }
 
     function renderUsers() {
-      document.getElementById('userTableBody').innerHTML = allUsers.map(u => `
-        <tr>
-          <td><span class="user-avatar">${(u.Username||'?').substring(0,2).toUpperCase()}</span>${esc(u.Username)}</td>
-          <td>${esc(u.Email||'—')}</td>
-          <td><span class="badge ${u.IsApproved?'badge-approved':'badge-pending'}">${u.IsApproved?'Active':'Pending'}</span></td>
-          <td>${(u.Roles||'').split(', ').filter(Boolean).map(r=>'<span class="role-chip">'+esc(r)+'</span>').join('')||'<span style="color:var(--muted)">—</span>'}</td>
-          <td style="font-size:.78rem;color:var(--muted)">${esc(u.Groups||'—')}</td>
-          <td style="font-size:.75rem;color:var(--muted)">${fmtDate(u.CreatedAt)}</td>
+      document.getElementById('userTableBody').innerHTML = allUsers.map(u => {
+        const initials = (u.Username || '?').substring(0, 2).toUpperCase();
+        const roles = (u.Roles || '').split(', ').filter(Boolean);
+        const groups = (u.Groups || '').split(', ').filter(Boolean);
+        return `<tr>
+          <td><span class="u-avatar">${initials}</span>${esc(u.Username)}</td>
+          <td style="color:var(--text-secondary)">${esc(u.Email || '—')}</td>
+          <td><span class="badge ${u.IsApproved ? 'badge-active' : 'badge-pending'}">${u.IsApproved ? 'Active' : 'Pending'}</span></td>
+          <td>${roles.length ? roles.map(r => `<span class="role-pill" data-tooltip="Role: ${escAttr(r)} — assigned to this user">${esc(r)}</span>`).join('') : '<span style="color:var(--text-muted)">—</span>'}</td>
+          <td>${groups.length ? groups.map(g => `<span class="group-tag" data-tooltip="Group: ${escAttr(g)} — grants inherited role permissions">${esc(g)}</span>`).join('') : '<span style="color:var(--text-muted)">—</span>'}</td>
+          <td style="font-size:.75rem;color:var(--text-muted)">${fmtDate(u.CreatedAt)}</td>
           <td><div class="action-btns">
-            <button class="btn btn-sm btn-ghost" onclick="openEditModal(${u.UserID},'${escAttr(u.Username)}','${escAttr(u.Email||'')}')">✏️</button>
-            <button class="btn btn-sm btn-ghost" onclick="openResetPwModal(${u.UserID})">🔑</button>
-            <button class="btn btn-sm ${u.IsApproved?'btn-danger':'btn-approve'}" onclick="toggleApproval(${u.UserID})">${u.IsApproved?'Disable':'Enable'}</button>
+            <button class="btn btn-xs btn-ghost" onclick="openEditModal(${u.UserID},'${escAttr(u.Username)}','${escAttr(u.Email||'')}')" data-tooltip="Edit user details">✏️</button>
+            <button class="btn btn-xs btn-ghost" onclick="openResetPwModal(${u.UserID})" data-tooltip="Reset password">🔑</button>
+            <button class="btn btn-xs ${u.IsApproved?'btn-danger':'btn-success'}" onclick="toggleApproval(${u.UserID})" data-tooltip="${u.IsApproved?'Disable user':'Enable user'}">${u.IsApproved?'Disable':'Enable'}</button>
+            <button class="btn btn-xs btn-ghost" style="color:var(--color-accent)" onclick="openUserRoles(${u.UserID},'${escAttr(u.Username)}')" data-tooltip="Manage role assignments">🎭 Roles</button>
+            <button class="btn btn-xs btn-ghost" style="color:var(--color-success)" onclick="openUserGroups(${u.UserID},'${escAttr(u.Username)}')" data-tooltip="Manage group memberships">📁 Groups</button>
           </div></td>
-        </tr>
-      `).join('');
+        </tr>`;
+      }).join('');
     }
 
     async function loadPending() {
@@ -199,16 +336,20 @@
         const r = await fetch('/api/admin/users/pending', { headers: H() });
         const pending = await r.json();
         const sec = document.getElementById('pendingSection');
-        if (pending.length === 0) { sec.innerHTML = ''; return; }
+        if (!pending.length) { sec.innerHTML = ''; return; }
         sec.innerHTML = `
-          <h2 class="section-title">🔔 Pending Approvals <span class="badge badge-pending" style="font-size:.8rem">${pending.length}</span></h2>
+          <h2 class="sec-title">🔔 Pending Approvals <span class="badge-count">${pending.length}</span></h2>
           <div class="pending-grid">${pending.map(u => `
-            <div class="glass-card pending-card">
-              <div class="pending-avatar">🧑</div>
-              <div class="pending-info"><div class="name">${esc(u.Username)}</div><div class="email">${esc(u.Email||'No email')}</div><div style="font-size:.7rem;color:var(--muted);margin-top:.15rem">Applied ${fmtDate(u.CreatedAt)}</div></div>
+            <div class="a-card pending-card">
+              <div class="pending-avatar">${(u.Username||'?').substring(0,2).toUpperCase()}</div>
+              <div class="pending-info">
+                <div class="name">${esc(u.Username)}</div>
+                <div class="email">${esc(u.Email || 'No email')}</div>
+                <div style="font-size:.7rem;color:var(--text-muted);margin-top:.15rem">Applied ${fmtDate(u.CreatedAt)}</div>
+              </div>
               <div class="pending-actions">
-                <button class="btn btn-sm btn-approve" onclick="approveUser(${u.UserID})">✅</button>
-                <button class="btn btn-sm btn-danger" onclick="denyUser(${u.UserID})">❌</button>
+                <button class="btn btn-sm btn-success" onclick="approveUser(${u.UserID})" data-tooltip="Approve this user">✅</button>
+                <button class="btn btn-sm btn-danger" onclick="denyUser(${u.UserID})" data-tooltip="Deny and delete this user">❌</button>
               </div>
             </div>
           `).join('')}</div>`;
@@ -216,27 +357,84 @@
     }
 
     async function approveUser(id) { await fetch(`/api/admin/users/${id}/approve`, { method:'POST', headers:H() }); loadUsers(); loadPending(); }
-    async function denyUser(id) { if(!confirm('Deny and delete this user?')) return; await fetch(`/api/admin/users/${id}/deny`, { method:'POST', headers:H() }); loadUsers(); loadPending(); }
+    async function denyUser(id) { if (!confirm('Deny and delete this user?')) return; await fetch(`/api/admin/users/${id}/deny`, { method:'POST', headers:H() }); loadUsers(); loadPending(); }
     async function toggleApproval(id) { await fetch(`/api/admin/users/${id}/toggle-approval`, { method:'POST', headers:H() }); loadUsers(); }
 
-    function openEditModal(id, username, email) { document.getElementById('editUserId').value=id; document.getElementById('editUsername').value=username; document.getElementById('editEmail').value=email; document.getElementById('editUserModal').classList.add('open'); }
-    function closeEditModal() { document.getElementById('editUserModal').classList.remove('open'); }
+    // Edit user
+    function openEditModal(id, username, email) {
+      document.getElementById('editUserId').value = id;
+      document.getElementById('editUsername').value = username;
+      document.getElementById('editEmail').value = email;
+      openModal('editUserModal');
+    }
     async function saveUser() {
       const id = document.getElementById('editUserId').value;
       await fetch(`/api/admin/users/${id}`, { method:'PUT', headers:H(), body:JSON.stringify({ username:document.getElementById('editUsername').value, email:document.getElementById('editEmail').value }) });
-      closeEditModal(); loadUsers();
+      closeModal('editUserModal'); loadUsers();
     }
 
-    function openResetPwModal(id) { document.getElementById('resetPwUserId').value=id; document.getElementById('resetPwInput').value=''; document.getElementById('resetPwModal').classList.add('open'); }
-    function closeResetPwModal() { document.getElementById('resetPwModal').classList.remove('open'); }
+    // Reset password
+    function openResetPwModal(id) {
+      document.getElementById('resetPwUserId').value = id;
+      document.getElementById('resetPwInput').value = '';
+      openModal('resetPwModal');
+    }
     async function resetPassword() {
       const id = document.getElementById('resetPwUserId').value;
       const pw = document.getElementById('resetPwInput').value;
-      if(pw.length<6) return alert('Password must be at least 6 characters');
+      if (pw.length < 6) return alert('Password must be at least 6 characters');
       const r = await fetch(`/api/admin/users/${id}/reset-password`, { method:'POST', headers:H(), body:JSON.stringify({ newPassword:pw }) });
       const data = await r.json();
       alert(data.message);
-      closeResetPwModal();
+      closeModal('resetPwModal');
+    }
+
+    // ─── MANAGE USER ROLES ──
+    async function openUserRoles(userId, username) {
+      document.getElementById('userRolesUserId').value = userId;
+      document.getElementById('userRolesSubtitle').textContent = `Assign roles to ${username}`;
+      openModal('userRolesModal');
+      const cl = document.getElementById('userRolesChecklist');
+      cl.innerHTML = '<div style="color:var(--text-muted);padding:1rem;text-align:center">Loading…</div>';
+      try {
+        const r = await fetch(`/api/admin/users/${userId}/details`, { headers:H() });
+        const detail = await r.json();
+        const userRoleIds = new Set((detail.roles || []).map(r => r.RoleID));
+        cl.innerHTML = allRoles.map(role => `
+          <label class="check-item">
+            <input type="checkbox" ${userRoleIds.has(role.RoleID) ? 'checked' : ''} onchange="toggleUserRole(${userId},${role.RoleID},this.checked)" />
+            <span class="check-label">${esc(role.RoleName)}</span>
+          </label>
+        `).join('') || '<div style="color:var(--text-muted);padding:1rem">No roles defined yet.</div>';
+      } catch(e) { cl.innerHTML = '<div style="color:var(--color-danger);padding:1rem">Failed to load.</div>'; }
+    }
+    async function toggleUserRole(userId, roleId, assign) {
+      await fetch(`/api/admin/users/${userId}/roles/${roleId}`, { method: assign ? 'POST' : 'DELETE', headers: H() });
+      loadUsers(); // refresh table in background
+    }
+
+    // ─── MANAGE USER GROUPS ──
+    async function openUserGroups(userId, username) {
+      document.getElementById('userGroupsUserId').value = userId;
+      document.getElementById('userGroupsSubtitle').textContent = `Assign groups to ${username}`;
+      openModal('userGroupsModal');
+      const cl = document.getElementById('userGroupsChecklist');
+      cl.innerHTML = '<div style="color:var(--text-muted);padding:1rem;text-align:center">Loading…</div>';
+      try {
+        const r = await fetch(`/api/admin/users/${userId}/details`, { headers:H() });
+        const detail = await r.json();
+        const userGroupIds = new Set((detail.groups || []).map(g => g.GroupID));
+        cl.innerHTML = allGroups.map(g => `
+          <label class="check-item">
+            <input type="checkbox" ${userGroupIds.has(g.GroupID) ? 'checked' : ''} onchange="toggleUserGroup(${userId},${g.GroupID},this.checked)" />
+            <span class="check-label">${esc(g.GroupName)}</span>
+          </label>
+        `).join('') || '<div style="color:var(--text-muted);padding:1rem">No groups defined yet.</div>';
+      } catch(e) { cl.innerHTML = '<div style="color:var(--color-danger);padding:1rem">Failed to load.</div>'; }
+    }
+    async function toggleUserGroup(userId, groupId, assign) {
+      await fetch(`/api/admin/users/${userId}/groups/${groupId}`, { method: assign ? 'POST' : 'DELETE', headers: H() });
+      loadUsers();
     }
 
     // ─── ROLES ────────────
@@ -245,21 +443,26 @@
         const r = await fetch('/api/admin/roles', { headers: H() });
         allRoles = await r.json();
         renderRoles();
-        // Update perm role select
         const sel = document.getElementById('permRoleSelect');
-        sel.innerHTML = '<option value="">Select a role...</option>' + allRoles.map(r=>`<option value="${r.RoleID}">${esc(r.RoleName)}</option>`).join('');
+        sel.innerHTML = '<option value="">Select a role...</option>' + allRoles.map(r => `<option value="${r.RoleID}">${esc(r.RoleName)}</option>`).join('');
       } catch(e) { console.error(e); }
     }
 
     function renderRoles() {
+      // Count users per role from allUsers
+      const roleCounts = {};
+      allUsers.forEach(u => (u.Roles || '').split(', ').filter(Boolean).forEach(r => { roleCounts[r] = (roleCounts[r] || 0) + 1; }));
       document.getElementById('roleList').innerHTML = allRoles.length === 0
-        ? '<div class="empty-state"><div class="empty-icon">🎭</div><p>No roles yet. That\'s weird... create one!</p></div>'
+        ? '<div class="empty-state"><div class="empty-icon">🎭</div><p>No roles yet. Create one!</p></div>'
         : allRoles.map(r => `
-          <div class="glass-card entity-item">
-            <div><div class="entity-name">🎭 ${esc(r.RoleName)}</div></div>
+          <div class="a-card entity-item">
+            <div>
+              <div class="entity-name">🎭 ${esc(r.RoleName)}</div>
+              <div class="entity-meta">${roleCounts[r.RoleName] || 0} user${(roleCounts[r.RoleName] || 0) === 1 ? '' : 's'}</div>
+            </div>
             <div class="action-btns">
-              <button class="btn btn-sm btn-ghost" onclick="manageRolePerms(${r.RoleID},'${escAttr(r.RoleName)}')">🔐 Perms</button>
-              <button class="btn btn-sm btn-danger" onclick="deleteRole(${r.RoleID})">🗑</button>
+              <button class="btn btn-sm btn-ghost" onclick="manageRolePerms(${r.RoleID},'${escAttr(r.RoleName)}')">🔐 Permissions</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteRole(${r.RoleID})">🗑 Delete</button>
             </div>
           </div>
         `).join('');
@@ -267,13 +470,12 @@
 
     async function createRole() {
       const name = document.getElementById('newRoleName').value.trim();
-      if(!name) return;
-      await fetch('/api/admin/roles', { method:'POST', headers:H(), body:JSON.stringify({roleName:name}) });
+      if (!name) return;
+      await fetch('/api/admin/roles', { method:'POST', headers:H(), body:JSON.stringify({ roleName:name }) });
       document.getElementById('newRoleName').value = '';
       loadRoles();
     }
-
-    async function deleteRole(id) { if(!confirm('Delete this role?')) return; await fetch(`/api/admin/roles/${id}`, {method:'DELETE',headers:H()}); loadRoles(); }
+    async function deleteRole(id) { if (!confirm('Delete this role?')) return; await fetch(`/api/admin/roles/${id}`, { method:'DELETE', headers:H() }); loadRoles(); loadUsers(); }
 
     // ─── GROUPS ───────────
     async function loadGroups() {
@@ -285,84 +487,153 @@
     }
 
     function renderGroups() {
+      const groupCounts = {};
+      allUsers.forEach(u => (u.Groups || '').split(', ').filter(Boolean).forEach(g => { groupCounts[g] = (groupCounts[g] || 0) + 1; }));
       document.getElementById('groupList').innerHTML = allGroups.length === 0
-        ? '<div class="empty-state"><div class="empty-icon">📁</div><p>No groups. The void is empty but full of potential! ✨</p></div>'
-        : allGroups.map(g => `
-          <div class="glass-card entity-item">
-            <div><div class="entity-name">📁 ${esc(g.GroupName)}</div><div class="entity-meta">${g.Roles ? 'Roles: ' + g.Roles.split(', ').map(r=>'<span class="role-chip">'+esc(r)+'</span>').join('') : 'No roles assigned'}</div></div>
-            <button class="btn btn-sm btn-danger" onclick="deleteGroup(${g.GroupID})">🗑</button>
-          </div>
-        `).join('');
+        ? '<div class="empty-state"><div class="empty-icon">📁</div><p>No groups yet. Create one!</p></div>'
+        : allGroups.map(g => {
+          const roles = (g.Roles || '').split(', ').filter(Boolean);
+          const count = groupCounts[g.GroupName] || 0;
+          return `<div class="a-card entity-item">
+            <div>
+              <div class="entity-name">📁 ${esc(g.GroupName)}</div>
+              <div class="entity-meta">
+                ${roles.length ? roles.map(r => `<span class="role-pill" data-tooltip="Role assigned to this group">${esc(r)}</span>`).join('') : '<span>No roles</span>'}
+                · ${count} member${count === 1 ? '' : 's'}
+              </div>
+            </div>
+            <div class="action-btns">
+              <button class="btn btn-sm btn-ghost" onclick="manageGroupRoles(${g.GroupID},'${escAttr(g.GroupName)}')">🎭 Roles</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteGroup(${g.GroupID})">🗑 Delete</button>
+            </div>
+          </div>`;
+        }).join('');
     }
 
     async function createGroup() {
       const name = document.getElementById('newGroupName').value.trim();
-      if(!name) return;
-      await fetch('/api/admin/groups', { method:'POST', headers:H(), body:JSON.stringify({groupName:name}) });
+      if (!name) return;
+      await fetch('/api/admin/groups', { method:'POST', headers:H(), body:JSON.stringify({ groupName:name }) });
       document.getElementById('newGroupName').value = '';
       loadGroups();
     }
+    async function deleteGroup(id) { if (!confirm('Delete this group?')) return; await fetch(`/api/admin/groups/${id}`, { method:'DELETE', headers:H() }); loadGroups(); loadUsers(); }
 
-    async function deleteGroup(id) { if(!confirm('Delete this group?')) return; await fetch(`/api/admin/groups/${id}`, {method:'DELETE',headers:H()}); loadGroups(); }
+    // ─── MANAGE GROUP ROLES ──
+    async function manageGroupRoles(groupId, groupName) {
+      document.getElementById('groupRolesGroupId').value = groupId;
+      document.getElementById('groupRolesTitle').textContent = `📁 ${groupName} — Roles`;
+      openModal('groupRolesModal');
+      const cl = document.getElementById('groupRolesChecklist');
+      cl.innerHTML = '<div style="color:var(--text-muted);padding:1rem;text-align:center">Loading…</div>';
+      try {
+        const group = allGroups.find(g => g.GroupID === groupId);
+        const groupRoleNames = new Set((group?.Roles || '').split(', ').filter(Boolean));
+        cl.innerHTML = allRoles.map(r => `
+          <label class="check-item">
+            <input type="checkbox" ${groupRoleNames.has(r.RoleName) ? 'checked' : ''} onchange="toggleGroupRole(${groupId},${r.RoleID},this.checked)" />
+            <span class="check-label">${esc(r.RoleName)}</span>
+          </label>
+        `).join('') || '<div style="color:var(--text-muted);padding:1rem">No roles defined.</div>';
+      } catch(e) { cl.innerHTML = '<div style="color:var(--color-danger);padding:1rem">Failed to load.</div>'; }
+    }
+    async function toggleGroupRole(groupId, roleId, assign) {
+      await fetch(`/api/admin/groups/${groupId}/roles/${roleId}`, { method: assign ? 'POST' : 'DELETE', headers: H() });
+      await loadGroups(); // refresh group data
+    }
 
     // ─── PERMISSIONS ──────
     async function loadPermissions() {
-      try {
-        const r = await fetch('/api/admin/permissions', { headers: H() });
-        allPerms = await r.json();
-      } catch(e) { console.error(e); }
+      try { const r = await fetch('/api/admin/permissions', { headers: H() }); allPerms = await r.json(); } catch(e) { console.error(e); }
     }
 
     document.getElementById('permRoleSelect').addEventListener('change', async function() {
       const roleId = this.value;
-      if(!roleId) { document.getElementById('permList').innerHTML = ''; return; }
+      if (!roleId) { document.getElementById('permList').innerHTML = ''; return; }
       try {
         const r = await fetch(`/api/admin/roles/${roleId}/permissions`, { headers:H() });
         const rolePerms = await r.json();
-        const rolePermIds = new Set(rolePerms.map(p=>p.PermissionID));
-        document.getElementById('permList').innerHTML = `
-          <div class="entity-list">${allPerms.map(p => `
-            <div class="glass-card entity-item">
-              <div><div class="entity-name" style="font-size:.85rem">${esc(p.PermissionName)}</div><div class="entity-meta">${esc(p.Description||'')}</div></div>
-              <button class="btn btn-sm ${rolePermIds.has(p.PermissionID)?'btn-danger':'btn-approve'}" onclick="${rolePermIds.has(p.PermissionID)?`revokePermission(${roleId},${p.PermissionID})`:`assignPermission(${roleId},${p.PermissionID})`}">${rolePermIds.has(p.PermissionID)?'Revoke':'Grant'}</button>
-            </div>
-          `).join('')}</div>`;
+        const rpIds = new Set(rolePerms.map(p => p.PermissionID));
+        document.getElementById('permList').innerHTML = `<div class="entity-list">${allPerms.map(p => `
+          <div class="a-card entity-item">
+            <div><div class="entity-name" style="font-size:.85rem">${esc(p.PermissionName)}</div><div class="entity-meta">${esc(p.Description || '')}</div></div>
+            <button class="btn btn-sm ${rpIds.has(p.PermissionID) ? 'btn-danger' : 'btn-success'}" onclick="${rpIds.has(p.PermissionID) ? `revokePermission(${roleId},${p.PermissionID})` : `assignPermission(${roleId},${p.PermissionID})`}">${rpIds.has(p.PermissionID) ? 'Revoke' : 'Grant'}</button>
+          </div>
+        `).join('')}</div>`;
       } catch(e) { console.error(e); }
     });
 
-    async function assignPermission(roleId, permId) { await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, {method:'POST',headers:H()}); document.getElementById('permRoleSelect').dispatchEvent(new Event('change')); }
-    async function revokePermission(roleId, permId) { await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, {method:'DELETE',headers:H()}); document.getElementById('permRoleSelect').dispatchEvent(new Event('change')); }
+    async function assignPermission(roleId, permId) { await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, { method:'POST', headers:H() }); document.getElementById('permRoleSelect').dispatchEvent(new Event('change')); }
+    async function revokePermission(roleId, permId) { await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, { method:'DELETE', headers:H() }); document.getElementById('permRoleSelect').dispatchEvent(new Event('change')); }
 
+    // Role perms modal (from roles tab)
     async function manageRolePerms(roleId, roleName) {
-      document.getElementById('rolePermTitle').textContent = '🎭 ' + roleName + ' Permissions';
+      document.getElementById('rolePermTitle').textContent = '🎭 ' + roleName + ' — Permissions';
       document.getElementById('rolePermRoleId').value = roleId;
+      openModal('rolePermModal');
+      const body = document.getElementById('rolePermBody');
+      body.innerHTML = '<div style="color:var(--text-muted);padding:1rem;text-align:center">Loading…</div>';
       try {
         const r = await fetch(`/api/admin/roles/${roleId}/permissions`, { headers:H() });
         const rolePerms = await r.json();
-        const rolePermIds = new Set(rolePerms.map(p=>p.PermissionID));
-        document.getElementById('rolePermBody').innerHTML = allPerms.length === 0
-          ? '<p style="color:var(--muted)">No permissions defined yet.</p>'
+        const rpIds = new Set(rolePerms.map(p => p.PermissionID));
+        body.innerHTML = allPerms.length === 0
+          ? '<div style="color:var(--text-muted);padding:1rem">No permissions defined yet.</div>'
           : allPerms.map(p => `
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.04)">
-              <div><div style="font-weight:600;font-size:.85rem">${esc(p.PermissionName)}</div><div style="font-size:.75rem;color:var(--muted)">${esc(p.Description||'')}</div></div>
-              <button class="btn btn-sm ${rolePermIds.has(p.PermissionID)?'btn-danger':'btn-approve'}" onclick="toggleRolePerm(${roleId},${p.PermissionID},${rolePermIds.has(p.PermissionID)})">${rolePermIds.has(p.PermissionID)?'Revoke':'Grant'}</button>
-            </div>
+            <label class="check-item">
+              <input type="checkbox" ${rpIds.has(p.PermissionID) ? 'checked' : ''} onchange="toggleRolePerm(${roleId},${p.PermissionID},!this.checked)" />
+              <span class="check-label">${esc(p.PermissionName)}</span>
+              <span style="font-size:.72rem;color:var(--text-muted);margin-left:auto">${esc(p.Description || '')}</span>
+            </label>
           `).join('');
-        document.getElementById('rolePermModal').classList.add('open');
+      } catch(e) { body.innerHTML = '<div style="color:var(--color-danger);padding:1rem">Failed to load.</div>'; }
+    }
+    async function toggleRolePerm(roleId, permId, revoke) {
+      if (revoke) await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, { method:'DELETE', headers:H() });
+      else await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, { method:'POST', headers:H() });
+      const roleName = allRoles.find(r => r.RoleID === roleId)?.RoleName || '';
+      manageRolePerms(roleId, roleName);
+    }
+
+    // ─── AUDIT LOG ────────
+    function populateAuditFilter() {
+      const sel = document.getElementById('auditActionFilter');
+      sel.innerHTML = '<option value="">All actions</option>' + KNOWN_ACTIONS.map(a => `<option value="${a}">${a}</option>`).join('');
+      sel.addEventListener('change', () => loadAuditLogs(true));
+    }
+
+    async function loadAuditLogs(reset) {
+      if (reset) { auditOffset = 0; document.getElementById('auditTableBody').innerHTML = ''; }
+      const action = document.getElementById('auditActionFilter').value;
+      const url = `/api/admin/audit-logs?limit=${AUDIT_LIMIT}&offset=${auditOffset}${action ? '&action=' + encodeURIComponent(action) : ''}`;
+      try {
+        const r = await fetch(url, { headers: H() });
+        const logs = await r.json();
+        const tbody = document.getElementById('auditTableBody');
+        tbody.innerHTML += logs.map(l => {
+          let details = '';
+          try { const d = JSON.parse(l.Details || '{}'); details = Object.entries(d).map(([k,v]) => `${k}: ${v}`).join(', '); } catch { details = l.Details || ''; }
+          return `<tr>
+            <td style="white-space:nowrap;font-size:.75rem">${fmtDateTime(l.CreatedAt)}</td>
+            <td><span class="audit-action">${esc(l.Action)}</span></td>
+            <td>${esc(l.Username || 'System')}</td>
+            <td style="font-size:.75rem;font-family:monospace;color:var(--text-muted)">${esc(l.IPAddress || '—')}</td>
+            <td style="font-size:.75rem;color:var(--text-muted);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" data-tooltip="${escAttr(details)}">${esc(details) || '—'}</td>
+          </tr>`;
+        }).join('');
+        auditOffset += logs.length;
+        document.getElementById('auditLoadMore').style.display = logs.length >= AUDIT_LIMIT ? 'inline-flex' : 'none';
+        if (!logs.length && auditOffset === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-icon">📋</div><p>No audit logs found.</p></td></tr>';
+        }
       } catch(e) { console.error(e); }
     }
 
-    async function toggleRolePerm(roleId, permId, hasIt) {
-      if(hasIt) await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, {method:'DELETE',headers:H()});
-      else await fetch(`/api/admin/roles/${roleId}/permissions/${permId}`, {method:'POST',headers:H()});
-      const roleName = allRoles.find(r=>r.RoleID===roleId)?.RoleName||'';
-      manageRolePerms(roleId, roleName);
-    }
-    function closeRolePermModal() { document.getElementById('rolePermModal').classList.remove('open'); }
-
-    function esc(s) { if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-    function escAttr(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
-    function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+    // ─── UTILS ────────────
+    function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function escAttr(s) { return (s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+    function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }); }
+    function fmtDateTime(d) { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-US', { month:'short', day:'numeric' }) + ' ' + dt.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' }); }
 
     init();
   </script>
