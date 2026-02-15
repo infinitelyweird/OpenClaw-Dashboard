@@ -1,0 +1,1002 @@
+[
+  {
+    "phrase": "Error: password not found in any known universe.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You type passwords like you parallel park.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Caps lock isn't your problem. Everything else is.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password just filed a restraining order against you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That wasn't even close. Like, astronomically not close.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server laughed. That's never happened before.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. Again. Are we sensing a pattern here?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I've seen better login attempts from a cat walking on a keyboard.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed, much like your typing skills.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your credentials have the structural integrity of a wet napkin.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password died on arrival. No resuscitation possible.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The login gods have spoken, and they said no.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. Also, wow.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Were you trying to log in or just mashing keys for fun?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Three strikes and you're... still here, apparently.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt has been forwarded to our comedy department.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect. But hey, at least you're consistent.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The database winced. That's a first.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I checked twice because I couldn't believe someone would try that.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The system asked me to tell you it's disappointed.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password had the confidence of a soggy crouton.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Somewhere, a cybersecurity professor just felt a disturbance.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt has been archived under 'cautionary tales.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. So very, spectacularly, impressively wrong.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I'd give you a hint, but I don't think it would help.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Did you just guess? Because it felt like you just guessed.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The authentication server would like a moment to compose itself.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password attempt violated the Geneva Convention.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Nope. And the way you typed it suggests you knew that.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Your ancestors felt that one.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Even autocomplete wouldn't have saved you there.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I'm not mad, I'm just... no, I'm mad.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The firewall didn't even need to activate for that one.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt just got a participation trophy.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Was that a password or a cry for help?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. The server didn't even have to think about it.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That login attempt belongs in a museum of human error.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You just set a new personal record for wrongness.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The CAPTCHA was rooting for you. It's now reconsidering.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. Please try again after some deep self-reflection.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password and the correct password aren't even in the same zip code.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt was so bad the error log blushed.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "If wrong answers were currency, you'd be a billionaire.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The system is starting to think you're doing this on purpose.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Even the backup server doesn't want to deal with this.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's the kind of password attempt that makes algorithms cry.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You just authenticated yourself as 'not getting in.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The correct one is watching from a safe distance.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied with prejudice.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your typing says 'confident.' Your password says 'catastrophe.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt was rejected before it even finished transmitting.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I've been hashed, salted, and I still felt that burn.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login attempt #whatever. We've both lost count.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The entropy of that password was somehow negative.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt just got its own error code.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's not your password. That's not anyone's password.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I checked with every server on the planet. It's a no from all of them.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong credentials. Right attitude though — delusional, but spirited.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The login form would like to request hazard pay.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password attempt has been nominated for Worst Performance.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You're not locked out yet, but the system is considering it preemptively.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Nope. Nope. Absolutely nope.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt just tripped every alarm except the right one.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. Have you considered a career that doesn't involve computers?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The hash function took one look and walked away.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password has the accuracy of a stormtrooper.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Failed. And not in the charming, 'almost had it' way.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your credential game is weaker than hotel Wi-Fi.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I'd say 'nice try' but I respect honesty more.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password attempt arrived dead on scene.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server processed your request and immediately filed for therapy.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You just speed-ran failing authentication.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Your password was in a different castle.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The right one is embarrassed to be associated with you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt made our intrusion detection system feel overqualified.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Error 401: Unauthorized and frankly unwelcome.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Somehow you managed to get every single character wrong.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The login page is now questioning its purpose in life.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt has the energy of showing up to the wrong wedding.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Rejected. The server didn't even check — it just knew.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That was the digital equivalent of walking into a glass door.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. At this rate, heat death of the universe comes first.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your attempt was processed in 0.001 seconds. That's how fast we said no.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I've seen stronger authentication attempts from a toaster.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Shall I play some hold music while you figure it out?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password had the lifespan of a mayfly in a hurricane.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. The server says 'not today, not tomorrow, not ever.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt just got added to the training data for what not to do.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The SSL certificate is cringing and it doesn't even have feelings.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication says no. Common sense said no first.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password was DOA — Dead On Arrival at the auth server.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt just made the fail2ban logs more interesting.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. But you entered it with such conviction.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The password field has trust issues now, thanks to you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That wasn't authentication. That was a surrender.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password and reality seem to be on different timelines.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The 'forgot password' link is waving frantically at you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt violated at least three laws of computer science.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "I've rejected thousands of passwords, but yours was special.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server is beginning to take this personally.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. Your keyboard called — it wants an apology.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That login attempt had all the grace of a shopping cart with a bad wheel.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. Please consult your past self who set this password.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password failed faster than a New Year's resolution.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That was like trying to unlock a door with a banana.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The authentication module just sighed. Digitally.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. Even the placeholder text was more accurate.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your attempt was so off, the server thought it was a different request entirely.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. And the system would like you to know it's not sorry.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password has less validity than a three-dollar bill.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Your confidence-to-accuracy ratio is truly remarkable.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The bcrypt function didn't even bother running. It just said no.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt just became a unit of measurement for failure.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong credentials. Right screen though, so partial credit?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt made our load balancer feel overstaffed.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. The server is drafting a strongly worded email.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt is the reason we have rate limiting.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect password. I'm running out of ways to say that politely.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That was the worst password since the last password you tried.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The token expired before your shame did.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your attempt has been flagged as 'aggressively incorrect.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The database just sent its condolences.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password has the structural integrity of a house of cards in a tornado.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. And I mean that in every language the server supports.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your credentials just got a rejection letter. With a stamp. First class.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The session cookie crumbled before it could even form.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That login attempt should come with a warning label.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication denied. The system is now stress-eating bits.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt just lowered the building's average IQ.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. I'm starting to think you enjoy rejection.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt made our security team laugh, then weep.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Even the loading spinner gave up halfway through.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You've turned password entry into a spectator sport.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server clock reset itself in disbelief. Still denied.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password attempt had the precision of a blindfolded dart throw.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. The router is whispering about you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. Your monitor deserves better than this.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt was intercepted by common sense before reaching the server.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The two-factor authentication would like to be three-factor after seeing that.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The cursor blinked in Morse code: W-R-O-N-G.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt was processed, judged, and found wanting.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. The server logs will remember this for audit purposes and comedy.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt had the effectiveness of a screen door on a submarine.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. Your password left the chat.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "You're batting zero and somehow still swinging with confidence.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The auth token just tokenized itself out of existence.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The correct one filed for witness protection.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That login attempt just became exhibit A in 'Why We Can't Have Nice Things.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password was weighed, measured, and found to be fiction.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server returned 401 so fast it might have been precognitive.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. At this point, the form is just humoring you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt was rejected by every layer of the OSI model.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your credentials have the half-life of a soap bubble on asphalt.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The encryption algorithm wants you to know it tried its best.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That was less 'forgot password' and more 'never knew it.'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The network packet carrying your password apologized on arrival.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. Maybe try interpretive dance instead of typing.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt just earned a permanent spot in our hall of shame.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password had the shelf life of ice cream in a sauna.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. The server suggests you hydrate and try again.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. So breathtakingly, magnificently, historically wrong.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The middleware caught that and gently placed it in the trash.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your attempt triggered our 'are you serious?' detector.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The submit button is considering a career change.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password has the staying power of a sandcastle at high tide.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. Even the error message feels bad delivering this news.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt just set off the mediocrity alarm.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server rejected you faster than a bouncer at an exclusive club.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The enter key is filing a grievance.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt was the digital equivalent of bringing a spoon to a sword fight.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. The server is now questioning your commitment.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt has the relevance of a floppy disk at a tech conference.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The validator gave up and just returned 'why?'",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Have you tried turning your memory on and off again?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password crashed and burned before leaving the runway.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The system suggests starting with remembering it correctly.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your attempt was the auth equivalent of bringing an umbrella to a drought.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. The server's patience has a lower TTL than your session.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That login attempt was cosplaying as a correct password, poorly.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The auth server just asked if you'd like to speak to a manager.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password attempt just received a one-star review from the database.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. I've started a tally. It's getting long.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt made the connection timeout look productive.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The security certificate is questioning your character, not just your credentials.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your password and success have a restraining order between them.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That was like throwing spaghetti at a wall, except the wall dodged.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The server processed your failure in record time. Congratulations?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. Your password didn't even make it past the lobby.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That login attempt just proved entropy is real and lives in your keyboard.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The backspace key would like a word with you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. Even the forgotten password link is avoiding eye contact.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your attempt was rejected with the urgency of a spam filter.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password had all the authority of a hall pass in prison.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "The login page has seen things. Your password is now one of them.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. The system recommends blaming solar flares and trying again.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login attempt just got peer-reviewed and unanimously rejected.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password was about as useful as a chocolate teapot.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. The server considered sugar-coating it but decided against it.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your credentials just failed the vibe check.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That attempt just joined our blooper reel.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Is your password 'password'? Because that's the energy you're giving.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Even a dictionary attack would give up on you.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is just your name with a '1' at the end, isn't it?",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Ah yes, 'qwerty.' The password of champions. And also you.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is so common it has its own Wikipedia page.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Congratulations, your password is in the top 10. Of worst passwords ever.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Let me guess — your pet's name followed by your birth year?",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is one Google search away from being everyone's password.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password is on more breached lists than a wedding registry.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password has the complexity of a light switch.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "A brute force attack would crack that during its coffee break.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password just showed up on a 'Top 100 Worst Passwords' listicle.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password is less secure than a screen door on a vault.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "I've seen stronger passwords on luggage.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password strategy seems to be 'hope for the best.'",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password could be cracked by a moderately intelligent hamster.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password has the defensive strength of a wet paper bag.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Did you pick your password from a children's word book?",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is the digital equivalent of leaving your front door wide open.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password is so weak it needs a spotter at the gym.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password has been pre-cracked for your inconvenience.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "A rainbow table just solved your password accidentally.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is basically a welcome mat for hackers.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password has the security profile of a Post-it note on a monitor.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password's threat level to hackers: mildly amusing.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password was in the first ten guesses of every hacking tool since 2003.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password has fewer characters than a tweet and less substance.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Is that a password or a keyboard sneeze?",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is the 'participation trophy' of cybersecurity.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password is so predictable, a fortune cookie could have guessed it.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password just failed a CAPTCHA. Think about that.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Rockyou.txt called — your password is on line 4.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password's entropy is lower than my expectations, and those were already underground.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That's the kind of password that makes security researchers drink.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password could be brute-forced on a calculator watch.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "A child with a crayon could design a more secure password.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is on the dark web's clearance rack.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password has all the unpredictability of sunrise.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is what we in the industry call 'a liability.'",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Hackers use your password as a warm-up exercise.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password was outdated when dial-up was cutting edge.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password security is a rounding error away from zero.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password would lose a fight to an empty string.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password is basically gift-wrapping your account for strangers.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "A potato battery has more power than your password has security.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password is what happens when you let autocomplete decide your fate.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password just appeared as a sample in a 'How Not To' security training.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Even 'guest' would have been a bolder choice.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "Your password's time-to-crack is measured in milliseconds. Generous milliseconds.",
+    "category": "bad_password"
+  },
+  {
+    "phrase": "That password is the cybersecurity equivalent of leaving your car running with the doors open.",
+    "category": "bad_password"
+  }
+]

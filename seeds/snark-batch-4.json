@@ -1,0 +1,1002 @@
+[
+  {
+    "phrase": "You've been temporarily banned for crimes against passwords.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Slow down there, hacker. And I use that term very loosely.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. The system needs a break from you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Maybe take a walk and think about what you've done.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The system has filed for a protective order.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've exceeded the maximum number of attempts. Impressive, honestly.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. Even brute force has standards.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Account locked. The password didn't change in the last 3 seconds, I promise.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Whoa there, speed racer. This isn't a password guessing competition.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been rate limited. The server is pressing charges.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Temporarily banned. Go hydrate or something.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. Are you okay? Blink twice if you need help.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. Consider this an intervention.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "The system has placed a restraining order on your login attempts.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've tried so many times the server started crying.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Please wait while we mourn your dignity.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many failed attempts. At this point it's not persistence, it's denial.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The good news? You can't make it worse. The bad news? You tried.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Slow down. The login form isn't going anywhere. Unlike your access.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been temporarily suspended for aggressive incompetence.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. Have you considered a career change?",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Account frozen. Not because of security. Because of you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. The algorithm is judging you silently.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out again. At this rate you'll set a record.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. The CAPTCHA wants a word with you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been throttled. Both figuratively and literally.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Access denied repeatedly. You're nothing if not consistent.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "The server has asked me to tell you to stop.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. Maybe go stare at a wall for five minutes.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. The firewall is starting to take this personally.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Your enthusiasm is noted and unwelcome.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been temporarily exiled. Reflect on your choices.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many failures. Even the error logs feel sorry for you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The database just sighed audibly.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Please wait before trying again. Or forever. Your call.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. I'm starting to think you don't actually have an account.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Go touch grass. I'm serious.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've exceeded the attempt limit. This is a login form, not a slot machine.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The server is on its lunch break from you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. At what point do we call this a DDoS?",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Temporarily locked. The system needs therapy after that barrage.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Maybe try reading a book instead.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've worn out your welcome and the login button.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. The server filed a noise complaint.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. Deep breaths. In through the nose, out through the mouth.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Congratulations, you've unlocked the 'too many attempts' achievement.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. I'd say try again later but honestly, don't.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many failures. The system is reconsidering its life choices. And yours.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. Come back when you've remembered how passwords work.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been rate limited. The system recommends a hobby.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. Was this a test? Because you failed it.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Account temporarily suspended due to repeated acts of wrongness.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Please hold while the server recovers from you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. This is the system's way of saying 'no means no.'",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. I admire the persistence, not the results.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been temporarily banned. Reason: being yourself.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. The hamster powering the server needs a nap.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. May I suggest a password manager? Or a life coach?",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. You're speedrunning failure.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "The system has collectively decided to ignore you for a while.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Even spam bots take breaks.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been locked out. The server is changing its number.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. This isn't a vending machine you can kick until it works.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Account locked. Estimated unlock time: when you learn your password.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Your IP address has been flagged as 'annoying.'",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. The login form is filing for workers' comp.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The system asked me to block you. I didn't argue.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been throttled harder than your internet connection.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. At this point the password is guessing you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Please wait 30 seconds. Or 30 years. We're flexible.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The server would like you to know it's not mad, just disappointed.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many failures. The system has downgraded your threat level to 'nuisance.'",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. You're the reason we can't have nice things.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been temporarily removed from the equation.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. The enter key is begging for mercy.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The system recommends journaling about your feelings.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Congratulations, you broke something. Not in, just something.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. You've officially exhausted both the system and my patience.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Account locked. Not even a reboot can save you now.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. The server is pretending you don't exist.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. It's not me, it's you. Actually, it's definitely you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. Your keyboard called. It wants a divorce.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been rate limited. Think of it as a mandatory vacation.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. At least you're consistent at something.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. This account owes you nothing.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Please step away from the computer slowly.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've triggered our abuse detection. And by 'abuse,' I mean yours against this login form.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The system has moved on. Maybe you should too.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. Even the forgot password link is avoiding you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Go call your mother. She's worried about you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've tried more passwords than most people have in a lifetime.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The security team has popcorn and is watching.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. The server's therapist says it needs space from you.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Your persistence would be admirable if it weren't so sad.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Account locked. The only thing you're brute-forcing is my will to live.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many tries. You've been demoted from 'user' to 'problem.'",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Locked out. The login page has entered witness protection.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Rate limited. Please wait patiently while we pretend to care.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "Too many attempts. This is now a cold case.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "You've been banned temporarily. Or permanently. We're still deciding.",
+    "category": "too_many_attempts"
+  },
+  {
+    "phrase": "The only thing you've authenticated today is my disappointment.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Security tip: your password should be harder to guess than your personality.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "This login page has seen things. Terrible things. Like your typing.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Welcome to authentication, where dreams go to die.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your security posture is giving 'open front door with a welcome mat.'",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Ah, another human who thinks 'password123' is clever.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The two-factor in two-factor auth doesn't mean trying the same wrong password twice.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "I've seen better security on a screen door.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your password strength is what we in the industry call 'decorative.'",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Fun fact: your login attempt was the least secure thing to happen today. And it's only Tuesday.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "This system is secured by 256-bit encryption and protected from you by sheer luck.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Please don't reuse passwords. I know you will, but please don't.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your browser history is more secure than your password. Think about that.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Authentication: the art of proving you're you, which you're failing at spectacularly.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The 'forgot password' button was invented for people like you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Somewhere, a cybersecurity professor just felt a disturbance in the force.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "I'd recommend biometrics but I'm not sure your face would pass either.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your approach to security is what keeps penetration testers employed.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Congratulations on finding the login page. That's the peak of today's achievements.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The computer isn't broken. The problem is on the other side of the screen.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Every time you type a password, a security engineer loses a year of life.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your password is like your opinions: weak and easily cracked.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "I'm not saying you're bad at computers, but the computer is saying it.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Encryption protects your data from hackers. Nothing protects it from you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "This is a secure system. You are its weakest link.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your IT department has a nickname for you and it's not flattering.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Somewhere, a sticky note with your password on it is feeling very exposed.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You interact with technology the way a bull interacts with a china shop.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The CAPTCHA was designed to tell humans from robots. In your case, it's confused.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your digital footprint looks more like a digital faceplant.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "If ignorance is bliss, your security practices must be euphoric.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You're the reason security questions exist. And also the reason they don't work.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The server logs read like a horror novel and you're the protagonist.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your understanding of cybersecurity could fit on a Post-it note. With room to spare.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "I'm contractually obligated to let you try. Not to be happy about it.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The only brute force here is your approach to user interfaces.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You use technology with the grace of a giraffe on roller skates.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "SSH stands for 'Stop Struggling, Human.'",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The best password is one you can't remember. You're halfway there.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your login skills make me appreciate automated bots.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Firewalls exist to keep threats out. Today, they're doing overtime.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Cookies track you online. Honestly, someone should.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Have you tried turning yourself off and on again?",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your session expired. Much like my faith in humanity.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The login form didn't load slowly. It was bracing itself.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your credentials are as valid as your understanding of how this works.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Multi-factor authentication: because one chance to fail isn't enough for you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You've accessed the login page. I'd say congratulations but let's not get ahead of ourselves.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The 'remember me' checkbox is having second thoughts.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Phishing emails have better spelling than your password.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your threat model is 'hope for the best.' Bold strategy.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You approach passwords the way you approach life: with reckless abandon.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The VPN can't protect you from yourself.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "OAuth would like to remind you that it's not magic. You still have to try.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Logging in shouldn't be this dramatic, yet here we are.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The audit log is going to be a fun read today.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your password expired. It was terminal from the start.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Single sign-on: one password to forget them all.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your attempt has been logged, cataloged, and mocked.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Biometric scan failed. The system doesn't recognize you. Relatable.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "HTTPS can encrypt your data but it can't encrypt your incompetence.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The 'show password' button exists because even you don't trust yourself.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Access control is working perfectly. It's controlling your access.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your security awareness training clearly didn't take.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "I'm a login form, not a miracle worker.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The password policy requires 8 characters. So does dealing with you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You treat MFA codes like suggestions.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The system administrator has been notified. They laughed.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Token expired. Along with any remaining goodwill.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your approach to authentication is technically a form of chaos engineering.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The security team wrote a case study about you. It's not a success story.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Caps lock is on. Although at this point, that's the least of your problems.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your idea of endpoint security is hoping nobody sits at your desk.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The system clock says it's 2026. Your security habits say 2003.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You clicked 'remember me' on a public computer, didn't you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Password managers exist. They're waiting for you. Patiently. Desperately.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "This ain't your first rodeo, but it sure looks like it.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your keystrokes have a cadence. The cadence of chaos.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Zero trust architecture. Because we especially don't trust you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The cipher suite negotiated successfully. If only you could.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "DNS resolved your request. Your life choices remain unresolved.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You have the digital literacy of a fax machine.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The server is up. Your skills are not.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Loading your profile. Lowering expectations.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Authenticating... verifying... regretting.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The only thing you've successfully hacked today is my patience.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your IP has been noted. In the 'hall of shame' kind of way.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "404: your competence was not found.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "I'd wish you luck but I don't think that's the issue here.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The password reset email is judging you from your inbox.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You've been authenticated. Don't let it go to your head.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Two-factor auth sent you a code. Whether you can type it correctly is another matter.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your certificate has expired. Like your patience. And mine.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Welcome back. The system grudgingly accepts your presence.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Wrong password. Again. Groundhog Day has nothing on you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect credentials. I'm starting to think you're doing this on purpose.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's not your password. That's not anyone's password.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Your password called and said it doesn't know you either.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong again. Have you considered writing it down? On second thought, don't.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Nope. Not even close. Are you even trying?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password was rejected with prejudice.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. The system reviewed your credentials and found them laughable.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect password. Shocking absolutely no one.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's wrong. Like, impressively wrong.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Maybe try your other wrong password.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. Your password went to a better place. Like someone else's account.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The universe remains unsurprised.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. That password was dead on arrival.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's not it, chief.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Did you just keyboard-smash and hope for the best?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect. Your password guessing skills are not FDIC insured.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. And I mean that in every possible sense.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password was wrong in ways I didn't know passwords could be wrong.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication error. Error being the operative word.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. Your credentials have the structural integrity of wet cardboard.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. I've seen better attempts from a cat walking across a keyboard.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. Try harder. Or smarter. Preferably both.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password doesn't match. It doesn't even rhyme.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect. The password field isn't a suggestion box.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Have you tried turning your memory on and off again?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's the wrong password. Yes, I'm sure. More sure than you, apparently.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Access denied. Your password is cosplaying as a real password and failing.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. At this point, even 'password' would've been a better guess.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. Please try again with an actual password this time.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The password fairy isn't real. You have to actually remember it.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. Were you trying to log in or just testing my error messages?",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password was so wrong it looped back around and became art.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect credentials. Your password is in another castle.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. The only thing you've unlocked is my sarcasm.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong. And before you ask, no, the system is not broken. You are.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That's not your password. I checked. Thoroughly. With contempt.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Plot twist: the password was inside you all along. It wasn't.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect. If passwords were a test, you'd need to repeat the semester.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. This is getting embarrassing for both of us.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. Your password had one job and couldn't even do that.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Authentication failed. The system is starting to feel personally insulted.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That wasn't even in the right ballpark. Or sport. Or dimension.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Statistically, a random string would've worked better.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. You're collecting these failures like trading cards.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Incorrect. I would say 'nice try' but I'd be lying.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "That password was a crime scene and I am the chalk outline.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Login failed. Please consult your nearest sticky note.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Wrong password. The hint was right there. You ignored it, didn't you.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Denied. At this point I'm rooting for you, and I'm still disappointed.",
+    "category": "login_fail"
+  },
+  {
+    "phrase": "Your login history reads like a cautionary tale.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The only encryption here is your thought process. Nobody can decode it.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Sudo make me a sandwich. Access denied. Even the terminal is done with you.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "Your security questions are harder than your password. That is not a compliment.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "The cloud stores your data. It also stores your mistakes. There are more mistakes.",
+    "category": "general_snark"
+  },
+  {
+    "phrase": "You navigate this system like a roomba bumping into furniture.",
+    "category": "general_snark"
+  }
+]
