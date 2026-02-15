@@ -175,6 +175,13 @@
       document.body.appendChild(script);
     }
 
+    // Inject notification center
+    if (!document.querySelector('script[src="notifications.js"]')) {
+      const nScript = document.createElement('script');
+      nScript.src = 'notifications.js';
+      document.body.appendChild(nScript);
+    }
+
     // Apply theme
     setTheme(theme);
   }

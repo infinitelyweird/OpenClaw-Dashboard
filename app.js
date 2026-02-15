@@ -70,6 +70,7 @@ app.use('/', require('./routes/versionRoute'));
 app.use('/', require('./routes/snarkRoute'));
 app.use('/', require('./routes/dashboardRoute'));
 app.use('/', require('./routes/projectRoute'));
+app.use('/', require('./routes/notificationRoute'));
 
 // Default route
 app.get('/', (req, res) => {
