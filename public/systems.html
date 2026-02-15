@@ -311,10 +311,28 @@
       ctx.beginPath(); ctx.arc(lx, ly, 7, 0, Math.PI * 2); ctx.strokeStyle = c + '60'; ctx.lineWidth = 2; ctx.stroke();
     }
 
+    let initialLoad = true;
+    let fetchInProgress = false;
+
     function fetchAll() {
-      AppLoader.show();
+      if (fetchInProgress) return;          // skip if previous cycle hasn't finished
+      fetchInProgress = true;
+
+      if (initialLoad) {
+        AppLoader.show();
+      } else {
+        RefreshIndicator.show();
+      }
       Promise.all([fetchCPU(), fetchMemory(), fetchOS(), fetchStorage(), fetchProcesses()])
-        .finally(() => AppLoader.hide());
+        .finally(() => {
+          fetchInProgress = false;
+          if (initialLoad) {
+            AppLoader.hide();
+            initialLoad = false;
+          } else {
+            RefreshIndicator.hide();
+          }
+        });
       document.getElementById('lastUpdate').textContent = 'Updated: ' + new Date().toLocaleTimeString();
     }
 

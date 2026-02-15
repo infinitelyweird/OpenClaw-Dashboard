@@ -1,5 +1,6 @@
 # HEARTBEAT.md
 
 ## Auto-start Dashboard Server
-- Check if the Infinitely Weird DevOps Dashboard is running on port 3000
-- If not running, start it: `cd I:\OpenClaw; node app.js` (background)
+- Check if port 3000 is listening: `Get-NetTCPConnection -LocalPort 3000`
+- If NOT listening, start detached: `Start-Process -FilePath "node" -ArgumentList "app.js" -WorkingDirectory "I:\OpenClaw" -WindowStyle Hidden -RedirectStandardOutput "I:\OpenClaw\server.log" -RedirectStandardError "I:\OpenClaw\server-err.log"`
+- Wait 3s then verify port is up
