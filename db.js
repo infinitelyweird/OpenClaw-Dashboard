@@ -1,14 +1,14 @@
 const sql = require('mssql');
 
 const dbConfig = {
-  user: 'openclaw',
-  password: 'ix4bw4riEiDrDMxwmNoD',
-  server: '192.168.0.100',
-  database: 'TaskDashboard',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_NAME,
   options: {
     encrypt: false,
     trustServerCertificate: true,
-    instanceName: 'MSSQLSERVER01'
+    instanceName: process.env.DB_INSTANCE
   }
 };
 
