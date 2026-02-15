@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="loader.css" />
+  <link rel="stylesheet" href="tooltips.css" />
   <style>
     /* Profile-specific styles using design system variables */
     .profile-page { max-width: 800px; margin: 0 auto; }
@@ -316,7 +317,22 @@
   </div>
 
   <script src="loader.js"></script>
+  <script src="tooltips.js"></script>
   <script>
+    // Safety: ensure loader hides even if something goes wrong
+    window.addEventListener('load', () => { setTimeout(() => { if (typeof AppLoader !== 'undefined') AppLoader.hide(); }, 5000); });
+    // Role & Group descriptions for tooltips
+    const roleDescriptions = {
+      'Administrator': 'Full system access. Can manage users, roles, groups, and all settings.',
+      'User': 'Standard access. Can view dashboards, manage own tasks and profile.',
+      'Manager': 'Team management. Can assign tasks, view reports, and manage projects.',
+      'Viewer': 'Read-only access. Can view dashboards and reports but cannot modify data.',
+    };
+    const groupDescriptions = {
+      'Administrators': 'System administrators group. Members inherit all admin permissions.',
+      'Standard User': 'Default group for approved users. Provides basic system access.',
+    };
+
     const TOKEN = localStorage.getItem('token');
     const H = () => ({ 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' });
     let profileData = {};
@@ -355,7 +371,7 @@
 
         // Role pills in identity header
         const rolesSpan = document.getElementById('identityRoles');
-        rolesSpan.innerHTML = (p.roles || []).map(r => `<span class="role-pill">${r}</span>`).join(' ');
+        rolesSpan.innerHTML = (p.roles || []).map(r => `<span class="role-pill" data-tooltip="${roleDescriptions[r] || 'Role assigned to your account.'}" data-tooltip-title="${r}">${r}</span>`).join(' ');
 
         // Bio
         document.getElementById('bioInput').value = p.Bio || '';
@@ -371,13 +387,13 @@
         // Roles & Groups lists
         const rolesList = document.getElementById('rolesList');
         if (p.roles && p.roles.length) {
-          rolesList.innerHTML = p.roles.map(r => `<span class="role-pill">${r}</span>`).join('');
+          rolesList.innerHTML = p.roles.map(r => `<span class="role-pill" data-tooltip="${roleDescriptions[r] || 'Role assigned to your account.'}" data-tooltip-title="${r}">${r}</span>`).join('');
         } else {
           rolesList.innerHTML = '<span class="rg-empty">No roles assigned</span>';
         }
         const groupsList = document.getElementById('groupsList');
         if (p.groups && p.groups.length) {
-          groupsList.innerHTML = p.groups.map(g => `<span class="group-tag">${g}</span>`).join('');
+          groupsList.innerHTML = p.groups.map(g => `<span class="group-tag" data-tooltip="${groupDescriptions[g] || 'Group membership assigned by an administrator.'}" data-tooltip-title="${g}">${g}</span>`).join('');
         } else {
           groupsList.innerHTML = '<span class="rg-empty">No groups assigned</span>';
         }

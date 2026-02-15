@@ -151,6 +151,19 @@
 
     body.prepend(layout);
 
+    // Inject global tooltip system
+    if (!document.querySelector('link[href="tooltips.css"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'tooltips.css';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[src="tooltips.js"]')) {
+      const script = document.createElement('script');
+      script.src = 'tooltips.js';
+      document.body.appendChild(script);
+    }
+
     // Apply theme
     setTheme(theme);
   }
