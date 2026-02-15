@@ -6,6 +6,7 @@
   <title>Dashboard · Infinitely Weird DevOps</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="nav.css">
+  <link rel="stylesheet" href="dashboard.css">
   <style>
     :root {
       --bg: #0a0a1a;
@@ -178,19 +179,22 @@
 </head>
 <body>
   <div id="page-content">
-    <h1 class="page-title">Welcome back, <span id="greeting-name">...</span> 👋</h1>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <h1 class="page-title" style="margin-bottom:0">Welcome back, <span id="greeting-name">...</span> 👋</h1>
+      <button class="dashboard-edit-btn" title="Edit Dashboard">✏️ Edit</button>
+    </div>
 
     <div class="kpi-grid" id="kpi-grid">
-      <div class="glass-card kpi-card"><div class="kpi-icon">📋</div><div class="kpi-value" id="kpi-tasks">—</div><div class="kpi-label">Active Tasks</div></div>
-      <div class="glass-card kpi-card"><div class="kpi-icon">📁</div><div class="kpi-value" id="kpi-projects">—</div><div class="kpi-label">Open Projects</div></div>
-      <div class="glass-card kpi-card"><div class="kpi-icon">🚀</div><div class="kpi-value" id="kpi-deployments">—</div><div class="kpi-label">Pending Deploys</div></div>
-      <div class="glass-card kpi-card"><div class="kpi-icon">💚</div><div class="kpi-value" id="kpi-health">—</div><div class="kpi-label">System Health</div></div>
-      <div class="glass-card kpi-card"><div class="kpi-icon">🛡️</div><div class="kpi-value" id="kpi-security">—</div><div class="kpi-label">Security Score</div></div>
-      <div class="glass-card kpi-card"><div class="kpi-icon">👥</div><div class="kpi-value" id="kpi-team">—</div><div class="kpi-label">Team Members</div></div>
+      <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-tasks"><div class="kpi-icon">📋</div><div class="kpi-value" id="kpi-tasks">—</div><div class="kpi-label">Active Tasks</div></div>
+      <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-projects"><div class="kpi-icon">📁</div><div class="kpi-value" id="kpi-projects">—</div><div class="kpi-label">Open Projects</div></div>
+      <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-deployments"><div class="kpi-icon">🚀</div><div class="kpi-value" id="kpi-deployments">—</div><div class="kpi-label">Pending Deploys</div></div>
+      <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-health"><div class="kpi-icon">💚</div><div class="kpi-value" id="kpi-health">—</div><div class="kpi-label">System Health</div></div>
+      <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-security"><div class="kpi-icon">🛡️</div><div class="kpi-value" id="kpi-security">—</div><div class="kpi-label">Security Score</div></div>
+      <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-team"><div class="kpi-icon">👥</div><div class="kpi-value" id="kpi-team">—</div><div class="kpi-label">Team Members</div></div>
     </div>
 
     <div class="widgets-grid">
-      <div>
+      <div class="dashboard-widget" data-widget-id="widget-activity">
         <div class="glass-card">
           <div class="widget-title">⚡ Recent Activity</div>
           <div id="activity-feed">
@@ -209,7 +213,7 @@
         </div>
       </div>
 
-      <div>
+      <div class="dashboard-widget" data-widget-id="widget-actions">
         <div class="glass-card">
           <div class="widget-title">⚡ Quick Actions</div>
           <div class="quick-actions">
@@ -223,6 +227,7 @@
   </div>
 
   <script src="nav.js"></script>
+  <script src="dashboard.js"></script>
   <script>
     (async function () {
       // Greeting

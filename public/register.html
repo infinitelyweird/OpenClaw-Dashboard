@@ -74,6 +74,13 @@
     .form-group input.invalid { border-color: #ef4444; }
     .form-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem; padding-left: 2.75rem; }
     .form-error { font-size: 0.7rem; color: #fca5a5; margin-top: 0.25rem; padding-left: 2.75rem; display: none; }
+    .pw-requirements {
+      display: none; padding: 0.5rem 0.75rem 0.5rem 2.75rem; margin-top: 0.25rem;
+      font-size: 0.75rem; line-height: 1.6;
+    }
+    .pw-requirements.visible { display: block; }
+    .pw-req { color: var(--text-muted); transition: color 0.2s; }
+    .pw-req.met { color: var(--color-success, #34d399); }
     .submit-btn {
       width: 100%; padding: 0.8rem; border: none; border-radius: 12px;
       background: var(--gradient-accent); color: #fff; font-size: 1rem; font-weight: 700;
@@ -126,7 +133,13 @@
       </div>
       <div class="form-group">
         <span class="icon">🔒</span>
-        <input type="password" id="password" placeholder="Password" required minlength="6" autocomplete="new-password" />
+        <input type="password" id="password" placeholder="Password" required minlength="8" autocomplete="new-password" />
+        <div class="pw-requirements" id="pw-requirements">
+          <div class="pw-req" id="req-length">✗ At least 8 characters</div>
+          <div class="pw-req" id="req-upper">✗ Contains uppercase letter</div>
+          <div class="pw-req" id="req-lower">✗ Contains lowercase letter</div>
+          <div class="pw-req" id="req-number">✗ Contains a number</div>
+        </div>
       </div>
       <div class="form-group">
         <span class="icon">🔒</span>
@@ -154,6 +167,29 @@
     document.documentElement.setAttribute('data-theme', getTheme());
     document.getElementById('theme-toggle').textContent = getTheme() === 'dark' ? '🌙' : '☀️';
 
+    // Password requirements live check
+    const pwInput = document.getElementById('password');
+    const reqsDiv = document.getElementById('pw-requirements');
+    const reqs = {
+      length: { el: document.getElementById('req-length'), test: v => v.length >= 8 },
+      upper:  { el: document.getElementById('req-upper'),  test: v => /[A-Z]/.test(v) },
+      lower:  { el: document.getElementById('req-lower'),  test: v => /[a-z]/.test(v) },
+      number: { el: document.getElementById('req-number'), test: v => /[0-9]/.test(v) },
+    };
+    function checkReqs() {
+      const v = pwInput.value;
+      let allMet = true;
+      for (const k in reqs) {
+        const met = reqs[k].test(v);
+        reqs[k].el.classList.toggle('met', met);
+        reqs[k].el.textContent = (met ? '✓ ' : '✗ ') + reqs[k].el.textContent.slice(2);
+        if (!met) allMet = false;
+      }
+      return allMet;
+    }
+    pwInput.addEventListener('focus', () => reqsDiv.classList.add('visible'));
+    pwInput.addEventListener('input', checkReqs);
+
     // Live validation
     document.getElementById('confirm').addEventListener('input', function () {
       const match = this.value === document.getElementById('password').value;
@@ -168,6 +204,12 @@
       const suc = document.getElementById('success-msg');
       err.style.display = 'none';
       suc.style.display = 'none';
+
+      if (!checkReqs()) {
+        err.textContent = 'Password does not meet all requirements';
+        err.style.display = 'block';
+        return false;
+      }
 
       const pw = document.getElementById('password').value;
       const confirm = document.getElementById('confirm').value;

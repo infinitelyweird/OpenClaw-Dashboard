@@ -1,14 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { sql, getPool } = require('../db');
+const { registerRules } = require('../middleware/validate');
+const { logAudit, AUDIT } = require('../middleware/audit');
 const router = express.Router();
 
-router.post('/api/register', async (req, res) => {
+router.post('/api/register', ...registerRules, async (req, res) => {
   const { username, password, email } = req.body;
-
-  if (!email.endsWith('@infinitelyweird.com')) {
-    return res.status(400).json({ message: 'Invalid email domain. Must be @infinitelyweird.com.' });
-  }
 
   try {
     const pool = await getPool();
@@ -32,6 +30,7 @@ router.post('/api/register', async (req, res) => {
       .query(`INSERT INTO Users (Username, PasswordHash, Email, IsApproved, CreatedAt) 
               VALUES (@Username2, @PasswordHash, @Email2, 0, GETDATE())`);
 
+    logAudit(AUDIT.REGISTER, null, { username, email }, req);
     res.status(200).json({ message: 'Registration successful! Pending admin approval.' });
   } catch (err) {
     console.error(err);

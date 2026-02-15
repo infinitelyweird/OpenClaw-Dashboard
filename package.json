@@ -3,6 +3,9 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mssql": "^12.2.0",
     "multer": "^2.0.2",
@@ -11,7 +14,9 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "jest"
+    "migrate": "node migrate.js",
+    "test": "jest",
+    "seed:snark": "node seeds/snark-phrases.js"
   },
   "devDependencies": {
     "jest": "^30.2.0",

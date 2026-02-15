@@ -27,6 +27,11 @@
     .avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-size:.8rem;font-weight:600}
     .avatar-wrapper:hover .avatar-overlay{opacity:1}
     .avatar-hint{font-size:.78rem;color:var(--muted);margin-top:.5rem}
+    .pw-requirements{display:none;padding:.4rem 0 0;font-size:.75rem;line-height:1.6}
+    .pw-requirements.visible{display:block}
+    .pw-req{color:var(--muted);transition:color .2s}
+    .pw-req.met{color:var(--accent)}
+    .pw-match-error{font-size:.75rem;color:var(--danger);margin-top:.25rem;display:none}
 
     /* Form */
     .form-group{margin-bottom:1rem}
@@ -83,8 +88,17 @@
     <div class="glass-card" id="password">
       <h3 class="section-title">🔒 Change Password</h3>
       <div class="form-group"><label>Current Password</label><input type="password" id="currentPw" /></div>
-      <div class="form-group"><label>New Password</label><input type="password" id="newPw" placeholder="Min 6 characters" /></div>
-      <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPw" /></div>
+      <div class="form-group"><label>New Password</label><input type="password" id="newPw" placeholder="Min 8 characters" />
+        <div class="pw-requirements" id="pw-requirements">
+          <div class="pw-req" id="req-length">✗ At least 8 characters</div>
+          <div class="pw-req" id="req-upper">✗ Contains uppercase letter</div>
+          <div class="pw-req" id="req-lower">✗ Contains lowercase letter</div>
+          <div class="pw-req" id="req-number">✗ Contains a number</div>
+        </div>
+      </div>
+      <div class="form-group"><label>Confirm New Password</label><input type="password" id="confirmPw" />
+        <div class="pw-match-error" id="pw-match-error">Passwords don't match</div>
+      </div>
       <div class="form-actions"><button class="btn btn-primary" onclick="changePassword()">🔑 Update Password</button></div>
     </div>
 
@@ -145,11 +159,39 @@
       } catch(e) { showMsg('Failed to save profile', 'error'); }
     }
 
+    // Password requirements live check
+    const newPwInput = document.getElementById('newPw');
+    const confirmPwInput = document.getElementById('confirmPw');
+    const preqsDiv = document.getElementById('pw-requirements');
+    const preqs = {
+      length: { el: document.getElementById('req-length'), test: v => v.length >= 8 },
+      upper:  { el: document.getElementById('req-upper'),  test: v => /[A-Z]/.test(v) },
+      lower:  { el: document.getElementById('req-lower'),  test: v => /[a-z]/.test(v) },
+      number: { el: document.getElementById('req-number'), test: v => /[0-9]/.test(v) },
+    };
+    function checkPwReqs() {
+      const v = newPwInput.value;
+      let allMet = true;
+      for (const k in preqs) {
+        const met = preqs[k].test(v);
+        preqs[k].el.classList.toggle('met', met);
+        preqs[k].el.textContent = (met ? '✓ ' : '✗ ') + preqs[k].el.textContent.slice(2);
+        if (!met) allMet = false;
+      }
+      return allMet;
+    }
+    newPwInput.addEventListener('focus', () => preqsDiv.classList.add('visible'));
+    newPwInput.addEventListener('input', checkPwReqs);
+    confirmPwInput.addEventListener('input', function() {
+      const match = this.value === newPwInput.value;
+      document.getElementById('pw-match-error').style.display = (!match && this.value.length > 0) ? 'block' : 'none';
+    });
+
     async function changePassword() {
       const current = document.getElementById('currentPw').value;
       const newPw = document.getElementById('newPw').value;
       const confirm = document.getElementById('confirmPw').value;
-      if (newPw.length < 6) return showMsg('Password must be at least 6 characters', 'error');
+      if (!checkPwReqs()) return showMsg('Password does not meet all requirements', 'error');
       if (newPw !== confirm) return showMsg('Passwords don\'t match! 🤔', 'error');
       try {
         const r = await fetch('/api/profile/password', { method: 'PUT', headers: H(), body: JSON.stringify({ currentPassword: current, newPassword: newPw }) });

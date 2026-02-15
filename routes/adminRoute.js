@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const { sql, getPool } = require('../db');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const { logAudit, AUDIT } = require('../middleware/audit');
 const router = express.Router();
 
 // All admin routes require auth + admin role
@@ -69,6 +70,7 @@ router.post('/api/admin/users/:id/approve', async (req, res) => {
         END
       `);
 
+    logAudit(AUDIT.USER_APPROVED, req.user.userId, { targetUserId: req.params.id }, req);
     res.json({ message: 'User approved.' });
   } catch (err) {
     console.error(err);
@@ -92,6 +94,7 @@ router.post('/api/admin/users/:id/deny', async (req, res) => {
     await pool.request().input('UserID', sql.Int, id).query('DELETE FROM UserRoles WHERE UserID = @UserID');
     await pool.request().input('UserID', sql.Int, id).query('DELETE FROM UserGroups WHERE UserID = @UserID');
     await pool.request().input('UserID', sql.Int, id).query('DELETE FROM Users WHERE UserID = @UserID');
+    logAudit(AUDIT.USER_DENIED, req.user.userId, { targetUserId: req.params.id }, req);
     res.json({ message: 'User denied and removed.' });
   } catch (err) {
     console.error(err);
@@ -129,6 +132,7 @@ router.post('/api/admin/users/:id/reset-password', async (req, res) => {
       .input('UserID', sql.Int, req.params.id)
       .input('PasswordHash', sql.NVarChar, hashed)
       .query('UPDATE Users SET PasswordHash = @PasswordHash WHERE UserID = @UserID');
+    logAudit(AUDIT.PASSWORD_RESET, req.user.userId, { targetUserId: req.params.id }, req);
     res.json({ message: 'Password reset successfully.' });
   } catch (err) {
     console.error(err);
@@ -172,6 +176,7 @@ router.post('/api/admin/roles', async (req, res) => {
     await pool.request()
       .input('RoleName', sql.NVarChar, roleName)
       .query('INSERT INTO Roles (RoleName) VALUES (@RoleName)');
+    logAudit(AUDIT.ROLE_CREATED, req.user.userId, { roleName }, req);
     res.json({ message: 'Role created.' });
   } catch (err) {
     console.error(err);
@@ -187,6 +192,7 @@ router.delete('/api/admin/roles/:id', async (req, res) => {
     await pool.request().input('RoleID', sql.Int, id).query('DELETE FROM UserRoles WHERE RoleID = @RoleID');
     await pool.request().input('RoleID', sql.Int, id).query('DELETE FROM GroupRoles WHERE RoleID = @RoleID');
     await pool.request().input('RoleID', sql.Int, id).query('DELETE FROM Roles WHERE RoleID = @RoleID');
+    logAudit(AUDIT.ROLE_DELETED, req.user.userId, { roleId: req.params.id }, req);
     res.json({ message: 'Role deleted.' });
   } catch (err) {
     console.error(err);
@@ -202,6 +208,7 @@ router.post('/api/admin/users/:userId/roles/:roleId', async (req, res) => {
       .input('UserID', sql.Int, req.params.userId)
       .input('RoleID', sql.Int, req.params.roleId)
       .query('IF NOT EXISTS (SELECT 1 FROM UserRoles WHERE UserID=@UserID AND RoleID=@RoleID) INSERT INTO UserRoles (UserID, RoleID) VALUES (@UserID, @RoleID)');
+    logAudit(AUDIT.ROLE_ASSIGNED, req.user.userId, { targetUserId: req.params.userId, roleId: req.params.roleId }, req);
     res.json({ message: 'Role assigned.' });
   } catch (err) {
     console.error(err);
@@ -443,6 +450,37 @@ router.get('/api/admin/users/:id/permissions', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to load user permissions.' });
+  }
+});
+
+// ─── AUDIT LOGS ──────────────────────────────────────────
+
+// Get audit logs (admin only)
+router.get('/api/admin/audit-logs', async (req, res) => {
+  try {
+    const pool = await getPool();
+    const limit = Math.min(parseInt(req.query.limit) || 50, 200);
+    const offset = parseInt(req.query.offset) || 0;
+    const action = req.query.action;
+    
+    let query = `SELECT a.*, u.Username FROM AuditLog a 
+                 LEFT JOIN Users u ON a.UserID = u.UserID`;
+    const request = pool.request();
+    
+    if (action) {
+      query += ' WHERE a.Action = @Action';
+      request.input('Action', sql.NVarChar, action);
+    }
+    
+    query += ' ORDER BY a.CreatedAt DESC OFFSET @Offset ROWS FETCH NEXT @Limit ROWS ONLY';
+    request.input('Offset', sql.Int, offset);
+    request.input('Limit', sql.Int, limit);
+    
+    const result = await request.query(query);
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to load audit logs.' });
   }
 });
 

@@ -3,9 +3,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sql, getPool } = require('../db');
 const { JWT_SECRET } = require('../middleware/auth');
+const { loginRules } = require('../middleware/validate');
+const { logAudit, AUDIT } = require('../middleware/audit');
 const router = express.Router();
 
-router.post('/api/login', async (req, res) => {
+router.post('/api/login', ...loginRules, async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -21,11 +23,13 @@ router.post('/api/login', async (req, res) => {
     const user = result.recordset[0];
 
     if (!user.IsApproved) {
+      logAudit(AUDIT.LOGIN_UNAPPROVED, user.UserID, { username }, req);
       return res.status(403).json({ message: 'Your account is awaiting Administrator approval.' });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.PasswordHash);
     if (!isPasswordValid) {
+      logAudit(AUDIT.LOGIN_FAILED, null, { username }, req);
       return res.status(400).json({ message: 'Invalid username or password.' });
     }
 
@@ -50,6 +54,7 @@ router.post('/api/login', async (req, res) => {
       JWT_SECRET,
       { expiresIn: '24h' }
     );
+    logAudit(AUDIT.LOGIN_SUCCESS, user.UserID, { username }, req);
     res.status(200).json({ message: 'Login successful!', token, isAdmin });
   } catch (err) {
     console.error(err);

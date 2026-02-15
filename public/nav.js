@@ -107,9 +107,22 @@
       <div class="header-right">
         <button class="header-btn" id="theme-toggle" onclick="window.__toggleTheme()" title="Toggle theme">${theme === 'dark' ? '🌙' : '☀️'}</button>
         <button class="header-btn" title="Notifications">🔔<span class="badge"></span></button>
-        <div class="user-info" onclick="window.location.href='profile.html'">
-          <div class="user-avatar">${initials}</div>
-          <span class="user-name">${user ? user.username : 'Guest'}</span>
+        <div class="user-menu" id="user-menu">
+          <div class="user-info" onclick="window.__toggleUserMenu(event)">
+            <div class="user-avatar">${initials}</div>
+            <span class="user-name">${user ? user.username : 'Guest'}</span>
+          </div>
+          <div class="user-dropdown" id="user-dropdown">
+            <div class="dropdown-user-info">
+              <div class="dropdown-username">${user ? user.username : 'Guest'}</div>
+              <div class="dropdown-email">${user ? (user.username + '@infinitelyweird.dev') : ''}</div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="profile.html">👤 Profile</a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" onclick="window.__switchUser()">🔄 Switch User</button>
+            <button class="dropdown-item dropdown-item--danger" onclick="window.__logout()">🚪 Log Off</button>
+          </div>
         </div>
       </div>
     `;
@@ -151,7 +164,40 @@
     document.getElementById('sidebar-overlay')?.classList.remove('active');
   }
 
+  // ── User menu ──
+  function toggleUserMenu(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('user-dropdown');
+    if (dd) dd.classList.toggle('open');
+  }
+
+  function closeUserMenu() {
+    const dd = document.getElementById('user-dropdown');
+    if (dd) dd.classList.remove('open');
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  function switchUser() {
+    localStorage.removeItem('token');
+    // Brief toast before redirect
+    const toast = document.createElement('div');
+    toast.textContent = 'Switching user...';
+    toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--accent,#a78bfa);color:#fff;padding:0.5rem 1.5rem;border-radius:8px;z-index:9999;font-weight:600;';
+    document.body.appendChild(toast);
+    setTimeout(() => { window.location.href = 'login.html'; }, 600);
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener('click', closeUserMenu);
+
   // ── Expose globals ──
+  window.__toggleUserMenu = toggleUserMenu;
+  window.__logout = logout;
+  window.__switchUser = switchUser;
   window.__toggleTheme = toggleTheme;
   window.__toggleSidebar = function () {
     const s = document.getElementById('sidebar');

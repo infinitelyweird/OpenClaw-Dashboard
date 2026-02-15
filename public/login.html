@@ -149,6 +149,17 @@
     .submit-btn:active { transform: translateY(0); }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+    .shake { animation: shake 0.3s ease-in-out; }
+
+    .forgot-note {
+      text-align: center; margin-top: 0.75rem; font-size: 0.75rem; color: var(--text-muted);
+    }
+
     .alt-link {
       text-align: center;
       margin-top: 1.5rem;
@@ -217,6 +228,7 @@
     <div class="alt-link">
       Don't have an account? <a href="register.html">Register</a>
     </div>
+    <p class="forgot-note">Forgot your password? Contact your administrator.</p>
   </div>
 
   <script>
@@ -256,8 +268,12 @@
         localStorage.setItem('token', data.token);
         window.location.href = 'index.html';
       } catch (ex) {
-        err.textContent = ex.message;
+        err.textContent = 'Please check your credentials and try again.';
         err.style.display = 'block';
+        const card = document.querySelector('.login-card');
+        card.classList.remove('shake');
+        void card.offsetWidth; // reflow to restart animation
+        card.classList.add('shake');
         btn.disabled = false;
         btn.textContent = 'Sign In';
       }

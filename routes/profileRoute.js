@@ -4,6 +4,8 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const { sql, getPool } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
+const { profileUpdateRules, changePasswordRules } = require('../middleware/validate');
+const { logAudit, AUDIT } = require('../middleware/audit');
 const router = express.Router();
 
 // Avatar upload config
@@ -51,7 +53,7 @@ router.get('/api/profile', authenticateToken, async (req, res) => {
 });
 
 // Update own profile
-router.put('/api/profile', authenticateToken, async (req, res) => {
+router.put('/api/profile', authenticateToken, ...profileUpdateRules, async (req, res) => {
   const { displayName, bio, phone, location, jobTitle, department } = req.body;
   try {
     const pool = await getPool();
@@ -66,6 +68,7 @@ router.put('/api/profile', authenticateToken, async (req, res) => {
       .query(`UPDATE Users SET DisplayName=@DisplayName, Bio=@Bio, Phone=@Phone,
               Location=@Location, JobTitle=@JobTitle, Department=@Department
               WHERE UserID=@UserID`);
+    logAudit(AUDIT.PROFILE_UPDATED, req.user.userId, 'Profile updated', req);
     res.json({ message: 'Profile updated.' });
   } catch (err) {
     console.error(err);
@@ -83,6 +86,7 @@ router.post('/api/profile/avatar', authenticateToken, upload.single('avatar'), a
       .input('UserID', sql.Int, req.user.userId)
       .input('AvatarPath', sql.NVarChar, avatarPath)
       .query('UPDATE Users SET AvatarPath=@AvatarPath WHERE UserID=@UserID');
+    logAudit(AUDIT.AVATAR_UPLOADED, req.user.userId, 'Avatar uploaded', req);
     res.json({ message: 'Avatar uploaded.', avatarPath });
   } catch (err) {
     console.error(err);
@@ -91,9 +95,8 @@ router.post('/api/profile/avatar', authenticateToken, upload.single('avatar'), a
 });
 
 // Change own password
-router.post('/api/profile/change-password', authenticateToken, async (req, res) => {
+router.post('/api/profile/change-password', authenticateToken, ...changePasswordRules, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  if (!newPassword || newPassword.length < 6) return res.status(400).json({ message: 'New password must be at least 6 characters.' });
   try {
     const pool = await getPool();
     const result = await pool.request()
@@ -106,6 +109,7 @@ router.post('/api/profile/change-password', authenticateToken, async (req, res) 
       .input('UserID', sql.Int, req.user.userId)
       .input('PasswordHash', sql.NVarChar, hashed)
       .query('UPDATE Users SET PasswordHash=@PasswordHash WHERE UserID=@UserID');
+    logAudit(AUDIT.PASSWORD_CHANGE, req.user.userId, 'Password changed', req);
     res.json({ message: 'Password changed successfully.' });
   } catch (err) {
     console.error(err);

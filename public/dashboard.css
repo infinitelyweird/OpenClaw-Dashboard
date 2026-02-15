@@ -1,0 +1,222 @@
+/* ================================================================
+   DASHBOARD WIDGET SYSTEM — Drag & Drop, Resize, Edit Mode
+   ================================================================ */
+
+/* Edit Dashboard Button */
+.dashboard-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border, var(--border-glass, rgba(255,255,255,0.08)));
+  background: var(--glass, var(--bg-glass, rgba(255,255,255,0.06)));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text, var(--text-primary, #f0f0ff));
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+.dashboard-edit-btn:hover {
+  background: var(--glass-hover, var(--bg-glass-hover, rgba(255,255,255,0.12)));
+  border-color: var(--accent, var(--color-accent, #a78bfa));
+}
+.dashboard-edit-btn.active {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: var(--color-success, #34d399);
+  color: var(--color-success, #34d399);
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.25);
+}
+
+/* Drag Handle */
+.widget-drag-handle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--glass, var(--bg-glass, rgba(255,255,255,0.06)));
+  border: 1px solid var(--border, var(--border-glass, rgba(255,255,255,0.08)));
+  color: var(--text-muted, #64748b);
+  font-size: 1.1rem;
+  cursor: grab;
+  transition: all 0.2s ease;
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 10;
+  line-height: 1;
+}
+.widget-drag-handle:hover {
+  background: rgba(167, 139, 250, 0.2);
+  color: var(--accent, var(--color-accent, #a78bfa));
+}
+.widget-drag-handle:active { cursor: grabbing; }
+
+/* Resize Control */
+.widget-resize-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--glass, var(--bg-glass, rgba(255,255,255,0.06)));
+  border: 1px solid var(--border, var(--border-glass, rgba(255,255,255,0.08)));
+  color: var(--text-muted, #64748b);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+}
+.widget-resize-btn:hover {
+  background: rgba(167, 139, 250, 0.2);
+  color: var(--accent, var(--color-accent, #a78bfa));
+}
+
+/* Hide/Show Toggle */
+.widget-hide-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--glass, var(--bg-glass, rgba(255,255,255,0.06)));
+  border: 1px solid var(--border, var(--border-glass, rgba(255,255,255,0.08)));
+  color: var(--text-muted, #64748b);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: absolute;
+  top: 0.5rem;
+  right: 2.5rem;
+  z-index: 10;
+}
+.widget-hide-btn:hover {
+  background: rgba(248, 113, 113, 0.2);
+  color: var(--color-danger, #f87171);
+}
+
+/* Dashboard Widget Base */
+.dashboard-widget {
+  position: relative;
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Edit Mode — show controls */
+.edit-mode .widget-drag-handle,
+.edit-mode .widget-resize-btn,
+.edit-mode .widget-hide-btn {
+  display: flex;
+}
+.edit-mode .dashboard-widget {
+  outline: 1px dashed rgba(167, 139, 250, 0.25);
+  outline-offset: 2px;
+  border-radius: 16px;
+}
+
+/* Dragging state */
+.widget-dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  z-index: 1000;
+}
+
+/* Drop target */
+.widget-drop-target {
+  outline: 2px dashed var(--accent, var(--color-accent, #a78bfa)) !important;
+  outline-offset: 4px;
+  box-shadow: 0 0 24px rgba(167, 139, 250, 0.3),
+              inset 0 0 24px rgba(167, 139, 250, 0.05);
+  border-radius: 16px;
+}
+
+/* Widget hidden */
+.dashboard-widget.widget-hidden {
+  opacity: 0.3;
+  filter: grayscale(0.5);
+}
+.dashboard-widget.widget-hidden .widget-hide-btn {
+  color: var(--color-danger, #f87171);
+}
+
+/* Size variants */
+.dashboard-widget[data-widget-size="small"] {
+  grid-column: span 1;
+}
+.dashboard-widget[data-widget-size="medium"] {
+  grid-column: span 2;
+}
+.dashboard-widget[data-widget-size="large"] {
+  grid-column: span 3;
+}
+
+/* Resize menu */
+.widget-resize-menu {
+  display: none;
+  position: absolute;
+  top: 2.5rem;
+  right: 0.5rem;
+  background: var(--bg-surface, var(--bg-elevated, #1e293b));
+  border: 1px solid var(--border, var(--border-glass, rgba(255,255,255,0.08)));
+  border-radius: 12px;
+  padding: 0.25rem;
+  z-index: 100;
+  min-width: 100px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  backdrop-filter: blur(16px);
+}
+.widget-resize-menu.open { display: block; }
+.widget-resize-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.4rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--text, var(--text-primary, #f0f0ff));
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+.widget-resize-menu button:hover {
+  background: rgba(167, 139, 250, 0.15);
+}
+.widget-resize-menu button.active {
+  color: var(--accent, var(--color-accent, #a78bfa));
+  font-weight: 600;
+}
+
+/* Toast notification */
+.dashboard-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-surface, #1e293b);
+  border: 1px solid var(--accent, var(--color-accent, #a78bfa));
+  color: var(--text, var(--text-primary, #f0f0ff));
+  padding: 0.6rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  backdrop-filter: blur(16px);
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.35s ease;
+  pointer-events: none;
+}
+.dashboard-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
