@@ -159,7 +159,6 @@
     .msg.error { display: block; background: var(--color-danger-bg); color: var(--color-danger); border: 1px solid rgba(248,113,113,0.3); }
 
     /* Theme */
-    .theme-options { display: flex; gap: 0.8rem; flex-wrap: wrap; }
     .theme-option {
       width: 60px; height: 40px; border-radius: var(--radius-sm); cursor: pointer;
       border: 2px solid transparent; transition: all var(--duration) var(--ease); position: relative;
@@ -173,6 +172,11 @@
       color: var(--text-inverse); font-weight: 700;
     }
     .theme-option.selected .theme-check { display: flex; }
+    .theme-label {
+      position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);
+      font-size: 0.65rem; color: var(--text-muted); white-space: nowrap; font-weight: 500;
+    }
+    .theme-options { display: flex; gap: 0.8rem; flex-wrap: wrap; padding-bottom: 1.2rem; }
 
     .page-header h1 {
       font-family: 'Space Grotesk', sans-serif; font-size: 2rem; margin: 0; color: var(--text-primary);
@@ -307,10 +311,11 @@
         <h3 class="section-title">🎨 Preferences</h3>
         <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.8rem">Choose your vibe. Because DevOps should look good. 💅</p>
         <div class="theme-options">
-          <div class="theme-option selected" data-theme="dark-purple" style="background:linear-gradient(135deg,#0f172a,#1e1b4b)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
-          <div class="theme-option" data-theme="dark-teal" style="background:linear-gradient(135deg,#0f172a,#134e4a)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
-          <div class="theme-option" data-theme="dark-rose" style="background:linear-gradient(135deg,#0f172a,#4a1942)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
-          <div class="theme-option" data-theme="midnight" style="background:linear-gradient(135deg,#0a0a0a,#1a1a2e)" onclick="selectTheme(this)"><div class="theme-check">✓</div></div>
+          <div class="theme-option selected" data-theme="dark-purple" style="background:linear-gradient(135deg,#0f172a,#1e1b4b)" onclick="selectTheme(this)"><div class="theme-check">✓</div><div class="theme-label">Purple Haze</div></div>
+          <div class="theme-option" data-theme="dark-teal" style="background:linear-gradient(135deg,#0a1a1f,#134e4a)" onclick="selectTheme(this)"><div class="theme-check">✓</div><div class="theme-label">Ocean Deep</div></div>
+          <div class="theme-option" data-theme="dark-rose" style="background:linear-gradient(135deg,#1a0a1e,#4a1942)" onclick="selectTheme(this)"><div class="theme-check">✓</div><div class="theme-label">Neon Rose</div></div>
+          <div class="theme-option" data-theme="midnight" style="background:linear-gradient(135deg,#050508,#1a1a2e)" onclick="selectTheme(this)"><div class="theme-check">✓</div><div class="theme-label">Midnight</div></div>
+          <div class="theme-option" data-theme="light" style="background:linear-gradient(135deg,#f0f4f8,#ffffff)" onclick="selectTheme(this)"><div class="theme-check">✓</div><div class="theme-label">Clean Light</div></div>
         </div>
       </div>
     </div>
@@ -511,8 +516,14 @@
     function selectTheme(el) {
       document.querySelectorAll('.theme-option').forEach(t => t.classList.remove('selected'));
       el.classList.add('selected');
-      localStorage.setItem('theme', el.dataset.theme);
-      showMsg('Theme saved! Refresh for full effect. 🎨', 'success');
+      const theme = el.dataset.theme;
+      localStorage.setItem('theme', theme);
+      if (theme !== 'light') localStorage.setItem('preferred-dark-theme', theme);
+      document.documentElement.setAttribute('data-theme', theme);
+      // Update nav toggle button
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+      showMsg('Theme applied! 🎨', 'success');
     }
 
     if (window.location.hash === '#password') {

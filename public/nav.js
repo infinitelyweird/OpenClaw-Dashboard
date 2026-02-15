@@ -34,12 +34,19 @@
   function setTheme(t) {
     localStorage.setItem('theme', t);
     document.documentElement.setAttribute('data-theme', t);
+    if (t !== 'light') localStorage.setItem('preferred-dark-theme', t);
   }
   function toggleTheme() {
-    const next = getTheme() === 'dark' ? 'light' : 'dark';
+    const cur = getTheme();
+    let next;
+    if (cur === 'light') {
+      next = localStorage.getItem('preferred-dark-theme') || 'dark-purple';
+    } else {
+      next = 'light';
+    }
     setTheme(next);
     const btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
+    if (btn) btn.textContent = next === 'light' ? '☀️' : '🌙';
   }
 
   // ── Active page ──
@@ -106,7 +113,7 @@
         </div>
       </div>
       <div class="header-right">
-        <button class="header-btn" id="theme-toggle" onclick="window.__toggleTheme()" title="Toggle theme">${theme === 'dark' ? '🌙' : '☀️'}</button>
+        <button class="header-btn" id="theme-toggle" onclick="window.__toggleTheme()" title="Toggle theme">${theme === 'light' ? '☀️' : '🌙'}</button>
         <button class="header-btn" title="Notifications">🔔<span class="badge"></span></button>
         <div class="user-menu" id="user-menu">
           <div class="user-info" onclick="window.__toggleUserMenu(event)">
