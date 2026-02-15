@@ -122,11 +122,22 @@ router.put('/api/admin/users/:id', async (req, res) => {
 // Reset user password
 router.post('/api/admin/users/:id/reset-password', async (req, res) => {
   const { newPassword } = req.body;
-  if (!newPassword || newPassword.length < 6) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters.' });
-  }
   try {
     const pool = await getPool();
+    // Check if target user is an admin
+    const adminCheck = await pool.request()
+      .input('TargetUID', sql.Int, req.params.id)
+      .query(`SELECT COUNT(*) AS cnt FROM UserRoles ur INNER JOIN Roles r ON ur.RoleID = r.RoleID WHERE ur.UserID = @TargetUID AND r.RoleName = 'Administrator'`);
+    const targetIsAdmin = adminCheck.recordset[0].cnt > 0;
+    const minLen = targetIsAdmin ? 13 : 8;
+
+    if (!newPassword || newPassword.length < minLen) {
+      return res.status(400).json({ message: `Password must be at least ${minLen} characters${targetIsAdmin ? ' (Administrator requirement)' : ''}.` });
+    }
+    if (!/[A-Z]/.test(newPassword)) return res.status(400).json({ message: 'Password needs an uppercase letter.' });
+    if (!/[a-z]/.test(newPassword)) return res.status(400).json({ message: 'Password needs a lowercase letter.' });
+    if (!/[0-9]/.test(newPassword)) return res.status(400).json({ message: 'Password needs a number.' });
+
     const hashed = await bcrypt.hash(newPassword, 10);
     await pool.request()
       .input('UserID', sql.Int, req.params.id)

@@ -454,12 +454,16 @@
       } catch(e) { showMsg('Failed to save details', 'error'); }
     }
 
-    // Password requirements
+    // Password requirements — admins need 13+ chars
     const newPwInput = document.getElementById('newPw');
     const confirmPwInput = document.getElementById('confirmPw');
     const preqsDiv = document.getElementById('pw-requirements');
+    const isAdmin = (() => { try { return JSON.parse(atob(TOKEN.split('.')[1])).isAdmin; } catch { return false; } })();
+    const minPwLen = isAdmin ? 13 : 8;
+    document.getElementById('req-length').textContent = `✗ At least ${minPwLen} characters`;
+    newPwInput.placeholder = `Min ${minPwLen} characters`;
     const preqs = {
-      length: { el: document.getElementById('req-length'), test: v => v.length >= 8 },
+      length: { el: document.getElementById('req-length'), test: v => v.length >= minPwLen },
       upper:  { el: document.getElementById('req-upper'),  test: v => /[A-Z]/.test(v) },
       lower:  { el: document.getElementById('req-lower'),  test: v => /[a-z]/.test(v) },
       number: { el: document.getElementById('req-number'), test: v => /[0-9]/.test(v) },
