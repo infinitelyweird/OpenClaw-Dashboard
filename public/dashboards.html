@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboards — Infinitely Weird</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="custom-dashboard.css" />
+</head>
+<body>
+  <div id="page-content">
+    <div class="cd-header">
+      <div class="cd-header-left">
+        <h1 class="cd-title">📊 My Dashboards</h1>
+      </div>
+      <div class="cd-header-right">
+        <button class="cd-btn cd-btn-primary" id="btn-create-dash">＋ New Dashboard</button>
+      </div>
+    </div>
+
+    <div id="dash-section-mine"></div>
+    <div id="dash-section-shared"></div>
+    <div id="dash-empty" style="display:none" class="cd-empty">
+      <div class="cd-empty-icon">📊</div>
+      <h2>No dashboards yet</h2>
+      <p>Create your first custom dashboard to get started.</p>
+    </div>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div class="cd-modal-overlay" id="modal-create" style="display:none">
+    <div class="cd-modal">
+      <div class="cd-modal-header">
+        <h2 id="create-modal-title">New Dashboard</h2>
+        <button class="cd-modal-close" onclick="document.getElementById('modal-create').style.display='none'">✕</button>
+      </div>
+      <div class="cd-modal-body">
+        <div class="cd-form-grid">
+          <label>Name <input type="text" id="dash-name" placeholder="My Dashboard" /></label>
+          <label>Description <input type="text" id="dash-desc" placeholder="Optional description..." /></label>
+          <label>Icon <input type="text" id="dash-icon" value="📊" maxlength="5" style="width:60px" /></label>
+          <label style="flex-direction:row;align-items:center;gap:0.5rem">
+            <input type="checkbox" id="dash-shared" /> Share with all users
+          </label>
+        </div>
+      </div>
+      <div class="cd-modal-footer">
+        <button class="cd-btn cd-btn-secondary" onclick="document.getElementById('modal-create').style.display='none'">Cancel</button>
+        <button class="cd-btn cd-btn-primary" id="btn-save-dash">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="nav.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    let dashboards = [];
+    let editingId = null;
+
+    async function load() {
+      const res = await window.apiFetch('/api/dashboards');
+      if (res && res.ok) dashboards = await res.json();
+      render();
+    }
+
+    function render() {
+      const token = localStorage.getItem('token');
+      let userId;
+      try { userId = JSON.parse(atob(token.split('.')[1])).userId; } catch { userId = 0; }
+
+      const mine = dashboards.filter(d => d.CreatedBy === userId);
+      const shared = dashboards.filter(d => d.IsShared && d.CreatedBy !== userId);
+
+      if (!mine.length && !shared.length) {
+        document.getElementById('dash-empty').style.display = '';
+        document.getElementById('dash-section-mine').innerHTML = '';
+        document.getElementById('dash-section-shared').innerHTML = '';
+        return;
+      }
+      document.getElementById('dash-empty').style.display = 'none';
+
+      document.getElementById('dash-section-mine').innerHTML = mine.length ? `
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;color:var(--text-primary);margin:1.5rem 0 0.75rem">My Dashboards</h2>
+        <div class="dash-cards">${mine.map(cardHtml).join('')}</div>` : '';
+
+      document.getElementById('dash-section-shared').innerHTML = shared.length ? `
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;color:var(--text-primary);margin:1.5rem 0 0.75rem">🌐 Shared Dashboards</h2>
+        <div class="dash-cards">${shared.map(cardHtml).join('')}</div>` : '';
+    }
+
+    function cardHtml(d) {
+      const date = new Date(d.UpdatedAt).toLocaleDateString();
+      return `<div class="dash-card" onclick="location.href='custom-dashboard.html?id=${d.DashboardID}'">
+        <div class="dash-card-icon">${d.Icon || '📊'}</div>
+        <div class="dash-card-info">
+          <div class="dash-card-name">${d.Name}</div>
+          <div class="dash-card-desc">${d.Description || 'No description'}</div>
+          <div class="dash-card-meta">${d.WidgetCount || 0} widgets · Updated ${date}</div>
+        </div>
+        <div class="dash-card-actions" onclick="event.stopPropagation()">
+          <button class="cd-widget-action" onclick="editDash(${d.DashboardID})" title="Edit">✏️</button>
+          <button class="cd-widget-action danger" onclick="deleteDash(${d.DashboardID})" title="Delete">🗑️</button>
+        </div>
+      </div>`;
+    }
+
+    window.editDash = function(id) {
+      const d = dashboards.find(db => db.DashboardID === id);
+      if (!d) return;
+      editingId = id;
+      document.getElementById('create-modal-title').textContent = 'Edit Dashboard';
+      document.getElementById('dash-name').value = d.Name;
+      document.getElementById('dash-desc').value = d.Description || '';
+      document.getElementById('dash-icon').value = d.Icon || '📊';
+      document.getElementById('dash-shared').checked = d.IsShared;
+      document.getElementById('btn-save-dash').textContent = 'Save';
+      document.getElementById('modal-create').style.display = '';
+    };
+
+    window.deleteDash = async function(id) {
+      if (!confirm('Delete this dashboard and all its widgets?')) return;
+      const res = await window.apiFetch('/api/dashboards/' + id, { method: 'DELETE' });
+      if (res && res.ok) load();
+    };
+
+    document.getElementById('btn-create-dash').onclick = () => {
+      editingId = null;
+      document.getElementById('create-modal-title').textContent = 'New Dashboard';
+      document.getElementById('dash-name').value = '';
+      document.getElementById('dash-desc').value = '';
+      document.getElementById('dash-icon').value = '📊';
+      document.getElementById('dash-shared').checked = false;
+      document.getElementById('btn-save-dash').textContent = 'Create';
+      document.getElementById('modal-create').style.display = '';
+    };
+
+    document.getElementById('btn-save-dash').onclick = async () => {
+      const data = {
+        name: document.getElementById('dash-name').value.trim(),
+        description: document.getElementById('dash-desc').value.trim(),
+        icon: document.getElementById('dash-icon').value.trim() || '📊',
+        isShared: document.getElementById('dash-shared').checked,
+      };
+      if (!data.name) { alert('Name is required'); return; }
+      let res;
+      if (editingId) {
+        res = await window.apiFetch('/api/dashboards/' + editingId, { method: 'PUT', body: JSON.stringify(data) });
+      } else {
+        res = await window.apiFetch('/api/dashboards', { method: 'POST', body: JSON.stringify(data) });
+      }
+      if (res && res.ok) {
+        document.getElementById('modal-create').style.display = 'none';
+        load();
+      }
+    };
+
+    document.getElementById('modal-create').onclick = e => { if (e.target.id === 'modal-create') e.target.style.display = 'none'; };
+
+    // Card styles
+    const s = document.createElement('style');
+    s.textContent = `
+      .dash-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+      .dash-card{display:flex;align-items:center;gap:1rem;padding:1.25rem;background:var(--bg-glass);border:1px solid var(--border-glass);border-radius:var(--radius-lg);backdrop-filter:blur(var(--blur));cursor:pointer;transition:all .2s}
+      .dash-card:hover{border-color:var(--border-glass-hover);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+      .dash-card-icon{font-size:2rem;flex-shrink:0}
+      .dash-card-info{flex:1;min-width:0}
+      .dash-card-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:0.2rem}
+      .dash-card-desc{font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .dash-card-meta{font-size:0.75rem;color:var(--text-muted)}
+      .dash-card-actions{display:flex;gap:0.25rem;opacity:0;transition:opacity .2s}
+      .dash-card:hover .dash-card-actions{opacity:1}
+    `;
+    document.head.appendChild(s);
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+    else load();
+  })();
+  </script>
+</body>
+</html>

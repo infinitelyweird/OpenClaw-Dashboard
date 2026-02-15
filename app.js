@@ -60,6 +60,7 @@ app.use('/', require('./routes/speedtestRoute'));
 app.use('/', require('./routes/network-security'));
 app.use('/', require('./routes/versionRoute'));
 app.use('/', require('./routes/snarkRoute'));
+app.use('/', require('./routes/dashboardRoute'));
 
 // Default route
 app.get('/', (req, res) => {

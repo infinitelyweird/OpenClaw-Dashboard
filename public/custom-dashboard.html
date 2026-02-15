@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Dashboard — Infinitely Weird</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="custom-dashboard.css" />
+</head>
+<body>
+  <div id="page-content">
+    <div class="cd-header">
+      <div class="cd-header-left">
+        <a href="dashboards.html" class="cd-back-btn">← Back</a>
+        <span class="cd-icon" id="cd-icon">📊</span>
+        <h1 class="cd-title" id="cd-title">Dashboard</h1>
+        <span class="cd-desc" id="cd-desc"></span>
+      </div>
+      <div class="cd-header-right">
+        <button class="cd-btn cd-btn-secondary" id="btn-variables" title="Variables">🔧 Variables</button>
+        <button class="cd-btn cd-btn-secondary" id="btn-add-widget" style="display:none">＋ Add Widget</button>
+        <button class="cd-btn cd-btn-secondary" id="btn-save-layout" style="display:none">💾 Save Layout</button>
+        <button class="cd-btn cd-btn-primary" id="btn-edit-mode">✏️ Edit</button>
+      </div>
+    </div>
+    <div class="cd-grid" id="cd-grid"></div>
+    <div class="cd-empty" id="cd-empty" style="display:none">
+      <div class="cd-empty-icon">📦</div>
+      <h2>No widgets yet</h2>
+      <p>Enter edit mode and add widgets to get started.</p>
+    </div>
+  </div>
+
+  <!-- Add Widget Modal -->
+  <div class="cd-modal-overlay" id="modal-add-widget" style="display:none">
+    <div class="cd-modal cd-modal-lg">
+      <div class="cd-modal-header">
+        <h2>🏪 Widget Store</h2>
+        <input type="text" class="cd-modal-search" id="widget-search" placeholder="Search widgets..." />
+        <button class="cd-modal-close" onclick="closeModal('modal-add-widget')">✕</button>
+      </div>
+      <div class="cd-modal-body cd-store">
+        <div class="cd-store-cats" id="store-categories"></div>
+        <div class="cd-store-grid" id="store-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget Config Modal -->
+  <div class="cd-modal-overlay" id="modal-widget-config" style="display:none">
+    <div class="cd-modal">
+      <div class="cd-modal-header">
+        <h2 id="config-modal-title">Configure Widget</h2>
+        <button class="cd-modal-close" onclick="closeModal('modal-widget-config')">✕</button>
+      </div>
+      <div class="cd-modal-body" id="config-modal-body"></div>
+      <div class="cd-modal-footer">
+        <button class="cd-btn cd-btn-secondary" onclick="closeModal('modal-widget-config')">Cancel</button>
+        <button class="cd-btn cd-btn-primary" id="btn-save-config">Save Widget</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variables Modal -->
+  <div class="cd-modal-overlay" id="modal-variables" style="display:none">
+    <div class="cd-modal cd-modal-lg">
+      <div class="cd-modal-header">
+        <h2>🔧 Widget Variables</h2>
+        <button class="cd-modal-close" onclick="closeModal('modal-variables')">✕</button>
+      </div>
+      <div class="cd-modal-body">
+        <div class="cd-var-toolbar">
+          <input type="text" class="cd-var-search" id="var-search" placeholder="Search variables..." />
+          <button class="cd-btn cd-btn-primary cd-btn-sm" id="btn-add-var">＋ New Variable</button>
+        </div>
+        <div id="var-list"></div>
+        <div id="var-form" style="display:none">
+          <h3 id="var-form-title">New Variable</h3>
+          <div class="cd-form-grid">
+            <label>Name <input type="text" id="var-name" placeholder="my_variable" /></label>
+            <label>Display Name <input type="text" id="var-display" placeholder="My Variable" /></label>
+            <label>Value <input type="text" id="var-value" /></label>
+            <label>Type
+              <select id="var-type"><option>text</option><option>number</option><option>url</option><option>secret</option><option>json</option><option>color</option></select>
+            </label>
+            <label>Category <input type="text" id="var-category" placeholder="general" /></label>
+            <label>Description <input type="text" id="var-description" /></label>
+          </div>
+          <div class="cd-form-actions">
+            <button class="cd-btn cd-btn-secondary" onclick="document.getElementById('var-form').style.display='none'">Cancel</button>
+            <button class="cd-btn cd-btn-primary" id="btn-save-var">Save Variable</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="nav.js"></script>
+  <script src="widget-renderers.js"></script>
+  <script src="custom-dashboard-app.js"></script>
+</body>
+</html>

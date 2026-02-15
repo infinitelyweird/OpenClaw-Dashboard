@@ -51,6 +51,7 @@
   // ── Nav items ──
   const navItems = [
     { icon: '🏠', label: 'Dashboard', href: 'index.html' },
+    { icon: '📊', label: 'Dashboards', href: 'dashboards.html' },
     { icon: '📋', label: 'Tasks', href: 'tasks.html' },
     { icon: '📁', label: 'Projects', href: 'projects.html' },
     { icon: '🚀', label: 'Deployments', href: 'deployments.html' },

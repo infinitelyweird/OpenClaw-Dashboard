@@ -113,4 +113,21 @@ router.post('/api/speedtest/configure', (req, res) => {
   res.json({ message: `Auto speed test enabled every ${intervalMinutes} minutes.`, intervalMinutes, autoEnabled: true });
 });
 
+// Auto-start speed test every 15 minutes on server boot
+intervalMinutes = 15;
+intervalTimer = setInterval(() => {
+  runSpeedTest()
+    .then(r => console.log(`[SPEEDTEST] Auto complete: ${r.downloadMbps}↓ / ${r.uploadMbps}↑ Mbps, ${r.pingMs}ms ping`))
+    .catch(e => console.error('[SPEEDTEST] Auto error:', e.message));
+}, intervalMinutes * 60 * 1000);
+
+// Run one immediately on startup (after 30s delay to let server settle)
+setTimeout(() => {
+  runSpeedTest()
+    .then(r => console.log(`[SPEEDTEST] Startup test: ${r.downloadMbps}↓ / ${r.uploadMbps}↑ Mbps, ${r.pingMs}ms ping`))
+    .catch(e => console.error('[SPEEDTEST] Startup test error:', e.message));
+}, 30000);
+
+console.log(`[SPEEDTEST] Auto-polling enabled: every ${intervalMinutes} minutes`);
+
 module.exports = router;
