@@ -44,6 +44,28 @@ router.get('/api/network/stats', async (req, res) => {
 
 // --- SECURITY ---
 
+// GET /api/security/failed-logins — failed login attempts
+router.get('/api/security/failed-logins', async (req, res) => {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .query(`SELECT TOP 10 Action, UserID, IPAddress, UserAgent, Details, CreatedAt 
+              FROM AuditLog 
+              WHERE Action = 'LOGIN_FAILED'
+              ORDER BY CreatedAt DESC`);
+    const logins = result.recordset.map(row => ({
+      username: JSON.parse(row.Details)?.username || 'Unknown',
+      ipAddress: row.IPAddress,
+      userAgent: row.UserAgent,
+      timestamp: row.CreatedAt
+    }));
+    res.json({ count: logins.length, logins });
+  } catch (err) {
+    console.error('[SECURITY] Failed to fetch failed logins:', err.message);
+    res.status(500).json({ message: 'Failed to get failed logins.' });
+  }
+});
+
 // GET /api/security/open-ports — listening ports
 router.get('/api/security/open-ports', async (req, res) => {
   try {

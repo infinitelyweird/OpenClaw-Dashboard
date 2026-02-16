@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help & Documentation - Infinitely Weird DevOps Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="documentation.css">
+</head>
+<body>
+  <div class="doc-container">
+    <header class="doc-header">
+      <h1>Help & Documentation</h1>
+      <input type="text" id="search" placeholder="Search documentation..." oninput="filterDocs(this.value)" />
+    </header>
+
+    <section class="doc-categories">
+      <h2>Categories</h2>
+      <div id="categories-list">
+        <!-- Dynamically populated categories -->
+      </div>
+    </section>
+
+    <section class="doc-content" id="doc-content">
+      <h2>Documentation</h2>
+      <div id="doc-placeholder">
+        <p>Select a category to view detailed documentation, browse the topics below, or use the search bar to find what you need.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="documentation.js"></script>
+</body>
+</html>

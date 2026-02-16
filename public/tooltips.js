@@ -1,10 +1,11 @@
+// Tooltip Logic: Fix null anchor issues, clarify delegation behavior
 (function() {
   'use strict';
-  
+
   let activeTooltip = null;
   let hoverTimeout = null;
   let isPinned = false;
-  
+
   function createTooltip() {
     const el = document.createElement('div');
     el.className = 'iw-tooltip';
@@ -22,41 +23,45 @@
     document.body.appendChild(el);
     return el;
   }
-  
+
   function getTooltipEl() {
     if (!activeTooltip) activeTooltip = createTooltip();
     return activeTooltip;
   }
-  
+
   function positionTooltip(tooltip, anchor) {
+    if (!anchor) return; // Add null safety check
+
     const rect = anchor.getBoundingClientRect();
     const tipRect = tooltip.getBoundingClientRect();
-    
+
     let top = rect.bottom + 8;
     let left = rect.left + (rect.width / 2) - (tipRect.width / 2);
-    
+
     // Keep within viewport
     if (left < 8) left = 8;
     if (left + tipRect.width > window.innerWidth - 8) left = window.innerWidth - tipRect.width - 8;
     if (top + tipRect.height > window.innerHeight - 8) {
       top = rect.top - tipRect.height - 8; // flip above
     }
-    
+
     tooltip.style.top = top + 'px';
     tooltip.style.left = left + 'px';
   }
-  
+
   function showTooltip(anchor) {
+    if (!anchor) return; // Add null safety check
+
     const title = anchor.getAttribute('data-tooltip-title') || anchor.textContent.trim();
     const body = anchor.getAttribute('data-tooltip');
     if (!body) return;
-    
+
     const tip = getTooltipEl();
     tip.querySelector('.iw-tooltip-title-text').textContent = title;
     tip.querySelector('.iw-tooltip-body').textContent = body;
     tip.classList.remove('fading', 'pinned');
     isPinned = false;
-    
+
     // Position needs to happen after content is set
     tip.style.display = 'block';
     requestAnimationFrame(() => {
@@ -64,7 +69,7 @@
       requestAnimationFrame(() => tip.classList.add('visible'));
     });
   }
-  
+
   function hideTooltip() {
     if (!activeTooltip) return;
     isPinned = false;
@@ -77,35 +82,35 @@
       }
     }, 100); // fast fade out
   }
-  
+
   function pinTooltip() {
     if (!activeTooltip) return;
     isPinned = true;
     activeTooltip.classList.add('pinned');
   }
-  
+
   // Event delegation — works on any [data-tooltip] element, even dynamically added
   document.addEventListener('mouseenter', function(e) {
-    const target = e.target.closest('[data-tooltip]');
+    const target = e?.target?.closest?.('[data-tooltip]'); // Add safeguard
     if (!target) return;
     if (isPinned) return; // don't interrupt a pinned tooltip
-    
+
     clearTimeout(hoverTimeout);
     hoverTimeout = setTimeout(() => showTooltip(target), 300); // slight delay
   }, true);
-  
+
   document.addEventListener('mouseleave', function(e) {
-    const target = e.target.closest('[data-tooltip]');
+    const target = e?.target?.closest?.('[data-tooltip]'); // Add safeguard
     if (!target) return;
     clearTimeout(hoverTimeout);
     if (!isPinned) {
       hideTooltip();
     }
   }, true);
-  
+
   // Click to pin
   document.addEventListener('click', function(e) {
-    const target = e.target.closest('[data-tooltip]');
+    const target = e?.target?.closest?.('[data-tooltip]'); // Add safeguard
     if (target) {
       e.preventDefault();
       if (isPinned) {
@@ -122,7 +127,7 @@
       hideTooltip();
     }
   });
-  
+
   // Expose for programmatic use
   window.IWTooltip = { show: showTooltip, hide: hideTooltip, pin: pinTooltip };
 })();

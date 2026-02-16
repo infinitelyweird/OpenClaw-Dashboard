@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="loader.css">
   <style>
-    :root {
+    :root
+	{
       --bg: #0a0a1a;
       --bg-surface: #12122a;
       --glass: rgba(255,255,255,0.06);
@@ -182,9 +183,9 @@
   <div id="page-content">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
       <h1 class="page-title" style="margin-bottom:0">Welcome back, <span id="greeting-name">...</span> 👋</h1>
-      <button class="dashboard-edit-btn" title="Edit Dashboard">✏️ Edit</button>
+      <button class="dashboard-edit-btn active" title="Edit Dashboard">✏️ Edit</button>
     </div>
-
+	
     <div class="kpi-grid" id="kpi-grid">
       <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-tasks"><div class="kpi-icon">📋</div><div class="kpi-value" id="kpi-tasks">—</div><div class="kpi-label">Active Tasks</div></div>
       <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-projects"><div class="kpi-icon">📁</div><div class="kpi-value" id="kpi-projects">—</div><div class="kpi-label">Open Projects</div></div>
@@ -193,7 +194,7 @@
       <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-security"><div class="kpi-icon">🛡️</div><div class="kpi-value" id="kpi-security">—</div><div class="kpi-label">Security Score</div></div>
       <div class="dashboard-widget glass-card kpi-card" data-widget-id="kpi-team"><div class="kpi-icon">👥</div><div class="kpi-value" id="kpi-team">—</div><div class="kpi-label">Team Members</div></div>
     </div>
-
+	
     <div class="widgets-grid">
       <div class="dashboard-widget" data-widget-id="widget-activity">
         <div class="glass-card">
@@ -203,15 +204,19 @@
           </div>
         </div>
 
-        <div class="glass-card" style="margin-top:1.25rem">
-          <div class="widget-title">🖥️ System Status</div>
-          <div id="system-status">
-            <div class="status-row"><span><span class="status-dot status-green"></span>API Server</span><span>Checking...</span></div>
-            <div class="status-row"><span><span class="status-dot status-green"></span>CPU Usage</span><span id="sys-cpu">—</span></div>
-            <div class="status-row"><span><span class="status-dot status-green"></span>Memory</span><span id="sys-mem">—</span></div>
-            <div class="status-row"><span><span class="status-dot status-green"></span>Uptime</span><span id="sys-uptime">—</span></div>
-          </div>
+        </div> <!-- Split Widgets -->
+    <!-- 🖥️ System Status Widget -->
+    <div class="dashboard-widget" data-widget-id="widget-system-status">
+      <div class="glass-card">
+        <div class="widget-title">🖥️ System Status</div>
+        <div id="system-status">
+          <div class="status-row"><span><span class="status-dot status-green"></span>API Server</span><span>Checking...</span></div>
+          <div class="status-row"><span><span class="status-dot status-green"></span>CPU Usage</span><span id="sys-cpu">—</span></div>
+          <div class="status-row"><span><span class="status-dot status-green"></span>Memory</span><span id="sys-mem">—</span></div>
+          <div class="status-row"><span><span class="status-dot status-green"></span>Uptime</span><span id="sys-uptime">—</span></div>
         </div>
+      </div>
+    </div>
       </div>
 
       <div class="dashboard-widget" data-widget-id="widget-actions">
@@ -229,7 +234,7 @@
 
   <script src="loader.js"></script>
   <script src="nav.js"></script>
-  <script src="dashboard.js"></script>
+  <script src="dashboard.js?v=12345"></script>
   <script>
     (function () {
       const token = localStorage.getItem('token');

@@ -120,6 +120,23 @@
   <script src="nav.js"></script>
 
   <div id="page-content">
+    <div class="a-card" id="domainTests">
+      <div class="sec-title">📡 Domain Tests</div>
+      <div>
+        <ul class="domain-list"></ul>
+        <div style="margin-top: 1rem;">
+          <input id="newDomain" placeholder="Add new domain name" style="width:60%;">
+          <button id="addDomain">Add Domain</button>
+        </div>
+      </div>
+      <div style="margin-top: 1.5rem;">
+        <label>Check Frequency (in minutes):
+          <input type="number" id="checkFrequency" value="60" step="5" min="5" style="width:70px; margin:0 1rem;">
+        </label>
+        <button id="applyFreq">Apply</button>
+      </div>
+    </div>
+    <script src="domain-widget.js"></script>
     <div class="page-header">
       <div>
         <p class="eyebrow">Administration</p>

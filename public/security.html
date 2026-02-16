@@ -247,8 +247,18 @@
         else addEvent('good', 'SSL/TLS active');
       } catch { results.ssl = { ok: null, detail: 'Could not check' }; }
 
-      // Failed logins — no endpoint, optimistic
-      results.logins = { ok: true, detail: 'No failed login data available' };
+      // Fetch failed logins
+default:
+try {
+  const r = await fetch('/api/security/failed-logins', { headers });
+  const data = await r.json();
+  results.logins = data && data.count > 0
+    ? { ok: false, detail: `${data.count} failed login attempt(s) detected` }
+    : { ok: true, detail: 'No failed logins detected' };
+
+  if (data && data.count > 0) {
+    const failedLoginsHtml = data.logins.map(login => `
+      <div style=\"color:var(--red);margin:0.3rem">< Person>::</Person>{}</></div_p;}.
 
       // Open ports — fetch from network stats as proxy
       try {
