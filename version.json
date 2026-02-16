@@ -1,6 +1,6 @@
 {
   "app": "Infinitely Weird DevOps Dashboard",
-  "version": "2.0.0",
+  "version": "Alpha7",
   "buildDate": "2026-02-14",
   "modules": {
     "module-loader": "1.0.0",
