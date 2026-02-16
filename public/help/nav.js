@@ -1,4 +1,4 @@
-// nav.js — Shared navigation logic for Infinitely Weird DevOps Dashboard
+// nav.js — Shared navigation logic for Infinitely Weird DevOps Knowledge Base
 (function () {
   'use strict';
 
@@ -76,37 +76,13 @@
 	return false;
   }
 
-	// Random monkey for the knowledge base link.
-  	var emoji = [String.fromCodePoint(0x1F648), String.fromCodePoint(0x1F649), String.fromCodePoint(0x1F64A)]; 
-	var randomMonkey = emoji[Math.floor(Math.random() * emoji.length)];
-	
-	var house = String.fromCodePoint(0x1F3E0);
-	var chart = String.fromCodePoint(0x1F4C8);
-	var tasks = String.fromCodePoint(0x1F4CB);
-	var projects = String.fromCodePoint(0x1F4D2);
-	var deployments = String.fromCodePoint(0x1F680)
-	var systems = String.fromCodePoint(0x1F4BB);
-	var network = String.fromCodePoint(0x1F310);
-	var admin = String.fromCodePoint(0x1F512);
-	var security = String.fromCodePoint(0x1F355); // 0x1F512
-	var profile = String.fromCodePoint(0x1F478);
-
-  // Nav items
+  // ── Nav items ──
   const navItems = [
-    { icon: house, label: 'Dashboard', href: 'index.html' },
-    { icon: chart, label: 'Dashboards', href: 'dashboards.html' },
-    { icon: tasks, label: 'Tasks', href: 'tasks.html' },
-    { icon: projects, label: 'Projects', href: 'projects.html' },
-    { icon: deployments, label: 'Deployments', href: 'deployments.html' },
-    { icon: systems, label: 'Systems', href: 'systems.html' },
-    { icon: network, label: 'Network', href: 'network.html' },
-    { icon: security, label: 'Security', href: 'security.html' },
-    { icon: admin, label: 'Admin', href: 'admin.html', adminOnly: true },
-    { icon: security, label: 'Profile', href: 'profile.html' },
-	{ icon: randomMonkey, label: 'Knowledge Base', href: 'help/index.html' }
+    { icon: '🏠', label: 'API Info', href: 'index.html' },
+    { icon: '📊', label: 'System Info', href: 'dashboards.html' },
   ];
 
-  // Inject shell
+  // ── Inject shell ──
   function injectShell() {
     const user = getUser();
     const page = currentPage();
@@ -115,7 +91,7 @@
     const theme = getTheme();
 
     const navLinks = navItems
-      .filter(n => !n.adminOnly || isAdmin)
+      .filter(n => !n.adminOnly)
       .map(n => `<a href="${n.href}" class="${page === n.href ? 'active' : ''}"><span class="nav-icon">${n.icon}</span>${n.label}</a>`)
       .join('');
 
@@ -149,7 +125,7 @@
         <button class="mobile-toggle" id="mobile-toggle" onclick="window.__toggleSidebar()">☰</button>
         <div class="header-search">
           <span class="search-icon">🔍</span>
-          <input type="text" placeholder="Search anything..." />
+          <input  type="search" id="help-search-input" placeholder="Search anything..." />
         </div>
       </div>
       <div class="header-right">
@@ -163,7 +139,7 @@
           <div class="user-dropdown" id="user-dropdown">
             <div class="dropdown-user-info">
               <div class="dropdown-username">${user ? user.username : 'Guest'}</div>
-              <div class="dropdown-email">${user ? (user.username + '@infinitelyweird.dev') : ''}</div>
+              <div class="dropdown-email">${user ? (user.username + '@infinitelyweird.com') : ''}</div>
             </div>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="profile.html">👤 Profile</a>
@@ -202,19 +178,19 @@
     if (!document.querySelector('link[href="tooltips.css"]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'tooltips.css';
+      link.href = '../tooltips.css';
       document.head.appendChild(link);
     }
     if (!document.querySelector('script[src="tooltips.js"]')) {
       const script = document.createElement('script');
-      script.src = 'tooltips.js';
+      script.src = '../tooltips.js';
       document.body.appendChild(script);
     }
 
     // Inject notification center
     if (!document.querySelector('script[src="notifications.js"]')) {
       const nScript = document.createElement('script');
-      nScript.src = 'notifications.js';
+      nScript.src = '../notifications.js';
       document.body.appendChild(nScript);
     }
 
@@ -246,7 +222,7 @@
 
   function logout() {
     localStorage.clear();
-    window.location.href = 'login.html';
+    window.location.href = '../login.html';
   }
 
   function switchUser() {
@@ -284,14 +260,11 @@
 
   // ── Init ──
   function init() {
-    // Only inject shell on authenticated pages (not login/register)
-    const page = currentPage();
 	  
-	if (page === 'login.html' || page === 'register.html') return;
-	if (isHelpPath()) return;
-	  
-    if (!requireAuth()) return;
-    injectShell();
+	if (isHelpPath())
+	{
+    	injectShell();
+	}
   }
 
   if (document.readyState === 'loading') {

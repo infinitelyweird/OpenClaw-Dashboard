@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Documentation - OpenClaw Dashboard</title>
+  <link rel="stylesheet" href="../styles-help.css">
+  <script src="search.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>API Documentation</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Help Center</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="use-cases.html">Use Cases</a></li>
+        <li><a href="../swagger-ui/index.html">API Explorer (Swagger)</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Login API</h2>
+    <p><strong>Endpoint:</strong> <code>POST /api/login</code></p>
+    <p><strong>Description:</strong> Authenticate a user and retrieve a JWT token.</p>
+    <ul>
+      <li><strong>username</strong> (string, required): The username of the user.</li>
+      <li><strong>password</strong> (string, required): The user's password.</li>
+    </ul>
+
+    <h3>Request Example:</h3>
+    <pre><code>{
+  "username": "admin",
+  "password": "securepassword"
+}</code></pre>
+
+    <h3>Response Example:</h3>
+    <pre><code>{
+  "message": "Login successful!",
+  "token": "<JWT_TOKEN>",
+  "isAdmin": true,
+  "forcePasswordChange": false
+}</code></pre>
+
+    <h3>Error Codes:</h3>
+    <ul>
+      <li>400: Invalid username or password.</li>
+      <li>403: Account awaiting approval.</li>
+      <li>500: Internal server error.</li>
+    </ul>
+
+    <hr />
+
+    <h2>Registration API</h2>
+    <p><strong>Endpoint:</strong> <code>POST /api/register</code></p>
+    <p><strong>Description:</strong> Register a new user account (requires admin approval).</p>
+    <ul>
+      <li><strong>username</strong> (string, required): Desired username.</li>
+      <li><strong>password</strong> (string, required): Desired password.</li>
+      <li><strong>email</strong> (string, required): User's email address.</li>
+    </ul>
+
+    <h3>Request Example:</h3>
+    <pre><code>{
+  "username": "newuser",
+  "password": "securepassword",
+  "email": "newuser@example.com"
+}</code></pre>
+
+    <h3>Response Example:</h3>
+    <pre><code>{
+  "message": "Registration successful! Pending admin approval."
+}</code></pre>
+
+    <h3>Error Codes:</h3>
+    <ul>
+      <li>400: Username or email already exists.</li>
+      <li>500: Internal server error.</li>
+    </ul>
+  </main>
+</body>
+</html>

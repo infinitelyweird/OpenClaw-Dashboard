@@ -71,6 +71,7 @@ app.use('/', require('./routes/snarkRoute'));
 app.use('/', require('./routes/dashboardRoute'));
 app.use('/', require('./routes/projectRoute'));
 app.use('/', require('./routes/notificationRoute'));
+app.use('/help', require('./routes/helpRoute'));
 
 // Default route
 app.get('/', (req, res) => {
